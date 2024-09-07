@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"backend/services"
+	"api/services"
 
 	"github.com/gin-gonic/gin"
 )

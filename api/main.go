@@ -1,8 +1,8 @@
 package main
 
 import (
-	"backend/handlers"
-	"backend/services"
+	"api/handlers"
+	"api/services"
 
 	"github.com/gin-gonic/gin"
 )
