@@ -1,11 +1,52 @@
 import Dashboard from "@/components/dashboard-02";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "./data-table";
-import { columns } from "./columns";
+import { columns, Product } from "./columns";
+
+const data: Product[] = [
+  {
+    nombre: "Tomate",
+    tipo: "verdura",
+    momento: ["almuerzo", "cena"],
+    precio: 50,
+    cantidadActual: 10,
+    cantidadMinima: 5,
+  },
+  {
+    nombre: "Manzana",
+    tipo: "fruta",
+    momento: ["desayuno", "merienda"],
+    precio: 30,
+    cantidadActual: 20,
+    cantidadMinima: 10,
+  },
+  {
+    nombre: "Carne",
+    tipo: "carne",
+    momento: ["almuerzo", "cena"],
+    precio: 200,
+    cantidadActual: 5,
+    cantidadMinima: 2,
+  },
+  {
+    nombre: "Pescado",
+    tipo: "pescado",
+    momento: ["almuerzo", "cena"],
+    precio: 150,
+    cantidadActual: 3,
+    cantidadMinima: 1,
+  },
+  {
+    nombre: "Leche",
+    tipo: "lacteo",
+    momento: ["desayuno"],
+    precio: 60,
+    cantidadActual: 5,
+    cantidadMinima: 2,
+  },
+];
 
 export default function ChartsPage() {
-  const data = [];
-
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center">
