@@ -90,7 +90,11 @@ func (repository AlimentoRepository) PostAlimento(alimento model.Alimento) (*mon
 
 func (repository AlimentoRepository) PutAlimento(alimento model.Alimento) (*mongo.UpdateResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("alimentos")
-
+	alimentoDB, err := repository.GetAlimento(utils.GetStringIDFromObjectID(alimento.ID))
+	if err != nil {
+		return nil, err
+	}
+	alimento.FechaCreacion = alimentoDB.FechaCreacion
 	filter := bson.M{"_id": alimento.ID}
 	update := bson.M{"$set": alimento}
 

@@ -32,9 +32,9 @@ func mappingRoutes() {
 		compras := router.Group("/compras")
 	*/
 
-	alimentos.GET("", alimentoHandler.GetAlimentos)
+	alimentos.GET("/", alimentoHandler.GetAlimentos)
 	alimentos.GET("/:id", alimentoHandler.GetAlimento)
-	alimentos.POST("", alimentoHandler.PostAlimento)
+	alimentos.POST("/", alimentoHandler.PostAlimento)
 	alimentos.PUT("/:id", alimentoHandler.PutAlimento)
 	alimentos.DELETE("/:id", alimentoHandler.DeleteAlimento)
 }
