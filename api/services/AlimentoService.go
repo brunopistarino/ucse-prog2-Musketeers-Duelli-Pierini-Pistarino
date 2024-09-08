@@ -1,16 +1,111 @@
 package services
 
+import (
+	"api/dto"
+	"api/repositories"
+	"api/utils"
+	"errors"
+	"log"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 type AlimentoInterface interface {
-	Ping() bool
+	GetAlimentos() ([]*dto.Alimento, error)
+	GetAlimento(id string) (*dto.Alimento, error)
+	PostAlimento(alimento *dto.Alimento) error
+	PutAlimento(alimento *dto.Alimento) error
+	DeleteAlimento(id string) error
 }
 
 type AlimentoService struct {
+	AlimentoRepository repositories.AlimentoRepositoryInterface
 }
 
-func NewAlimentoService() *AlimentoService {
-	return &AlimentoService{}
+func NewAlimentoService(alimentoRepository repositories.AlimentoRepositoryInterface) *AlimentoService {
+	return &AlimentoService{
+		AlimentoRepository: alimentoRepository,
+	}
 }
 
-func (service *AlimentoService) Ping() bool {
-	return true
+func (service *AlimentoService) GetAlimentos() ([]*dto.Alimento, error) {
+	alimentosDB, err := service.AlimentoRepository.GetAlimentos()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var alimentos []*dto.Alimento
+	for _, alimentoDB := range alimentosDB {
+		alimento := dto.NewAlimento(alimentoDB)
+		alimentos = append(alimentos, alimento)
+
+	}
+	return alimentos, nil
+}
+
+func (service *AlimentoService) GetAlimento(id string) (*dto.Alimento, error) {
+	alimentoDB, err := service.AlimentoRepository.GetAlimento(id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	alimento := dto.NewAlimento(alimentoDB)
+	return alimento, nil
+}
+
+func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) error {
+
+	err := alimento.VerifyAlimento()
+	if err != nil {
+		return err
+	}
+
+	alimentoDB := alimento.GetModel()
+
+	now := time.Now()
+
+	alimentoDB.FechaCreacion = primitive.NewDateTimeFromTime(now)
+	alimentoDB.FechaActualizacion = primitive.NewDateTimeFromTime(time.Time{})
+	insertOneResult, err := service.AlimentoRepository.PostAlimento(alimentoDB)
+	resultID := insertOneResult.InsertedID.(primitive.ObjectID)
+
+	if err != nil {
+		log.Printf("[service:AlimentoService][method:PostAlimento][reason:ERROR_INSERT][error:%d]", err)
+		return err
+	}
+	alimento.ID = utils.GetStringIDFromObjectID(resultID)
+	return nil
+}
+
+func (service *AlimentoService) PutAlimento(alimento *dto.Alimento) error {
+	err := alimento.VerifyAlimento()
+	if err != nil {
+		return err
+	}
+
+	alimentoDB := alimento.GetModel()
+	now := time.Now()
+	alimentoDB.FechaActualizacion = primitive.NewDateTimeFromTime(now)
+
+	updateResult, err := service.AlimentoRepository.PutAlimento(alimentoDB)
+	if err != nil {
+		log.Printf("[service:AlimentoService][method:PutAlimento][reason:ERROR_UPDATE][error:%s]", err.Error())
+		return err
+	}
+	if updateResult.MatchedCount == 0 {
+		return errors.New("NF")
+	}
+	return nil
+}
+
+func (service *AlimentoService) DeleteAlimento(id string) error {
+	_, err := service.AlimentoRepository.DeleteAlimento(id)
+	if err != nil {
+		log.Printf("[service:AlimentoService][method:DeleteAlimento][reason:ERROR_DELETE][error:%s]", err.Error())
+		return err
+	}
+	return nil
 }

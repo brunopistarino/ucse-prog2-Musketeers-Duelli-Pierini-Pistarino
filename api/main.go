@@ -2,6 +2,7 @@ package main
 
 import (
 	"api/handlers"
+	"api/repositories"
 	"api/services"
 
 	"github.com/gin-gonic/gin"
@@ -30,13 +31,32 @@ func mappingRoutes() {
 		recetas := router.Group("/recetas")
 		compras := router.Group("/compras")
 	*/
-	alimentos.GET("/", alimentoHandler.Ping)
+
+	alimentos.GET("", alimentoHandler.GetAlimentos)
+	alimentos.GET("/:id", alimentoHandler.GetAlimento)
+	alimentos.POST("", alimentoHandler.PostAlimento)
+	alimentos.PUT("/:id", alimentoHandler.PutAlimento)
+	alimentos.DELETE("/:id", alimentoHandler.DeleteAlimento)
 }
 
 func dependencies() {
-	// var db
-	// var repositories
-	// var services
-	var alimentoService = services.NewAlimentoService()
+	var database repositories.DB
+
+	// Alimentos
+	var alimentoRepository repositories.AlimentoRepositoryInterface
+	var alimentoService services.AlimentoInterface
+
+	database = repositories.NewMongoDB()
+	alimentoRepository = repositories.NewAlimentoRepository(database)
+	alimentoService = services.NewAlimentoService(alimentoRepository)
 	alimentoHandler = handlers.NewAlimentoHandler(alimentoService)
+	//
+
+	// Recetas
+
+	//
+
+	// Compras
+
+	//
 }
