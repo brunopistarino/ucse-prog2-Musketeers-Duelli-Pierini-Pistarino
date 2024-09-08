@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
 import { Clock12, Clock3, Clock6, Clock9 } from "lucide-react";
 
@@ -66,11 +67,57 @@ export const columns: ColumnDef<Product>[] = [
   },
   {
     accessorKey: "cantidadActual",
-    header: "Cantidad Actual",
+    header: "Cantidad",
+    cell: ({ row }) => {
+      const cantidadActual = row.getValue("cantidadActual") as number;
+      const cantidadMinima = row.getValue("cantidadMinima") as number;
+
+      return (
+        <div className="">
+          {cantidadActual} / {cantidadMinima}
+        </div>
+      );
+      //   return <Badge variant="outline">{row.getValue("cantidadActual")}</Badge>;
+    },
   },
+  //   {
+  //     accessorKey: "cantidadActual",
+  //     header: "Cantidad Actual",
+  //   },
   {
     accessorKey: "cantidadMinima",
-    header: "Cantidad Minima",
+    header: () => <></>,
+    // cell: () => <div className="rounded-full h-4 border w-32 bg-red-500"></div>,
+    cell: ({ row }) => {
+      const cantidadActual = row.getValue("cantidadActual") as number;
+      const cantidadMinima = row.getValue("cantidadMinima") as number;
+
+      return (
+        <div
+          className={cn(
+            "rounded-full h-4 border-2 w-32 overflow-clip",
+            cantidadActual === 0 && "border-red-500"
+            // cantidadActual >= cantidadMinima ? "bg-green-500" : "bg-red-500"
+          )}
+        >
+          <div
+            className={cn(
+              "h-full rounded-full",
+              cantidadActual >= cantidadMinima
+                ? "bg-green-500"
+                : cantidadActual / cantidadMinima > 0.66
+                ? "bg-yellow-500"
+                : cantidadActual / cantidadMinima > 0.33
+                ? "bg-orange-500"
+                : "bg-red-500"
+            )}
+            style={{
+              width: `${(cantidadActual / cantidadMinima) * 100}%`,
+            }}
+          />
+        </div>
+      );
+    },
   },
 ];
 
