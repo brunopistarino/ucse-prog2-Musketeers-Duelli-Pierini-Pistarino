@@ -3,9 +3,9 @@ package dto
 import "api/clients/responses"
 
 type User struct {
-	Codigo   string `json:codigo`
-	Email    string `json:email`
-	Username string `json:username`
+	Codigo   string `json:"codigo"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
 }
 
 func NewUser(userInfo *responses.UserInfo) User {
