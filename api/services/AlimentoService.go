@@ -5,7 +5,6 @@ import (
 	"api/repositories"
 	"api/utils"
 	"errors"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,6 +12,7 @@ import (
 
 type AlimentoInterface interface {
 	GetAlimentos() ([]*dto.Alimento, error)
+	GetAlimentosBelowMinimum(foodType string, name string) ([]*dto.Alimento, error)
 	GetAlimento(id string) (*dto.Alimento, error)
 	PostAlimento(alimento *dto.Alimento) error
 	PutAlimento(alimento *dto.Alimento) error
@@ -40,7 +40,6 @@ func (service *AlimentoService) GetAlimentos() ([]*dto.Alimento, error) {
 	for _, alimentoDB := range alimentosDB {
 		alimento := dto.NewAlimento(alimentoDB)
 		alimentos = append(alimentos, alimento)
-
 	}
 	return alimentos, nil
 }
@@ -73,7 +72,6 @@ func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) error {
 	resultID := insertOneResult.InsertedID.(primitive.ObjectID)
 
 	if err != nil {
-		log.Printf("[service:AlimentoService][method:PostAlimento][reason:ERROR_INSERT][error:%d]", err)
 		return err
 	}
 	alimento.ID = utils.GetStringIDFromObjectID(resultID)
@@ -92,7 +90,6 @@ func (service *AlimentoService) PutAlimento(alimento *dto.Alimento) error {
 
 	updateResult, err := service.AlimentoRepository.PutAlimento(alimentoDB)
 	if err != nil {
-		log.Printf("[service:AlimentoService][method:PutAlimento][reason:ERROR_UPDATE][error:%s]", err.Error())
 		return err
 	}
 	if updateResult.MatchedCount == 0 {
@@ -102,10 +99,31 @@ func (service *AlimentoService) PutAlimento(alimento *dto.Alimento) error {
 }
 
 func (service *AlimentoService) DeleteAlimento(id string) error {
-	_, err := service.AlimentoRepository.DeleteAlimento(id)
+	objectID := utils.GetObjectIDFromStringID(id)
+
+	_, err := service.AlimentoRepository.DeleteAlimento(objectID)
 	if err != nil {
-		log.Printf("[service:AlimentoService][method:DeleteAlimento][reason:ERROR_DELETE][error:%s]", err.Error())
 		return err
 	}
 	return nil
+}
+
+func (service *AlimentoService) GetAlimentosBelowMinimum(foodType string, name string) ([]*dto.Alimento, error) {
+
+	if foodType != "" && !utils.StringExistsInSlice(foodType, dto.FoodType) {
+		return nil, errors.New("invalid alimento type")
+	}
+
+	alimentosDB, err := service.AlimentoRepository.GetAlimentosBelowMinimum(foodType, name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var alimentos []*dto.Alimento
+	for _, alimentoDB := range alimentosDB {
+		alimento := dto.NewAlimento(alimentoDB)
+		alimentos = append(alimentos, alimento)
+	}
+	return alimentos, nil
 }

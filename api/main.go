@@ -10,7 +10,9 @@ import (
 
 var (
 	alimentoHandler *handlers.AlimentoHandler
-	router          *gin.Engine
+	//recetaHandler   *handlers.RecetaHandler
+	compraHandler *handlers.CompraHandler
+	router        *gin.Engine
 )
 
 func main() {
@@ -27,36 +29,36 @@ func main() {
 func mappingRoutes() {
 
 	alimentos := router.Group("/alimentos")
-	/*
-		recetas := router.Group("/recetas")
-		compras := router.Group("/compras")
-	*/
 
 	alimentos.GET("/", alimentoHandler.GetAlimentos)
 	alimentos.GET("/:id", alimentoHandler.GetAlimento)
 	alimentos.POST("/", alimentoHandler.PostAlimento)
 	alimentos.PUT("/:id", alimentoHandler.PutAlimento)
 	alimentos.DELETE("/:id", alimentoHandler.DeleteAlimento)
+	alimentos.GET("/below_minimum", alimentoHandler.GetAlimentosBelowMinimum)
+	/*
+		recetas := router.Group("/recetas")
+	*/
+
+	compras := router.Group("/compras")
+
+	compras.GET("/", compraHandler.GetCompras)
+	compras.POST("/", compraHandler.PostCompra)
 }
 
 func dependencies() {
-	var database repositories.DB
+	var database = repositories.NewMongoDB()
 
-	// Alimentos
-	var alimentoRepository repositories.AlimentoRepositoryInterface
-	var alimentoService services.AlimentoInterface
+	alimentoRepository := repositories.NewAlimentoRepository(database)
+	compraRepository := repositories.NewCompraRepository(database)
+	//recetaRepository := repositories.NewRecetaRepository(database)
 
-	database = repositories.NewMongoDB()
-	alimentoRepository = repositories.NewAlimentoRepository(database)
-	alimentoService = services.NewAlimentoService(alimentoRepository)
+	alimentoService := services.NewAlimentoService(alimentoRepository)
+	compraService := services.NewCompraService(alimentoRepository, compraRepository)
+	//recetaService := services.NewRecetaService(recetaRepository)
+
 	alimentoHandler = handlers.NewAlimentoHandler(alimentoService)
-	//
+	compraHandler = handlers.NewCompraHandler(compraService)
+	//recetaHandler = handlers.NewRecetaHandler(recetaService)
 
-	// Recetas
-
-	//
-
-	// Compras
-
-	//
 }

@@ -20,10 +20,11 @@ func NewAlimentoHandler(alimentoService services.AlimentoInterface) *AlimentoHan
 }
 
 func (handler *AlimentoHandler) GetAlimentos(c *gin.Context) {
+	log.Print("[handler:AlimentoHandler][method:GetAlimentos][info:GET_ALL]")
 	alimentos, err := handler.alimentoService.GetAlimentos()
 
 	if err != nil {
-		log.Printf("[handler:AlimentoHandler][method:GetAlimentos][reason:ERROR_GET][error:%d]", err.Error())
+		log.Printf("[handler:AlimentoHandler][method:GetAlimentos][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(500, gin.H{
 			"error": err,
 		})
@@ -33,7 +34,28 @@ func (handler *AlimentoHandler) GetAlimentos(c *gin.Context) {
 	c.JSON(200, alimentos)
 }
 
+func (handler *AlimentoHandler) GetAlimentosBelowMinimum(c *gin.Context) {
+	log.Print("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][info:GET_BELOW_MINIMUM]")
+
+	alimentoType := c.Query("type")
+	name := c.Query("name")
+
+	alimentos, err := handler.alimentoService.GetAlimentosBelowMinimum(alimentoType, name)
+
+	if err != nil {
+		log.Printf("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][reason:ERROR_GET][error:%s]", err.Error())
+		c.JSON(500, gin.H{
+			"error": err,
+		})
+		return
+	}
+	log.Printf("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][reason:SUCCESS_GET][alimentos:%d]", len(alimentos))
+	c.JSON(200, alimentos)
+}
+
 func (handler *AlimentoHandler) GetAlimento(c *gin.Context) {
+	log.Print("[handler:AlimentoHandler][method:GetAlimento][info:GET_ONE]")
+
 	id := c.Param("id")
 	alimento, err := handler.alimentoService.GetAlimento(id)
 
@@ -49,6 +71,8 @@ func (handler *AlimentoHandler) GetAlimento(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) PostAlimento(c *gin.Context) {
+	log.Print("[handler:AlimentoHandler][method:PostAlimento][info:POST]")
+
 	var alimento dto.Alimento
 	err := c.BindJSON(&alimento)
 	if err != nil {
@@ -74,6 +98,8 @@ func (handler *AlimentoHandler) PostAlimento(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
+	log.Print("[handler:AlimentoHandler][method:PutAlimento][info:PUT]")
+
 	var alimento dto.Alimento
 	err := c.BindJSON(&alimento)
 	if err != nil {
@@ -107,6 +133,8 @@ func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) DeleteAlimento(c *gin.Context) {
+	log.Print("[handler:AlimentoHandler][method:DeleteAlimento][info:DELETE]")
+
 	id := c.Param("id")
 	err := handler.alimentoService.DeleteAlimento(id)
 
