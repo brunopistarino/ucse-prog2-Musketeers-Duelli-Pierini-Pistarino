@@ -22,3 +22,11 @@ export const pages = [
     icon: ShoppingCart,
   },
 ];
+
+export const productTypes = {
+  verdura: "🥬 Verdura",
+  fruta: "🍎 Fruta",
+  carne: "🥩 Carne",
+  pescado: "🐟 Pescado",
+  lacteo: "🥛 Lácteo",
+};
