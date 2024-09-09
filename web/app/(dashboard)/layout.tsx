@@ -33,6 +33,8 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { pages } from "@/lib/constants";
+import { Suspense } from "react";
+import ModeToggle from "@/components/mode-toggle";
 
 export default function RootLayout({
   children,
@@ -79,20 +81,7 @@ export default function RootLayout({
             </nav>
           </div>
           <div className="mt-auto p-4">
-            <Card x-chunk="A card with a call to action">
-              <CardHeader className="p-2 pt-0 md:p-4">
-                <CardTitle>Upgrade to Pro</CardTitle>
-                <CardDescription>
-                  Unlock all features and get unlimited access to our support
-                  team.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-2 pt-0 md:p-4 md:pt-0">
-                <Button size="sm" className="w-full">
-                  Upgrade
-                </Button>
-              </CardContent>
-            </Card>
+            <ModeToggle />
           </div>
         </div>
       </div>
@@ -204,7 +193,11 @@ export default function RootLayout({
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
+        {/* <Suspense
+          fallback={<div className="animate-pulse bg-slate-200 h-full" />}
+        > */}
         {children}
+        {/* </Suspense> */}
       </div>
     </div>
   );
