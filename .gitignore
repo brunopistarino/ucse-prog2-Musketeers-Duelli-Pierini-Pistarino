@@ -1,0 +1,7 @@
+# Ignorar el archivo structure.json
+structure.json
+
+# Otros archivos y carpetas a ignorar
+node_modules/
+dist/
+.env
