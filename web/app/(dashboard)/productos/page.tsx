@@ -1,8 +1,8 @@
-import Dashboard from "@/components/dashboard-02";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "./data-table";
 import { columns, Product } from "./columns";
 import { getProducts } from "@/lib/actions";
+import FormSheet from "./form-sheet";
 
 export default async function ProductsPage() {
   const data = await getProducts();
@@ -11,6 +11,9 @@ export default async function ProductsPage() {
     <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center">
         <h1 className="text-lg font-semibold md:text-2xl">Productos</h1>
+        <FormSheet>
+          <Button variant="outline">Agregar Producto</Button>
+        </FormSheet>
       </div>
       {/* <EmptyState /> */}
       <DataTable columns={columns} data={data} />

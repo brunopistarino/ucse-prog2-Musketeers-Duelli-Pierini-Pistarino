@@ -1,10 +1,9 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { productTypes } from "@/lib/constants";
+import { productTypes, moments } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Clock12, Clock3, Clock6, Clock9 } from "lucide-react";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -44,7 +43,7 @@ export const columns: ColumnDef<Product>[] = [
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-2">
         {(row.getValue("momento") as Moment[]).map((momento) => {
-          const Icon = momentos[momento].icon;
+          const Icon = moments[momento].icon;
           return (
             <Badge
               key={momento}
@@ -52,7 +51,7 @@ export const columns: ColumnDef<Product>[] = [
               className="flex items-center gap-2"
             >
               <Icon className="h-4 w-4 text-muted-foreground" />
-              {momentos[momento].label}
+              {moments[momento].label}
             </Badge>
           );
         })}
@@ -190,22 +189,3 @@ export const columns: ColumnDef<Product>[] = [
     // },
   },
 ];
-
-const momentos = {
-  desayuno: {
-    label: "Desayuno",
-    icon: Clock6,
-  },
-  almuerzo: {
-    label: "Almuerzo",
-    icon: Clock12,
-  },
-  merienda: {
-    label: "Merienda",
-    icon: Clock3,
-  },
-  cena: {
-    label: "Cena",
-    icon: Clock9,
-  },
-};

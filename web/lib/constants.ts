@@ -1,4 +1,13 @@
-import { LineChart, Package, ShoppingCart, Users } from "lucide-react";
+import {
+  LineChart,
+  Package,
+  ShoppingCart,
+  Users,
+  Clock12,
+  Clock3,
+  Clock6,
+  Clock9,
+} from "lucide-react";
 
 export const pages = [
   {
@@ -29,4 +38,23 @@ export const productTypes = {
   carne: "🥩 Carne",
   pescado: "🐟 Pescado",
   lacteo: "🥛 Lácteo",
+};
+
+export const moments = {
+  desayuno: {
+    label: "Desayuno",
+    icon: Clock6,
+  },
+  almuerzo: {
+    label: "Almuerzo",
+    icon: Clock12,
+  },
+  merienda: {
+    label: "Merienda",
+    icon: Clock3,
+  },
+  cena: {
+    label: "Cena",
+    icon: Clock9,
+  },
 };
