@@ -8,16 +8,16 @@ export default async function ProductsPage() {
   const data = await getProducts();
 
   return (
-    <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-      <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-2xl">Productos</h1>
+    <div>
+      <div className="flex items-center p-4 justify-between border-b sticky top-0 bg-card z-50">
+        <h1 className="text-lg font-semibold md:text-2xl">Alimentos</h1>
         <FormSheet>
-          <Button variant="outline">Agregar Producto</Button>
+          <Button>Agregar alimento</Button>
         </FormSheet>
       </div>
       {/* <EmptyState /> */}
       <DataTable columns={columns} data={data} />
-    </main>
+    </div>
   );
 }
 

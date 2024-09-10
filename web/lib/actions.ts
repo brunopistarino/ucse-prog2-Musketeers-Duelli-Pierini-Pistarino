@@ -1,4 +1,4 @@
-import { Product } from "@/app/(dashboard)/productos/columns";
+import { Product } from "@/app/(dashboard)/alimentos/columns";
 
 const productos: Product[] = [
   {
