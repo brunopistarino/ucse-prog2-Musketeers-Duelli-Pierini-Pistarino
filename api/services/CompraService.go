@@ -5,6 +5,7 @@ import (
 	"api/model"
 	"api/repositories"
 	"api/utils"
+	"errors"
 	"log"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 
 type CompraInterface interface {
 	GetCompras() ([]*dto.Compra, error)
-	PostCompra(ids []string) (model.Compra, error)
+	PostCompra(ids []string) (*dto.Compra, error)
 }
 
 type CompraService struct {
@@ -43,14 +44,14 @@ func (service *CompraService) GetCompras() ([]*dto.Compra, error) {
 	return compras, nil
 }
 
-func (service *CompraService) PostCompra(ids []string) (model.Compra, error) {
+func (service *CompraService) PostCompra(ids []string) (*dto.Compra, error) {
 	var alimentosDB []model.Alimento
 	if len(ids) != 0 {
 		log.Printf("[service:CompraService][method:PostCompra][info:POST][ids:%v]", ids)
 		for _, id := range ids {
 			alimentoDB, err := service.AlimentoRepository.GetAlimento(id)
 			if err != nil {
-				return model.Compra{}, err
+				return nil, err
 			}
 
 			alimentosDB = append(alimentosDB, alimentoDB)
@@ -58,7 +59,10 @@ func (service *CompraService) PostCompra(ids []string) (model.Compra, error) {
 	} else {
 		results, err := service.AlimentoRepository.GetAlimentosBelowMinimum("", "")
 		if err != nil {
-			return model.Compra{}, err
+			return nil, err
+		}
+		if len(results) == 0 {
+			return nil, errors.New("no 'alimentos' to buy")
 		}
 		alimentosDB = results
 	}
@@ -66,24 +70,28 @@ func (service *CompraService) PostCompra(ids []string) (model.Compra, error) {
 	total, err := service.AlimentoRepository.SetAlimentosQuantityToMinimum(alimentosDB)
 
 	if err != nil {
-		return model.Compra{}, err
+		return nil, err
 	}
 
 	if total == 0 {
-		return model.Compra{}, nil
+		return nil, errors.New("no 'alimentos' to buy")
 	}
 
-	compra := model.Compra{
-		CostoTotal: total,
-		Fecha:      utils.GetPrimitiveDateTimeFromDate(time.Now()),
+	compraDB := model.Compra{
+		CostoTotal:         total,
+		FechaCreacion:      utils.GetPrimitiveDateTimeFromDate(time.Now()),
+		FechaActualizacion: primitive.NewDateTimeFromTime(time.Time{}),
 	}
 
-	insertOneResult, err := service.CompraRepository.PostCompra(compra)
+	insertOneResult, err := service.CompraRepository.PostCompra(compraDB)
 
 	if err != nil {
-		return model.Compra{}, err
+		return nil, err
 	}
 
-	compra.ID = insertOneResult.InsertedID.(primitive.ObjectID)
+	compraDB.ID = insertOneResult.InsertedID.(primitive.ObjectID)
+
+	compra := dto.NewCompra(compraDB)
+
 	return compra, nil
 }

@@ -16,14 +16,14 @@ func NewCompra(compra model.Compra) *Compra {
 	return &Compra{
 		ID:         utils.GetStringIDFromObjectID(compra.ID),
 		CostoTotal: compra.CostoTotal,
-		Fecha:      utils.GetDateFromPrimitiveDateTime(compra.Fecha),
+		Fecha:      utils.GetDateFromPrimitiveDateTime(compra.FechaCreacion),
 	}
 }
 
 func (compra Compra) GetModel() model.Compra {
 	return model.Compra{
-		ID:         utils.GetObjectIDFromStringID(compra.ID),
-		CostoTotal: compra.CostoTotal,
-		Fecha:      utils.GetPrimitiveDateTimeFromDate(compra.Fecha),
+		ID:            utils.GetObjectIDFromStringID(compra.ID),
+		CostoTotal:    compra.CostoTotal,
+		FechaCreacion: utils.GetPrimitiveDateTimeFromDate(compra.Fecha),
 	}
 }
