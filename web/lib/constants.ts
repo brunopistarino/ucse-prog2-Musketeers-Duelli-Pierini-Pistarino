@@ -16,8 +16,8 @@ export const pages = [
     icon: LineChart,
   },
   {
-    name: "Productos",
-    href: "/productos",
+    name: "Alimentos",
+    href: "/alimentos",
     icon: Package,
   },
   {
