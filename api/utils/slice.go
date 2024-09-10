@@ -19,3 +19,15 @@ func SliceToString(slice []string) string {
 	}
 	return str
 }
+
+func HasDuplicates[T comparable](arr []T) bool {
+	seen := make(map[T]bool)
+
+	for _, val := range arr {
+		if seen[val] {
+			return true
+		}
+		seen[val] = true
+	}
+	return false
+}

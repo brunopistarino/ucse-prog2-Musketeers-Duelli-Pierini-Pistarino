@@ -25,7 +25,7 @@ func (handler *CompraHandler) GetCompras(c *gin.Context) {
 	if err != nil {
 		log.Printf("[handler:CompraHandler][method:GetCompras][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(500, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -38,7 +38,7 @@ func (handler *CompraHandler) PostCompra(c *gin.Context) {
 
 	// Bind an array of strings from a query parameter
 	ids := c.QueryArray("ids")
-
+	log.Printf("[handler:CompraHandler][method:PostCompra][info:POST][ids:%s]", ids)
 	if len(ids) == 0 {
 		log.Printf("[handler:CompraHandler][method:PostCompra][info:No ids provided]")
 	}
@@ -46,9 +46,16 @@ func (handler *CompraHandler) PostCompra(c *gin.Context) {
 	compra, err := handler.compraService.PostCompra(ids)
 
 	if err != nil {
+		if err.Error() == "no 'alimentos' to buy" {
+			log.Printf("[handler:CompraHandler][method:PostCompra][reason:BAD_POST][error:%s]", err.Error())
+			c.JSON(400, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 		log.Printf("[handler:CompraHandler][method:PostCompra][reason:ERROR_POST][error:%s]", err.Error())
 		c.JSON(500, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}

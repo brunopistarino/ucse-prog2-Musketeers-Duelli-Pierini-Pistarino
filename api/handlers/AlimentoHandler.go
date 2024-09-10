@@ -78,7 +78,7 @@ func (handler *AlimentoHandler) PostAlimento(c *gin.Context) {
 	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PostAlimento][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(400, gin.H{
-			"error": err,
+			"error": err.Error(),
 		})
 		return
 	}
@@ -120,11 +120,19 @@ func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
 
 	err = handler.alimentoService.PutAlimento(&alimento)
 
-	if err != nil && err.Error() == "NF" {
+	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_PUT][error:%s]", err.Error())
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": "Resource of id " + alimento.ID + " not found.",
+		if err.Error() == "NF" {
+
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": "Resource of id " + alimento.ID + " not found.",
+			})
+			return
+		}
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
 		})
+
 		return
 	}
 
