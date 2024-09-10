@@ -86,6 +86,9 @@ func (alimento Alimento) VerifyAlimento() error {
 	if len(alimento.Momentos) == 0 {
 		return errors.New("Momentos is required")
 	}
+	if utils.HasDuplicates(alimento.Momentos) {
+		return errors.New("Momentos has duplicates")
+	}
 	for _, momento := range alimento.Momentos {
 		if !utils.StringExistsInSlice(momento, Times) {
 			return errors.New("Momentos is invalid. '" + momento + "' is not a valid time. Must be one of: " + utils.SliceToString(Times))
