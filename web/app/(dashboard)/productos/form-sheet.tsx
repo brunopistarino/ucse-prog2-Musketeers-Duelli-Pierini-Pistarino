@@ -52,7 +52,7 @@ export default function FormSheet({ children, product }: Props) {
       nombre: product?.nombre || "",
       tipo: product?.tipo || "",
       momentos: product?.momento || [],
-      precio: Number(product?.precio) || undefined,
+      precio: product?.precio,
       cantidad_actual: Number(product?.cantidadActual) || undefined,
       cantidad_minima: Number(product?.cantidadMinima) || undefined,
     },

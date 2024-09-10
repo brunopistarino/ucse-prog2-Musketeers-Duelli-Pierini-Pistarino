@@ -58,7 +58,10 @@ export function DataTable<TData, TValue>({
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <FormSheet key={row.id} product={row.original as Product}>
-                <TableRow data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  className="cursor-pointer"
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(

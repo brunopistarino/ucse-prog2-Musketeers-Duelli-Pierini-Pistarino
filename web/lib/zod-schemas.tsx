@@ -6,7 +6,7 @@ export const alimentoFormSchema = z.object({
   momentos: z.array(z.string().min(1)).nonempty(),
   precio: z
     .union([
-      z
+      z.coerce
         .string()
         .regex(/^-?0$|^-?[1-9]\d*(\.\d+)?$/, {
           message: "El precio es obligatorio",

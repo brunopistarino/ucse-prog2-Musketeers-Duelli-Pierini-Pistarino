@@ -2,6 +2,7 @@
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { productTypes } from "@/lib/constants";
 import { useEffect, useState } from "react";
+type ProductType = "verdura" | "fruta" | "carne" | "pescado" | "lacteo";
 
 const columns = {
   600: 2,
@@ -9,7 +10,19 @@ const columns = {
   1200: 4,
 };
 
-export default function MasonryRecipes({ recipes }) {
+type Receta = {
+  nombre: string;
+  momento: string;
+  ingredientes: {
+    producto: {
+      nombre: string;
+      tipo: string;
+    };
+    cantidad: number;
+  }[];
+};
+
+export default function MasonryRecipes({ recipes }: { recipes: Receta[] }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -32,7 +45,7 @@ export default function MasonryRecipes({ recipes }) {
   );
 }
 
-const RecetaItem = ({ receta }) => (
+const RecetaItem = ({ receta }: { receta: Receta }) => (
   <div className="bg-border p-1 rounded-lg">
     <div className="flex flex-col gap-2 border py-4 px-6 bg-card rounded-md">
       <h2 className="text-lg font-semibold">{receta.nombre}</h2>
@@ -48,7 +61,10 @@ const RecetaItem = ({ receta }) => (
             className="flex items-center gap-2"
           >
             <p className="shrink-0">
-              {productTypes[ingrediente.producto.tipo].slice(0, 2)}{" "}
+              {productTypes[ingrediente.producto.tipo as ProductType].slice(
+                0,
+                2
+              )}{" "}
               {ingrediente.producto.nombre}
             </p>
             <div className="border-b w-full border-dashed border-gray-300" />
