@@ -29,48 +29,79 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { alimentoFormSchema } from "@/lib/zod-schemas";
+import { Alimento, alimentoFormSchema } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { productTypes } from "@/lib/constants";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Clock12, Clock3, Clock6, Clock9, Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Product } from "./columns";
-import { use, useEffect } from "react";
+import { AlimentosType, alimentosTypes, momentos } from "@/lib/constants";
+import { createAlimento, updateAlimento } from "@/lib/actions";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Props {
   children: React.ReactNode;
-  product?: Product;
+  alimento?: Alimento;
 }
 
-export default function FormSheet({ children, product }: Props) {
-  const form = useForm<z.infer<typeof alimentoFormSchema>>({
+export default function FormSheet({ children, alimento }: Props) {
+  const [isPending, setIsPending] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
+
+  const form = useForm<Alimento>({
     resolver: zodResolver(alimentoFormSchema),
     defaultValues: {
-      nombre: product?.nombre || "",
-      tipo: product?.tipo || "",
-      momentos: product?.momento || [],
-      precio: product?.precio,
-      cantidad_actual: Number(product?.cantidadActual) || undefined,
-      cantidad_minima: Number(product?.cantidadMinima) || undefined,
+      id: alimento?.id,
+      nombre: alimento?.nombre || "",
+      tipo: alimento?.tipo || "",
+      momentos: alimento?.momentos || [],
+      precio: alimento?.precio,
+      cantidad_actual: Number(alimento?.cantidad_actual) || undefined,
+      cantidad_minima: Number(alimento?.cantidad_minima) || undefined,
     },
   });
 
-  console.log(product);
+  const momentosList = Object.keys(momentos).map((key) => ({
+    // value: key,
+    value: "dsad",
+    label: momentos[key as keyof typeof momentos].label,
+    icon: momentos[key as keyof typeof momentos].icon,
+  }));
 
-  function onSubmit(values: z.infer<typeof alimentoFormSchema>) {
-    console.log(values);
+  console.log(alimento);
+
+  async function onSubmit(values: Alimento) {
+    setIsPending(true);
+    const response = alimento
+      ? await updateAlimento(values)
+      : await createAlimento(values);
+    if (response?.error) {
+      toast({
+        title: "Error",
+        description: response.error,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: `Alimento ${alimento ? "modificado" : "agregado"}`,
+      });
+      // form.reset();
+    }
+    setIsPending(false);
+    setIsOpen(false);
   }
 
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+    <AlertDialog open={isOpen}>
+      <AlertDialogTrigger asChild onClick={() => setIsOpen(true)}>
+        {children}
+      </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {product ? "Modificar" : "Agregar"} alimento
+            {alimento ? "Modificar" : "Agregar"} alimento
           </AlertDialogTitle>
           <AlertDialogDescription>
             Los alimentos son usados para crear recetas y llevar registro de su
@@ -110,9 +141,9 @@ export default function FormSheet({ children, product }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.keys(productTypes).map((key) => (
+                      {Object.keys(alimentosTypes).map((key) => (
                         <SelectItem key={key} value={key}>
-                          {productTypes[key as keyof typeof productTypes]}
+                          {alimentosTypes[key as AlimentosType]}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -129,7 +160,7 @@ export default function FormSheet({ children, product }: Props) {
                   <FormLabel>Momentos</FormLabel>
                   <FormControl>
                     <MultiSelect
-                      options={momentsList}
+                      options={momentosList}
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                       placeholder="Elija un o varios momentos"
@@ -190,15 +221,26 @@ export default function FormSheet({ children, product }: Props) {
             </div>
 
             <AlertDialogFooter className="pt-4">
-              {product && (
-                <Button variant="destructive" className="mr-auto gap-2">
+              {alimento && (
+                <Button
+                  variant="destructive"
+                  className="mr-auto gap-2"
+                  disabled={isPending}
+                >
                   <Trash2 size={16} />
                   Eliminar
                 </Button>
               )}
-              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel
+                disabled={isPending}
+                onClick={() => setIsOpen(false)}
+              >
+                Cancelar
+              </AlertDialogCancel>
               {/* <AlertDialogAction>Continue</AlertDialogAction> */}
-              <Button type="submit">Guardar</Button>
+              <Button type="submit" disabled={isPending}>
+                Guardar
+              </Button>
             </AlertDialogFooter>
           </form>
         </Form>
@@ -206,10 +248,3 @@ export default function FormSheet({ children, product }: Props) {
     </AlertDialog>
   );
 }
-
-const momentsList = [
-  { value: "desayuno", label: "Desayuno", icon: Clock6 },
-  { value: "almuerzo", label: "Almuerzo", icon: Clock12 },
-  { value: "merienda", label: "Merienda", icon: Clock3 },
-  { value: "cena", label: "Cena", icon: Clock9 },
-];

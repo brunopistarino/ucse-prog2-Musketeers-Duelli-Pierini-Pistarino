@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import FormSheet from "./form-sheet";
-import { Product } from "./columns";
+import { Alimento } from "@/lib/zod-schemas";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
-            <FormSheet key={row.id} product={row.original as Product}>
+            <FormSheet key={row.id} alimento={row.original as Alimento}>
               <TableRow
                 className="cursor-pointer"
                 data-state={row.getIsSelected() && "selected"}
