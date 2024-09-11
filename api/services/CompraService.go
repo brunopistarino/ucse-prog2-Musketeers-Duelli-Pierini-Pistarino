@@ -41,6 +41,9 @@ func (service *CompraService) GetCompras() ([]*dto.Compra, error) {
 		compra := dto.NewCompra(compraDB)
 		compras = append(compras, compra)
 	}
+	if len(compras) == 0 {
+		compras = []*dto.Compra{}
+	}
 	return compras, nil
 }
 

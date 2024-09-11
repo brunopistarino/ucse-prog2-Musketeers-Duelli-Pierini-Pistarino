@@ -15,7 +15,7 @@ type AlimentoInterface interface {
 	GetAlimentosBelowMinimum(foodType string, name string) ([]*dto.Alimento, error)
 	GetAlimento(id string) (*dto.Alimento, error)
 	PostAlimento(alimento *dto.Alimento) error
-	PutAlimento(alimento *dto.Alimento) error
+	PutAlimento(alimento *dto.Alimento, id string) error
 	DeleteAlimento(id string) error
 }
 
@@ -40,6 +40,9 @@ func (service *AlimentoService) GetAlimentos() ([]*dto.Alimento, error) {
 	for _, alimentoDB := range alimentosDB {
 		alimento := dto.NewAlimento(alimentoDB)
 		alimentos = append(alimentos, alimento)
+	}
+	if len(alimentos) == 0 {
+		alimentos = []*dto.Alimento{}
 	}
 	return alimentos, nil
 }
@@ -78,10 +81,13 @@ func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) error {
 	return nil
 }
 
-func (service *AlimentoService) PutAlimento(alimento *dto.Alimento) error {
+func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) error {
 	err := alimento.VerifyAlimento()
 	if err != nil {
 		return err
+	}
+	if id == "" {
+		return errors.New("id is required")
 	}
 
 	alimentoDB := alimento.GetModel()
@@ -124,6 +130,9 @@ func (service *AlimentoService) GetAlimentosBelowMinimum(foodType string, name s
 	for _, alimentoDB := range alimentosDB {
 		alimento := dto.NewAlimento(alimentoDB)
 		alimentos = append(alimentos, alimento)
+	}
+	if len(alimentos) == 0 {
+		alimentos = []*dto.Alimento{}
 	}
 	return alimentos, nil
 }
