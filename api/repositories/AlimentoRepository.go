@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type AlimentoRepositoryInterface interface {
@@ -34,8 +35,8 @@ func (repository AlimentoRepository) GetAlimentos() ([]model.Alimento, error) {
 
 	collection := repository.db.GetClient().Database("superCook").Collection("alimentos")
 	filter := bson.M{}
-
-	cursor, err := collection.Find(context.TODO(), filter)
+	findOptions := options.Find().SetSort(bson.D{{Key: "fecha_creacion", Value: -1}})
+	cursor, err := collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -55,14 +56,13 @@ func (repository AlimentoRepository) GetAlimentos() ([]model.Alimento, error) {
 	if err := cursor.Err(); err != nil {
 		return nil, err
 	}
-
 	return alimentos, nil
 }
 
 func (repository AlimentoRepository) GetAlimentosBelowMinimum(foodType string, name string) ([]model.Alimento, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("alimentos")
 	filter := bson.M{"$expr": bson.M{"$lt": []string{"$cantidad_actual", "$cantidad_minima"}}}
-
+	findOptions := options.Find().SetSort(bson.D{{Key: "fecha_creacion", Value: -1}})
 	// Type filter by exact match and name filter by approximate match
 	if foodType != "" {
 		filter["tipo"] = foodType
@@ -71,7 +71,7 @@ func (repository AlimentoRepository) GetAlimentosBelowMinimum(foodType string, n
 		filter["nombre"] = bson.M{"$regex": name, "$options": "i"}
 	}
 
-	cursor, err := collection.Find(context.TODO(), filter)
+	cursor, err := collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
 		return nil, err
 	}

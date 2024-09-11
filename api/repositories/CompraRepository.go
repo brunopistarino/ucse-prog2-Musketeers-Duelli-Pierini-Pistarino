@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type CompraRepositoryInterface interface {
@@ -40,8 +41,9 @@ func (repository CompraRepository) GetCompras() ([]model.Compra, error) {
 
 	collection := repository.db.GetClient().Database("superCook").Collection("compras")
 	filter := bson.M{}
+	findOptions := options.Find().SetSort(bson.D{{Key: "fecha_creacion", Value: -1}})
 
-	cursor, err := collection.Find(context.TODO(), filter)
+	cursor, err := collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
 		return nil, err
 	}
