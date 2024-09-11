@@ -39,7 +39,7 @@ var Times = []string{
 }
 
 type Alimento struct {
-	ID             string   `json:"id"`
+	ID             string   `json:"id" binding:"omitempty"`
 	Nombre         string   `json:"nombre"`
 	Tipo           string   `json:"tipo"`
 	Momentos       []string `json:"momentos"`
@@ -74,34 +74,37 @@ func (alimento Alimento) GetModel() model.Alimento {
 
 func (alimento Alimento) VerifyAlimento() error {
 	// Verify all fields are correctly filled
+	if alimento.ID != "" {
+		return errors.New("request body ID must not be set")
+	}
 	if alimento.Nombre == "" {
-		return errors.New("Nombre is required")
+		return errors.New("nombre is required")
 	}
 	if alimento.Tipo == "" {
-		return errors.New("Tipo is required")
+		return errors.New("tipo is required")
 	}
 	if !utils.StringExistsInSlice(alimento.Tipo, FoodType) {
-		return errors.New("Tipo is invalid. '" + alimento.Tipo + "' is not a valid food type. Must be one of: " + utils.SliceToString(FoodType))
+		return errors.New("tipo is invalid. '" + alimento.Tipo + "' is not a valid food type. Must be one of: " + utils.SliceToString(FoodType))
 	}
 	if len(alimento.Momentos) == 0 {
-		return errors.New("Momentos is required")
+		return errors.New("momentos is required")
 	}
 	if utils.HasDuplicates(alimento.Momentos) {
-		return errors.New("Momentos has duplicates")
+		return errors.New("momentos has duplicates")
 	}
 	for _, momento := range alimento.Momentos {
 		if !utils.StringExistsInSlice(momento, Times) {
-			return errors.New("Momentos is invalid. '" + momento + "' is not a valid time. Must be one of: " + utils.SliceToString(Times))
+			return errors.New("momentos is invalid. '" + momento + "' is not a valid time. Must be one of: " + utils.SliceToString(Times))
 		}
 	}
 	if alimento.Precio < 0 {
-		return errors.New("Precio must be a positive number")
+		return errors.New("precio must be a positive number")
 	}
 	if alimento.CantidadActual < 0 {
-		return errors.New("CantidadActual must be a positive number")
+		return errors.New("cantidadActual must be a positive number")
 	}
 	if alimento.CantidadMinima < 0 {
-		return errors.New("CantidadMinima must be a positive number")
+		return errors.New("cantidadMinima must be a positive number")
 	}
 	return nil
 }

@@ -109,16 +109,9 @@ func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
 		})
 		return
 	}
-	alimento.ID = c.Param("id")
-	if alimento.ID == "" {
-		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_PUT][error:%s]", "ID is required")
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "ID is required",
-		})
-		return
-	}
+	id := c.Param("id")
 
-	err = handler.alimentoService.PutAlimento(&alimento)
+	err = handler.alimentoService.PutAlimento(&alimento, id)
 
 	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_PUT][error:%s]", err.Error())
