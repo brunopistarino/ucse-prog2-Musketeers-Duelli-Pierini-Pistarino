@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const alimentoFormSchema = z.object({
+  id: z.string().optional(),
   nombre: z.string().min(1),
   tipo: z.string().min(1),
   momentos: z.array(z.string().min(1)).nonempty(),

@@ -1,25 +1,17 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { productTypes, moments } from "@/lib/constants";
+import {
+  alimentosTypes,
+  momentos,
+  AlimentosType,
+  MomentosType,
+} from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { Alimento } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-type ProductType = "verdura" | "fruta" | "carne" | "pescado" | "lacteo";
-type Moment = "desayuno" | "almuerzo" | "merienda" | "cena";
-
-export type Product = {
-  nombre: string;
-  tipo: ProductType;
-  momento: Moment[];
-  precio: number;
-  cantidadActual: number;
-  cantidadMinima: number;
-};
-
-export const columns: ColumnDef<Product>[] = [
+export const columns: ColumnDef<Alimento>[] = [
   {
     accessorKey: "nombre",
     header: "Nombre",
@@ -33,25 +25,25 @@ export const columns: ColumnDef<Product>[] = [
     // cell: (row) => tipos[row.getValue()],
     cell: (row) => (
       <Badge variant={"outline"}>
-        {productTypes[row.getValue() as ProductType]}
+        {alimentosTypes[row.getValue() as AlimentosType]}
       </Badge>
     ),
   },
   {
-    accessorKey: "momento",
+    accessorKey: "momentos",
     header: "Momento",
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-2">
-        {(row.getValue("momento") as Moment[]).map((momento) => {
-          const Icon = moments[momento].icon;
+        {(row.getValue("momentos") as MomentosType[]).map((momento) => {
+          const Icon = momentos[momento]?.icon;
           return (
             <Badge
               key={momento}
               variant={"outline"}
               className="flex items-center gap-2"
             >
-              <Icon className="h-4 w-4 text-muted-foreground" />
-              {moments[momento].label}
+              {Icon && <Icon className="h-4 w-4 text-muted-foreground" />}
+              {momentos[momento]?.label}
             </Badge>
           );
         })}
@@ -68,11 +60,11 @@ export const columns: ColumnDef<Product>[] = [
       }).format(row.getValue("precio")),
   },
   {
-    accessorKey: "cantidadActual",
+    accessorKey: "cantidad_actual",
     header: "Cantidad",
     cell: ({ row }) => {
-      const cantidadActual = row.getValue("cantidadActual") as number;
-      const cantidadMinima = row.getValue("cantidadMinima") as number;
+      const cantidadActual = row.getValue("cantidad_actual") as number;
+      const cantidadMinima = row.getValue("cantidad_minima") as number;
 
       return (
         <div className="">
@@ -87,11 +79,11 @@ export const columns: ColumnDef<Product>[] = [
   //     header: "Cantidad Actual",
   //   },
   {
-    accessorKey: "cantidadMinima",
+    accessorKey: "cantidad_minima",
     header: () => <></>,
     cell: ({ row }) => {
-      const cantidadActual = row.getValue("cantidadActual") as number;
-      const cantidadMinima = row.getValue("cantidadMinima") as number;
+      const cantidadActual = row.getValue("cantidad_actual") as number;
+      const cantidadMinima = row.getValue("cantidad_minima") as number;
 
       return (
         <div
