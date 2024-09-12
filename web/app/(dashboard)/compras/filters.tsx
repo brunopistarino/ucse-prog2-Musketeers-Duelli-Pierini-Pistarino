@@ -29,7 +29,10 @@ export default function Filters() {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <Select value={type} onValueChange={setType}>
+      <Select
+        value={type}
+        onValueChange={(v) => setType(v === "all" ? null : v)}
+      >
         <SelectTrigger className="w-48">
           <SelectValue placeholder="Todos los tipos" />
         </SelectTrigger>

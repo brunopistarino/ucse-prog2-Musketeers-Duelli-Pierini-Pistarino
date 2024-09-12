@@ -27,7 +27,7 @@ export default async function Page({ searchParams }: Props) {
     <div className="flex flex-col flex-1">
       <div className="flex items-center px-6 py-4 justify-between border-b sticky top-0 bg-card z-50">
         <h1 className="text-lg font-semibold md:text-2xl">Compras</h1>
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           <Filters />
           <Button className="gap-2">
             <DollarSign size={16} />

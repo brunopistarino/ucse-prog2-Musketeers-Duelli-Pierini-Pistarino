@@ -1,19 +1,8 @@
 import Link from "next/link";
-import {
-  Bell,
-  CircleUser,
-  Home,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+import { LogOut, ChefHat } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -35,73 +24,49 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { pages } from "@/lib/constants";
 import { Suspense } from "react";
 import ModeToggle from "@/components/mode-toggle";
+import { cn } from "@/lib/utils";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const currentPage = "/compras";
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] bg-muted/40">
-      <div className="hidden md:block">
+      <div className="hidden md:block p-2 lg:p-4">
         <div className="flex h-full max-h-screen flex-col gap-2">
-          <div className="flex h-14 items-center px-4 lg:h-[60px] lg:px-6 justify-between">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Package2 className="h-6 w-6" />
-              <span className="">Musketeers</span>
-            </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full"
-                >
-                  <CircleUser className="h-5 w-5" />
-                  <span className="sr-only">Toggle user menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {pages.map((page) => (
-                <Link
-                  key={page.href}
-                  href={page.href}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary text-md"
-                >
-                  <page.icon className="size-5" />
-                  {page.name}
-                </Link>
-              ))}
-
-              {/* <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
-              >
-                <Package className="h-4 w-4" />
-                Products
-              </Link>
+          <Button
+            size="lg"
+            variant="ghost"
+            className="gap-2 cursor-default text-xl"
+          >
+            <ChefHat size={24} />
+            <span>Musketeers</span>
+          </Button>
+          <nav className="grid">
+            {pages.map((page) => (
               <Link
-                href="#"
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                key={page.href}
+                href={page.href}
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "gap-2 justify-start",
+                  currentPage === page.href && "bg-accent"
+                )}
               >
-                <Users className="h-4 w-4" />
-                Customers
-              </Link> */}
-            </nav>
-          </div>
-          <div className="mt-auto p-4">
+                <page.icon className="size-5" />
+                {page.name}
+              </Link>
+            ))}
+          </nav>
+          <div className="mt-auto flex flex-col gap-2">
             <ModeToggle />
+            <Button className="gap-2" variant="secondary">
+              <LogOut size={16} />
+              Cerrar sesión
+            </Button>
           </div>
         </div>
       </div>
