@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,11 +31,10 @@ import { Input } from "@/components/ui/input";
 import { Alimento, alimentoFormSchema } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { MultiSelect } from "@/components/ui/multi-select";
-import { Clock12, Clock3, Clock6, Clock9, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { AlimentosType, alimentosTypes, momentos } from "@/lib/constants";
-import { createAlimento, updateAlimento } from "@/lib/actions";
+import { createAlimento, deleteAlimento, updateAlimento } from "@/lib/actions";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -64,13 +62,10 @@ export default function FormSheet({ children, alimento }: Props) {
   });
 
   const momentosList = Object.keys(momentos).map((key) => ({
-    // value: key,
-    value: "dsad",
+    value: key,
     label: momentos[key as keyof typeof momentos].label,
     icon: momentos[key as keyof typeof momentos].icon,
   }));
-
-  console.log(alimento);
 
   async function onSubmit(values: Alimento) {
     setIsPending(true);
@@ -87,7 +82,27 @@ export default function FormSheet({ children, alimento }: Props) {
       toast({
         title: `Alimento ${alimento ? "modificado" : "agregado"}`,
       });
-      // form.reset();
+      if (!alimento) {
+        form.reset();
+      }
+    }
+    setIsPending(false);
+    setIsOpen(false);
+  }
+
+  async function onDelete() {
+    setIsPending(true);
+    const response = await deleteAlimento(alimento?.id!);
+    if (response?.error) {
+      toast({
+        title: "Error",
+        description: response.error,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: `Alimento eliminado`,
+      });
     }
     setIsPending(false);
     setIsOpen(false);
@@ -226,6 +241,7 @@ export default function FormSheet({ children, alimento }: Props) {
                   variant="destructive"
                   className="mr-auto gap-2"
                   disabled={isPending}
+                  onClick={onDelete}
                 >
                   <Trash2 size={16} />
                   Eliminar
@@ -237,10 +253,9 @@ export default function FormSheet({ children, alimento }: Props) {
               >
                 Cancelar
               </AlertDialogCancel>
-              {/* <AlertDialogAction>Continue</AlertDialogAction> */}
-              <Button type="submit" disabled={isPending}>
+              <AlertDialogAction type="submit" disabled={isPending}>
                 Guardar
-              </Button>
+              </AlertDialogAction>
             </AlertDialogFooter>
           </form>
         </Form>

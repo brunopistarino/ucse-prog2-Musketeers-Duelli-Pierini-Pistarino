@@ -55,20 +55,26 @@ export function DataTable<TData, TValue>({
       </TableHeader>
       <TableBody>
         {table.getRowModel().rows?.length ? (
-          table.getRowModel().rows.map((row) => (
-            <FormSheet key={row.id} alimento={row.original as Alimento}>
-              <TableRow
-                className="cursor-pointer"
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </FormSheet>
-          ))
+          table.getRowModel().rows.map((row) => {
+            const alimento = row.original as Alimento;
+            return (
+              <FormSheet key={alimento.id} alimento={alimento}>
+                <TableRow
+                  className="cursor-pointer"
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </FormSheet>
+            );
+          })
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-24 text-center">
