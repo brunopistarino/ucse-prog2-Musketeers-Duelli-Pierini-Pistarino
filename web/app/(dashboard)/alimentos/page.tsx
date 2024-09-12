@@ -4,10 +4,14 @@ import { columns } from "./columns";
 import { getAlimentos } from "@/lib/actions";
 import FormSheet from "./form-sheet";
 import { Plus } from "lucide-react";
+import ErrorPage from "@/components/error-page";
 
 export default async function ProductsPage() {
-  const data = await getAlimentos();
-  // const data = [];
+  const { data, error } = await getAlimentos();
+
+  if (error) {
+    return <ErrorPage error={error} />;
+  }
 
   return (
     <div className="flex flex-col flex-1">

@@ -73,6 +73,7 @@ export default function FormSheet({ children, alimento }: Props) {
       ? await updateAlimento(values)
       : await createAlimento(values);
     if (response?.error) {
+      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,
@@ -85,9 +86,9 @@ export default function FormSheet({ children, alimento }: Props) {
       if (!alimento) {
         form.reset();
       }
+      setIsOpen(false);
     }
     setIsPending(false);
-    setIsOpen(false);
   }
 
   async function onDelete() {

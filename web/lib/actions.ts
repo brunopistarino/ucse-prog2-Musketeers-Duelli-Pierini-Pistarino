@@ -4,6 +4,7 @@ import { Alimento, alimentoFormSchema } from "./zod-schemas";
 import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { ZodError } from "zod";
 
 const productos: Alimento[] = [
   {
@@ -283,16 +284,10 @@ const recetas = [
 
 export async function getAlimentos() {
   try {
-    const response = await fetch(`${process.env.API_URL}alimentos`);
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    console.log("data", data);
-    return data;
+    const response = await axios.get(`${process.env.API_URL}alimentos`);
+    return { data: response.data, error: null };
   } catch (error) {
-    console.error("There was an error!", error);
+    return formatError(error);
   }
 }
 
@@ -317,7 +312,7 @@ export async function createAlimento(values: unknown) {
   const result = alimentoFormSchema.safeParse(values);
 
   if (!result.success) {
-    return { error: result.error.errors[0].message };
+    return formatZodError(result.error);
   }
 
   try {
@@ -336,13 +331,18 @@ export async function updateAlimento(values: unknown) {
   const result = alimentoFormSchema.safeParse(values);
 
   if (!result.success) {
-    return { error: result.error.errors[0].message };
+    return formatZodError(result.error);
   }
+
+  const { id, ...dataWithoutId } = result.data;
+
+  console.log(id, dataWithoutId);
+  console.log(`${process.env.API_URL}alimentos/${id}`);
 
   try {
     const response = await axios.put(
-      `${process.env.API_URL}alimentos/${result.data.id}`,
-      values
+      `${process.env.API_URL}alimentos/${id}`,
+      dataWithoutId
     );
     revalidatePath("/alimentos");
     return { data: response.data, error: null };
@@ -364,15 +364,32 @@ export async function deleteAlimento(id: string) {
 }
 
 function formatError(error: unknown) {
+  let errorMessage = "";
   if (axios.isAxiosError(error)) {
-    return {
-      data: null,
-      error: error.response?.data || { msg: [{ description: error.message }] },
-    };
+    if (error.response?.data) {
+      errorMessage = error.response.data.msg
+        .map((msg: any) => `${msg.msg_id} - ${msg.description}`)
+        .join(" | ");
+    } else {
+      errorMessage = error.message;
+    }
+  } else {
+    errorMessage = "Se produjo un error inesperado";
   }
   return {
     data: null,
-    error: { msg: [{ description: "Se produjo un error inesperado" }] },
+    error: errorMessage,
+  };
+}
+
+function formatZodError(error: ZodError) {
+  let errorMessage = "";
+  error.issues.forEach((issue: any) => {
+    errorMessage += issue.message + " | ";
+  });
+  return {
+    data: null,
+    error: errorMessage,
   };
 }
 

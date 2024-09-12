@@ -7,7 +7,14 @@ import { DollarSign } from "lucide-react";
 import Filters from "./filters";
 import ErrorPage from "@/components/error-page";
 
-export default async function Page({ searchParams }) {
+interface Props {
+  searchParams: {
+    name: string;
+    type: string;
+  };
+}
+
+export default async function Page({ searchParams }: Props) {
   const { name, type } = searchParams;
   // Usar un global state para guardar los productos seleccionados para comprar
   const { data, error } = await getAlimentosBelowMinimum(name, type);
