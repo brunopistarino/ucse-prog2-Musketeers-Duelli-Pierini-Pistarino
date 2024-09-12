@@ -1,147 +1,146 @@
 "use server";
 
-import { Product } from "@/app/(dashboard)/alimentos/columns";
-import { alimentoFormSchema } from "./zod-schemas";
+import { Alimento, alimentoFormSchema } from "./zod-schemas";
 import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-const productos: Product[] = [
+const productos: Alimento[] = [
   {
     nombre: "Tomate",
     tipo: "Verdura",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 50,
-    cantidadActual: 10,
-    cantidadMinima: 5,
+    cantidad_actual: 10,
+    cantidad_minima: 5,
   },
   {
     nombre: "Manzana",
     tipo: "Fruta",
-    momento: ["Desayuno", "Merienda"],
+    momentos: ["Desayuno", "Merienda"],
     precio: 30,
-    cantidadActual: 20,
-    cantidadMinima: 10,
+    cantidad_actual: 20,
+    cantidad_minima: 10,
   },
   {
     nombre: "Carne",
     tipo: "Carne",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 200,
-    cantidadActual: 0,
-    cantidadMinima: 2,
+    cantidad_actual: 0,
+    cantidad_minima: 2,
   },
   {
     nombre: "Pescado",
     tipo: "Pescado",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 150,
-    cantidadActual: 1,
-    cantidadMinima: 2,
+    cantidad_actual: 1,
+    cantidad_minima: 2,
   },
   {
     nombre: "Leche",
     tipo: "Lácteo",
-    momento: ["Desayuno"],
+    momentos: ["Desayuno"],
     precio: 60,
-    cantidadActual: 5,
-    cantidadMinima: 7,
+    cantidad_actual: 5,
+    cantidad_minima: 7,
   },
   {
     nombre: "Huevo",
     tipo: "Lácteo",
-    momento: ["Desayuno"],
+    momentos: ["Desayuno"],
     precio: 10,
-    cantidadActual: 10,
-    cantidadMinima: 5,
+    cantidad_actual: 10,
+    cantidad_minima: 5,
   },
   {
     nombre: "Banana",
     tipo: "Fruta",
-    momento: ["Desayuno", "Merienda"],
+    momentos: ["Desayuno", "Merienda"],
     precio: 20,
-    cantidadActual: 8,
-    cantidadMinima: 10,
+    cantidad_actual: 8,
+    cantidad_minima: 10,
   },
   {
     nombre: "Pollo",
     tipo: "Carne",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 100,
-    cantidadActual: 5,
-    cantidadMinima: 2,
+    cantidad_actual: 5,
+    cantidad_minima: 2,
   },
   {
     nombre: "Atun",
     tipo: "Pescado",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 100,
-    cantidadActual: 1,
-    cantidadMinima: 3,
+    cantidad_actual: 1,
+    cantidad_minima: 3,
   },
   {
     nombre: "Queso",
     tipo: "Lácteo",
-    momento: ["Desayuno"],
+    momentos: ["Desayuno"],
     precio: 80,
-    cantidadActual: 0,
-    cantidadMinima: 2,
+    cantidad_actual: 0,
+    cantidad_minima: 2,
   },
   {
     nombre: "Yogurt",
     tipo: "Lácteo",
-    momento: ["Desayuno"],
+    momentos: ["Desayuno"],
     precio: 40,
-    cantidadActual: 5,
-    cantidadMinima: 2,
+    cantidad_actual: 5,
+    cantidad_minima: 2,
   },
   {
     nombre: "Pera",
     tipo: "Fruta",
-    momento: ["Desayuno", "Merienda"],
+    momentos: ["Desayuno", "Merienda"],
     precio: 30,
-    cantidadActual: 1,
-    cantidadMinima: 10,
+    cantidad_actual: 1,
+    cantidad_minima: 10,
   },
   {
     nombre: "Cerdo",
     tipo: "Carne",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 150,
-    cantidadActual: 5,
-    cantidadMinima: 2,
+    cantidad_actual: 5,
+    cantidad_minima: 2,
   },
   {
     nombre: "Salmon",
     tipo: "Pescado",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 200,
-    cantidadActual: 3,
-    cantidadMinima: 1,
+    cantidad_actual: 3,
+    cantidad_minima: 1,
   },
   {
     nombre: "Manteca",
     tipo: "Lácteo",
-    momento: ["Desayuno"],
+    momentos: ["Desayuno"],
     precio: 60,
-    cantidadActual: 0,
-    cantidadMinima: 2,
+    cantidad_actual: 0,
+    cantidad_minima: 2,
   },
   {
     nombre: "Lechuga",
     tipo: "Verdura",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 40,
-    cantidadActual: 5,
-    cantidadMinima: 2,
+    cantidad_actual: 5,
+    cantidad_minima: 2,
   },
   {
     nombre: "Aceite",
     tipo: "Verdura",
-    momento: ["Almuerzo", "Cena"],
+    momentos: ["Almuerzo", "Cena"],
     precio: 100,
-    cantidadActual: 1,
-    cantidadMinima: 2,
+    cantidad_actual: 1,
+    cantidad_minima: 2,
   },
 ];
 
@@ -297,20 +296,20 @@ export async function getAlimentos() {
   }
 }
 
-export async function getAlimentosBelowMinimum() {
+export async function getAlimentosBelowMinimum(name?: string, type?: string) {
   try {
-    const response = await fetch(
-      `${process.env.API_URL}alimentos/below_minimum`
+    const response = await axios.get(
+      `${process.env.API_URL}alimentos/below_minimum`,
+      {
+        params: {
+          name,
+          type,
+        },
+      }
     );
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    console.log("data", data);
-    return data;
+    return { data: response.data, error: null };
   } catch (error) {
-    console.error("There was an error!", error);
+    return formatError(error);
   }
 }
 
@@ -327,7 +326,7 @@ export async function createAlimento(values: unknown) {
       result.data
     );
     revalidatePath("/alimentos");
-    return { data: response.data };
+    return { data: response.data, error: null };
   } catch (error) {
     return formatError(error);
   }
@@ -346,7 +345,7 @@ export async function updateAlimento(values: unknown) {
       values
     );
     revalidatePath("/alimentos");
-    return { data: response.data };
+    return { data: response.data, error: null };
   } catch (error) {
     return formatError(error);
   }
@@ -358,7 +357,7 @@ export async function deleteAlimento(id: string) {
       `${process.env.API_URL}alimentos/${id}`
     );
     revalidatePath("/alimentos");
-    return { data: response.data };
+    return { data: response.data, error: null };
   } catch (error) {
     return formatError(error);
   }
@@ -366,10 +365,23 @@ export async function deleteAlimento(id: string) {
 
 function formatError(error: unknown) {
   if (axios.isAxiosError(error)) {
-    return error.response?.data.error || error.message;
+    return {
+      data: null,
+      error: error.response?.data || { msg: [{ description: error.message }] },
+    };
   }
-  return "Se produjo un error inesperado";
+  return {
+    data: null,
+    error: { msg: [{ description: "Se produjo un error inesperado" }] },
+  };
 }
+
+// function formatError(error: unknown) {
+//   if (axios.isAxiosError(error)) {
+//     return { error: error.response?.data.error || error.message };
+//   }
+//   return { error: "Se produjo un error inesperado" };
+// }
 
 export async function getRecipes() {
   //   await new Promise((resolve) => setTimeout(resolve, 2000));

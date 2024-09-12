@@ -1,7 +1,7 @@
 "use client";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { productTypes } from "@/lib/constants";
 import { useEffect, useState } from "react";
+import { AlimentosType, alimentosTypes } from "@/lib/constants";
 type ProductType = "verdura" | "fruta" | "carne" | "pescado" | "lacteo";
 
 const columns = {
@@ -61,7 +61,7 @@ const RecetaItem = ({ receta }: { receta: Receta }) => (
             className="flex items-center gap-2"
           >
             <p className="shrink-0">
-              {productTypes[ingrediente.producto.tipo as ProductType].slice(
+              {alimentosTypes[ingrediente.producto.tipo as AlimentosType].slice(
                 0,
                 2
               )}{" "}

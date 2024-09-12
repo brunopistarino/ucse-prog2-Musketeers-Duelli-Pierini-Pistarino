@@ -194,12 +194,14 @@ export default function FormSheet({ children, alimento }: Props) {
                   <FormControl>
                     <div className="relative">
                       <Input placeholder="50.00" type="number" {...field} />
-                      <p className="absolute top-1/2 -translate-y-1/2 right-3 text-muted-foreground text-sm">
-                        {new Intl.NumberFormat("es-AR", {
-                          style: "currency",
-                          currency: "ARS",
-                        }).format(field.value)}
-                      </p>
+                      {field.value && (
+                        <p className="absolute top-1/2 -translate-y-1/2 right-3 text-muted-foreground text-sm">
+                          {new Intl.NumberFormat("es-AR", {
+                            style: "currency",
+                            currency: "ARS",
+                          }).format(field.value)}
+                        </p>
+                      )}
                     </div>
                   </FormControl>
                   <FormMessage />

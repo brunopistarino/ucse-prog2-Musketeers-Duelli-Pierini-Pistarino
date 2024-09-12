@@ -2,7 +2,7 @@ import {
   LineChart,
   Package,
   ShoppingCart,
-  Users,
+  NotepadText,
   Clock12,
   Clock3,
   Clock6,
@@ -23,7 +23,7 @@ export const pages = [
   {
     name: "Recetas",
     href: "/recetas",
-    icon: Users,
+    icon: NotepadText,
   },
   {
     name: "Compras",

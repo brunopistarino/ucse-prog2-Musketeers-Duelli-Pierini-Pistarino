@@ -213,13 +213,15 @@ export default function RootLayout({
             </DropdownMenuContent>
           </DropdownMenu>
         </header> */}
-        {/* <Suspense
-          fallback={<div className="animate-pulse bg-slate-200 h-full" />}
-        > */}
-        <main className="flex flex-1 flex-col overflow-y-auto bg-card rounded-lg border shadow-sm">
-          {children}
-        </main>
-        {/* </Suspense> */}
+        <Suspense
+          fallback={
+            <div className="animate-pulse bg-slate-200 h-full rounded-lg" />
+          }
+        >
+          <main className="flex flex-1 flex-col overflow-y-auto bg-card rounded-lg border shadow-sm">
+            {children}
+          </main>
+        </Suspense>
       </div>
     </div>
   );

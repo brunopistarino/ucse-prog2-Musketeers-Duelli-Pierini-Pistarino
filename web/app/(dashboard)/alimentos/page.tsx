@@ -7,6 +7,7 @@ import { Plus } from "lucide-react";
 
 export default async function ProductsPage() {
   const data = await getAlimentos();
+  // const data = [];
 
   return (
     <div className="flex flex-col flex-1">
@@ -31,7 +32,8 @@ const EmptyState = () => (
     className="flex flex-1 items-center justify-center"
   >
     <div className="flex flex-col items-center gap-1 text-center">
-      <h3 className="text-2xl font-bold tracking-tight">No tenes productos</h3>
+      {/* <h3 className="text-2xl font-bold tracking-tight">No tenes productos</h3> */}
+      <h3 className="text-2xl font-bold tracking-tight">Sin resultados</h3>
       <p className="text-sm text-muted-foreground">
         Agrega productos para empezar a hacer recetas.
       </p>
