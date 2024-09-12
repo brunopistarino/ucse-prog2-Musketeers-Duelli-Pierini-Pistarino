@@ -10,6 +10,6 @@ type Receta struct {
 		Alimento primitive.ObjectID `bson:"alimento"`
 		Cantidad int                `bson:"cantidad"`
 	}
-	FechaCreacion primitive.DateTime `bson:"fechaCreacion`
-	FechaActualizacion primitive.DateTime `bson:"fechaActualizacion`
+	FechaCreacion      primitive.DateTime `bson:"fecha_creacion"`
+	FechaActualizacion primitive.DateTime `bson:"fecha_ctualizacion"`
 }
