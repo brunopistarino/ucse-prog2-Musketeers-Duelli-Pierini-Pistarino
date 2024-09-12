@@ -8,7 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlimentosType, alimentosTypes } from "@/lib/constants";
+import {
+  AlimentosType,
+  alimentosTypes,
+  momentos,
+  MomentosType,
+} from "@/lib/constants";
 import { useQueryState } from "nuqs";
 
 export default function Filters() {
@@ -17,6 +22,10 @@ export default function Filters() {
     shallow: false,
   });
   const [type, setType] = useQueryState("type", {
+    defaultValue: "",
+    shallow: false,
+  });
+  const [moment, setMoment] = useQueryState("moment", {
     defaultValue: "",
     shallow: false,
   });
@@ -41,6 +50,22 @@ export default function Filters() {
           {Object.keys(alimentosTypes).map((key) => (
             <SelectItem key={key} value={key}>
               {alimentosTypes[key as AlimentosType]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <Select
+        value={moment}
+        onValueChange={(v) => setMoment(v === "all" ? null : v)}
+      >
+        <SelectTrigger className="w-48">
+          <SelectValue placeholder="Todos los momentos" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">Todos los momentos</SelectItem>
+          {Object.keys(momentos).map((key) => (
+            <SelectItem key={key} value={key}>
+              {momentos[key as MomentosType].label}
             </SelectItem>
           ))}
         </SelectContent>
