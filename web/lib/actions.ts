@@ -148,7 +148,7 @@ const productos: Product[] = [
 const recetas = [
   {
     nombre: "Ensalada de tomate",
-    momento: "almuerzo",
+    momento: "Almuerzo",
     ingredientes: [
       { producto: productos[0], cantidad: 2 },
       { producto: productos[15], cantidad: 1 },
@@ -157,7 +157,7 @@ const recetas = [
   },
   {
     nombre: "Ensalada de frutas",
-    momento: "merienda",
+    momento: "Merienda",
     ingredientes: [
       { producto: productos[1], cantidad: 1 },
       { producto: productos[3], cantidad: 1 },
@@ -282,9 +282,8 @@ const recetas = [
   },
 ];
 
-export async function getProducts() {
+export async function getAlimentos() {
   try {
-    console.log(`${process.env.API_URL}alimentos`);
     const response = await fetch(`${process.env.API_URL}alimentos`);
     if (!response.ok) {
       throw new Error("Network response was not ok");
@@ -296,7 +295,23 @@ export async function getProducts() {
   } catch (error) {
     console.error("There was an error!", error);
   }
-  //   await new Promise((resolve) => setTimeout(resolve, 2000));
+}
+
+export async function getAlimentosBelowMinimum() {
+  try {
+    const response = await fetch(
+      `${process.env.API_URL}alimentos/below_minimum`
+    );
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    console.log("data", data);
+    return data;
+  } catch (error) {
+    console.error("There was an error!", error);
+  }
 }
 
 export async function createAlimento(values: unknown) {

@@ -89,6 +89,7 @@ export const columns: ColumnDef<Alimento>[] = [
         <div
           className={cn(
             "rounded-full h-4 border-2 w-32 overflow-clip",
+            // "rounded-full h-5 border-2 w-32 overflow-clip",
             cantidadActual === 0 && "border-red-500"
             // cantidadActual >= cantidadMinima ? "bg-green-500" : "bg-red-500"
           )}
@@ -108,12 +109,32 @@ export const columns: ColumnDef<Alimento>[] = [
               width: `${(cantidadActual / cantidadMinima) * 100}%`,
             }}
           />
+          {/* <div
+            className={cn(
+              "h-full rounded-full flex justify-end items-center px-1.5 text-xs font-semibold text-background",
+              cantidadActual >= cantidadMinima
+                ? "bg-green-500"
+                : cantidadActual / cantidadMinima > 0.66
+                ? "bg-yellow-500"
+                : cantidadActual / cantidadMinima > 0.33
+                ? "bg-orange-500"
+                : "bg-red-500"
+            )}
+            style={{
+              width: `${Math.min(
+                (cantidadActual / cantidadMinima) * 100,
+                100
+              )}%`,
+            }}
+          >
+            {cantidadActual}
+          </div>*/}
         </div>
       );
     },
     // cell: ({ row }) => {
-    //   const cantidadActual = row.getValue("cantidadActual") as number;
-    //   const cantidadMinima = row.getValue("cantidadMinima") as number;
+    //   const cantidadActual = row.getValue("cantidad_actual") as number;
+    //   const cantidadMinima = row.getValue("cantidad_minima") as number;
 
     //   return (
     //     <div
@@ -146,8 +167,8 @@ export const columns: ColumnDef<Alimento>[] = [
     //   );
     // },
     // cell: ({ row }) => {
-    //   const cantidadActual = row.getValue("cantidadActual") as number;
-    //   const cantidadMinima = row.getValue("cantidadMinima") as number;
+    //   const cantidadActual = row.getValue("cantidad_actual") as number;
+    //   const cantidadMinima = row.getValue("cantidad_minima") as number;
 
     //   return (
     //     <div className="flex gap-2 items-center">

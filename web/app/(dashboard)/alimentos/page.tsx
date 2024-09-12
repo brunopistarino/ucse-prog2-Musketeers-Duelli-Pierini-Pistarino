@@ -1,12 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "./data-table";
-import { columns, Product } from "./columns";
-import { getProducts } from "@/lib/actions";
+import { columns } from "./columns";
+import { getAlimentos } from "@/lib/actions";
 import FormSheet from "./form-sheet";
 import { Plus } from "lucide-react";
 
 export default async function ProductsPage() {
-  const data = await getProducts();
+  const data = await getAlimentos();
 
   return (
     <div className="flex flex-col flex-1">
