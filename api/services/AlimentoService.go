@@ -90,14 +90,13 @@ func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) dto.ReqErro
 
 func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) dto.ReqError {
 	err := alimento.VerifyAlimento()
-	log.Print(err)
 	if err != nil {
 		return *dto.NewReqErrorWithMessages(http.StatusUnprocessableEntity, err)
 	}
 	if id == "" {
 		return *dto.NewReqError(http.StatusBadRequest, 460, errors.New("id is required"))
 	}
-
+	alimento.ID = id
 	alimentoDB := alimento.GetModel()
 	now := time.Now()
 	alimentoDB.FechaActualizacion = primitive.NewDateTimeFromTime(now)
@@ -107,7 +106,7 @@ func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) d
 		return *dto.InternalServerError(errInsert)
 	}
 	if updateResult.MatchedCount == 0 {
-		return *dto.NotFoundError(errors.New("alimento not found"))
+		return *dto.NotFoundError(fmt.Errorf("alimento with id %v not found", id))
 	}
 	return dto.ReqError{}
 }
@@ -115,9 +114,12 @@ func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) d
 func (service *AlimentoService) DeleteAlimento(id string) dto.ReqError {
 	objectID := utils.GetObjectIDFromStringID(id)
 
-	_, err := service.AlimentoRepository.DeleteAlimento(objectID)
+	DeleteResult, err := service.AlimentoRepository.DeleteAlimento(objectID)
 	if err != nil {
 		return *dto.InternalServerError(err)
+	}
+	if DeleteResult.DeletedCount == 0 {
+		return *dto.NotFoundError(fmt.Errorf("alimento with id %v not found", id))
 	}
 	return dto.ReqError{}
 }
@@ -141,7 +143,7 @@ func (service *AlimentoService) GetAlimentosBelowMinimum(foodType string, name s
 		alimentos = append(alimentos, alimento)
 	}
 	if len(alimentos) == 0 {
-		return nil, *dto.NotFoundError(errors.New("no alimentos below minimum"))
+		alimentos = []*dto.Alimento{}
 	}
 	return alimentos, dto.ReqError{}
 }
