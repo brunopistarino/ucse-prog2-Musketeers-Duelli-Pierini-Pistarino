@@ -33,7 +33,7 @@ export default function MasonryRecipes({ recipes }: { recipes: Receta[] }) {
   if (!isMounted) return null;
 
   return (
-    <ResponsiveMasonry columnsCountBreakPoints={columns}>
+    <ResponsiveMasonry columnsCountBreakPoints={columns} className="px-4 pb-4">
       <Masonry gutter="16px">
         {/* <div className="grid grid-cols-3 gap-4"> */}
         {recipes.map((recipe, x) => (
