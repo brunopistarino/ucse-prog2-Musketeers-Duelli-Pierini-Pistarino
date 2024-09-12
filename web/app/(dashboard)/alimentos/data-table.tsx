@@ -15,7 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import FormSheet from "./form-sheet";
+import FormDialog from "./form-dialog";
 import { Alimento } from "@/lib/zod-schemas";
 
 interface DataTableProps<TData, TValue> {
@@ -58,7 +58,7 @@ export function DataTable<TData, TValue>({
           table.getRowModel().rows.map((row) => {
             const alimento = row.original as Alimento;
             return (
-              <FormSheet key={alimento.id} alimento={alimento}>
+              <FormDialog key={alimento.id} alimento={alimento}>
                 <TableRow
                   className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
                     </TableCell>
                   ))}
                 </TableRow>
-              </FormSheet>
+              </FormDialog>
             );
           })
         ) : (

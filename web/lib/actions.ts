@@ -327,22 +327,17 @@ export async function createAlimento(values: unknown) {
   }
 }
 
-export async function updateAlimento(values: unknown) {
+export async function updateAlimento(values: unknown, id: string) {
   const result = alimentoFormSchema.safeParse(values);
 
   if (!result.success) {
     return formatZodError(result.error);
   }
 
-  const { id, ...dataWithoutId } = result.data;
-
-  console.log(id, dataWithoutId);
-  console.log(`${process.env.API_URL}alimentos/${id}`);
-
   try {
     const response = await axios.put(
       `${process.env.API_URL}alimentos/${id}`,
-      dataWithoutId
+      result.data
     );
     revalidatePath("/alimentos");
     return { data: response.data, error: null };

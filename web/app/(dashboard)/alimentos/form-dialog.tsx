@@ -43,7 +43,7 @@ interface Props {
   alimento?: Alimento;
 }
 
-export default function FormSheet({ children, alimento }: Props) {
+export default function FormDialog({ children, alimento }: Props) {
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
@@ -51,7 +51,6 @@ export default function FormSheet({ children, alimento }: Props) {
   const form = useForm<Alimento>({
     resolver: zodResolver(alimentoFormSchema),
     defaultValues: {
-      id: alimento?.id,
       nombre: alimento?.nombre || "",
       tipo: alimento?.tipo || "",
       momentos: alimento?.momentos || [],
@@ -70,7 +69,7 @@ export default function FormSheet({ children, alimento }: Props) {
   async function onSubmit(values: Alimento) {
     setIsPending(true);
     const response = alimento
-      ? await updateAlimento(values)
+      ? await updateAlimento(values, alimento.id!)
       : await createAlimento(values);
     if (response?.error) {
       console.error(response.error);

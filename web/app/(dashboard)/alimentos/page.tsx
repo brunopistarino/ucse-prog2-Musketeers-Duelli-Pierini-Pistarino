@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { getAlimentos } from "@/lib/actions";
-import FormSheet from "./form-sheet";
+import FormDialog from "./form-dialog";
 import { Plus } from "lucide-react";
 import ErrorPage from "@/components/error-page";
 
@@ -17,12 +17,12 @@ export default async function ProductsPage() {
     <div className="flex flex-col flex-1">
       <div className="flex items-center px-6 py-4 justify-between border-b sticky top-0 bg-card z-50">
         <h1 className="text-lg font-semibold md:text-2xl">Alimentos</h1>
-        <FormSheet>
+        <FormDialog>
           <Button className="gap-2">
             <Plus size={16} />
             Agregar alimento
           </Button>
-        </FormSheet>
+        </FormDialog>
       </div>
       {/* <EmptyState /> */}
       <DataTable columns={columns} data={data} />
