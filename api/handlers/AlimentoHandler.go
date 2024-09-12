@@ -23,11 +23,9 @@ func (handler *AlimentoHandler) GetAlimentos(c *gin.Context) {
 	log.Print("[handler:AlimentoHandler][method:GetAlimentos][info:GET_ALL]")
 	alimentos, err := handler.alimentoService.GetAlimentos()
 
-	if err != nil {
+	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:GetAlimentos][reason:ERROR_GET][error:%s]", err.Error())
-		c.JSON(500, gin.H{
-			"error": err,
-		})
+		c.JSON(err.StatusCode, err)
 		return
 	}
 	log.Printf("[handler:AlimentoHandler][method:GetAlimentos][reason:SUCCESS_GET][alimentos:%d]", len(alimentos))
@@ -42,11 +40,9 @@ func (handler *AlimentoHandler) GetAlimentosBelowMinimum(c *gin.Context) {
 
 	alimentos, err := handler.alimentoService.GetAlimentosBelowMinimum(alimentoType, name)
 
-	if err != nil {
+	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][reason:ERROR_GET][error:%s]", err.Error())
-		c.JSON(500, gin.H{
-			"error": err,
-		})
+		c.JSON(err.StatusCode, err)
 		return
 	}
 	log.Printf("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][reason:SUCCESS_GET][alimentos:%d]", len(alimentos))
@@ -59,11 +55,9 @@ func (handler *AlimentoHandler) GetAlimento(c *gin.Context) {
 	id := c.Param("id")
 	alimento, err := handler.alimentoService.GetAlimento(id)
 
-	if err != nil {
+	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:GetAlimento][reason:ERROR_GET][error:%s]", err.Error())
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(err.StatusCode, err)
 		return
 	}
 	log.Printf("[handler:AlimentoHandler][method:GetAlimento][reason:SUCCESS_GET][alimento:%s]", alimento.Nombre)
@@ -77,19 +71,15 @@ func (handler *AlimentoHandler) PostAlimento(c *gin.Context) {
 	err := c.BindJSON(&alimento)
 	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PostAlimento][reason:ERROR_BIND][error:%s]", err.Error())
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, dto.NewReqError(http.StatusBadRequest, 400, err))
 		return
 	}
 
-	err = handler.alimentoService.PostAlimento(&alimento)
+	errorService := handler.alimentoService.PostAlimento(&alimento)
 
-	if err != nil {
-		log.Printf("[handler:AlimentoHandler][method:PostAlimento][reason:ERROR_PUT][error:%s]", err.Error())
-		c.JSON(400, gin.H{
-			"error": err.Error(),
-		})
+	if errorService.IsDefined() {
+		log.Printf("[handler:AlimentoHandler][method:PostAlimento][reason:ERROR_PUT][error:%s]", errorService.Error())
+		c.JSON(errorService.StatusCode, errorService)
 		return
 	}
 
@@ -104,28 +94,16 @@ func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
 	err := c.BindJSON(&alimento)
 	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_BIND][error:%s]", err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(http.StatusBadRequest, dto.NewReqError(http.StatusBadRequest, 400, err))
 		return
 	}
 	id := c.Param("id")
 
-	err = handler.alimentoService.PutAlimento(&alimento, id)
+	errorService := handler.alimentoService.PutAlimento(&alimento, id)
 
-	if err != nil {
-		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_PUT][error:%s]", err.Error())
-		if err.Error() == "NF" {
-
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "Resource of id " + alimento.ID + " not found.",
-			})
-			return
-		}
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-
+	if errorService.IsDefined() {
+		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_PUT][error:%s]", errorService.Error())
+		c.JSON(errorService.StatusCode, errorService)
 		return
 	}
 
@@ -139,11 +117,9 @@ func (handler *AlimentoHandler) DeleteAlimento(c *gin.Context) {
 	id := c.Param("id")
 	err := handler.alimentoService.DeleteAlimento(id)
 
-	if err != nil {
+	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:DeleteAlimento][reason:ERROR_DELETE][error:%s]", err.Error())
-		c.JSON(http.StatusNotFound, gin.H{
-			"error": err.Error(),
-		})
+		c.JSON(err.StatusCode, err)
 		return
 	}
 	log.Printf("[handler:AlimentoHandler][method:DeleteAlimento][reason:SUCCESS_DELETE][id:%s]", id)

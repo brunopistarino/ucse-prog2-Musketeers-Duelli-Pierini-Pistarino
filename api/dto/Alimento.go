@@ -3,7 +3,6 @@ package dto
 import (
 	"api/model"
 	"api/utils"
-	"errors"
 )
 
 // Declare a constant array of types of food.
@@ -72,39 +71,44 @@ func (alimento Alimento) GetModel() model.Alimento {
 	}
 }
 
-func (alimento Alimento) VerifyAlimento() error {
-	// Verify all fields are correctly filled
+func (alimento Alimento) VerifyAlimento() []RequestMessage {
+	var errs []RequestMessage
 	if alimento.ID != "" {
-		return errors.New("request body ID must not be set")
+		errs = append(errs, RequestMessage{ID: 461, Description: "request body id must not be set"})
 	}
 	if alimento.Nombre == "" {
-		return errors.New("nombre is required")
+		errs = append(errs, RequestMessage{ID: 462, Description: "nombre is required"})
+	} else if len(alimento.Nombre) < 2 || len(alimento.Nombre) > 50 {
+		errs = append(errs, RequestMessage{ID: 463, Description: "nombre must be between 2 and 50 characters"})
 	}
+
 	if alimento.Tipo == "" {
-		return errors.New("tipo is required")
+		errs = append(errs, RequestMessage{ID: 464, Description: "tipo is required"})
+	} else if !utils.StringExistsInSlice(alimento.Tipo, FoodType) {
+		errs = append(errs, RequestMessage{ID: 465, Description: "tipo is invalid. '" + alimento.Tipo + "' is not a valid food type. Must be one of: " + utils.SliceToString(FoodType)})
 	}
-	if !utils.StringExistsInSlice(alimento.Tipo, FoodType) {
-		return errors.New("tipo is invalid. '" + alimento.Tipo + "' is not a valid food type. Must be one of: " + utils.SliceToString(FoodType))
-	}
+
 	if len(alimento.Momentos) == 0 {
-		return errors.New("momentos is required")
-	}
-	if utils.HasDuplicates(alimento.Momentos) {
-		return errors.New("momentos has duplicates")
-	}
-	for _, momento := range alimento.Momentos {
-		if !utils.StringExistsInSlice(momento, Times) {
-			return errors.New("momentos is invalid. '" + momento + "' is not a valid time. Must be one of: " + utils.SliceToString(Times))
+		errs = append(errs, RequestMessage{ID: 466, Description: "momentos is required"})
+	} else if utils.HasDuplicates(alimento.Momentos) {
+		errs = append(errs, RequestMessage{ID: 467, Description: "momentos has duplicates"})
+	} else {
+		for _, momento := range alimento.Momentos {
+			if !utils.StringExistsInSlice(momento, Times) {
+				errs = append(errs, RequestMessage{ID: 468, Description: "momentos is invalid. '" + momento + "' is not a valid time. Must be one of: " + utils.SliceToString(Times)})
+				break
+			}
 		}
 	}
+
 	if alimento.Precio < 0 {
-		return errors.New("precio must be a positive number")
+		errs = append(errs, RequestMessage{ID: 459, Description: "precio must be a positive number"})
 	}
 	if alimento.CantidadActual < 0 {
-		return errors.New("cantidadActual must be a positive number")
+		errs = append(errs, RequestMessage{ID: 460, Description: "cantidad_actual must be a positive number"})
 	}
 	if alimento.CantidadMinima < 0 {
-		return errors.New("cantidadMinima must be a positive number")
+		errs = append(errs, RequestMessage{ID: 461, Description: "cantidad_minima must be a positive number"})
 	}
-	return nil
+	return errs
 }
