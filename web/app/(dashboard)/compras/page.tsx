@@ -19,9 +19,7 @@ export default async function Page({ searchParams }: Props) {
   // Usar un global state para guardar los productos seleccionados para comprar
   const { data, error } = await getAlimentosBelowMinimum(name, type);
 
-  if (error) {
-    return <ErrorPage error={error} />;
-  }
+  if (error) return <ErrorPage error={error} />;
 
   return (
     <div className="flex flex-col flex-1">
