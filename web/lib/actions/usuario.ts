@@ -4,7 +4,7 @@ import axios from "axios";
 import { formatError, formatZodError } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { loginSchema } from "../zod-schemas";
+import { loginSchema, registerSchema } from "../zod-schemas";
 
 export async function login(values: unknown) {
   const result = loginSchema.safeParse(values);
@@ -30,16 +30,22 @@ export async function login(values: unknown) {
   }
 }
 
-export async function register(data: {
-  email: string;
-  password: string;
-  confirm_password: string;
-}) {
+export async function register(values: unknown) {
+  const result = registerSchema.safeParse(values);
+  if (!result.success) return formatZodError(result.error);
+
   try {
     const response = await axios.post(
       `${process.env.API_URL}usuario/register`,
-      data
+      result.data
     );
+
+    const responseLogin = await login({
+      username: result.data.email,
+      password: result.data.password,
+    });
+
+    if (responseLogin.error) return responseLogin;
     return { data: response.data, error: null };
   } catch (error) {
     return formatError(error);
