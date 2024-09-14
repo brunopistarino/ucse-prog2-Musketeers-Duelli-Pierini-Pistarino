@@ -1,7 +1,9 @@
 package main
 
 import (
+	"api/clients"
 	"api/handlers"
+	"api/middlewares"
 	"api/repositories"
 	"api/services"
 
@@ -12,6 +14,7 @@ var (
 	alimentoHandler *handlers.AlimentoHandler
 	//recetaHandler   *handlers.RecetaHandler
 	compraHandler *handlers.CompraHandler
+	userHandler   *handlers.UserHandler
 	router        *gin.Engine
 )
 
@@ -28,7 +31,17 @@ func main() {
 
 func mappingRoutes() {
 
+	// Middleware for all routes
+	router.Use(middlewares.CORSMiddleware())
+
+	authMiddleware := middlewares.NewAuthMiddleware(clients.NewAuthClient())
+
+	usuario := router.Group("/usuario")
+	usuario.POST("/login", userHandler.LoginUser)
+	usuario.POST("/register", userHandler.RegisterUser)
+
 	alimentos := router.Group("/alimentos")
+	alimentos.Use(authMiddleware.ValidateToken)
 
 	alimentos.GET("/", alimentoHandler.GetAlimentos)
 	alimentos.GET("/:id", alimentoHandler.GetAlimento)
@@ -36,14 +49,18 @@ func mappingRoutes() {
 	alimentos.PUT("/:id", alimentoHandler.PutAlimento)
 	alimentos.DELETE("/:id", alimentoHandler.DeleteAlimento)
 	alimentos.GET("/below_minimum", alimentoHandler.GetAlimentosBelowMinimum)
+
 	/*
 		recetas := router.Group("/recetas")
+		recetas.Use(authMiddleware)
 	*/
 
 	compras := router.Group("/compras")
+	compras.Use(authMiddleware.ValidateToken)
 
 	compras.GET("/", compraHandler.GetCompras)
 	compras.POST("/", compraHandler.PostCompra)
+
 }
 
 func dependencies() {
@@ -60,5 +77,9 @@ func dependencies() {
 	alimentoHandler = handlers.NewAlimentoHandler(alimentoService)
 	compraHandler = handlers.NewCompraHandler(compraService)
 	//recetaHandler = handlers.NewRecetaHandler(recetaService)
+
+	var userClient = clients.NewAuthClient()
+	userService := services.NewUserService(userClient)
+	userHandler = handlers.NewUserHandler(userService)
 
 }
