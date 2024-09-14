@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 )
@@ -49,8 +50,12 @@ func BadRequestError(err error) *ReqError {
 	return NewReqError(http.StatusBadRequest, http.StatusBadRequest, err)
 }
 
-func UnauthorizedError(err error) *ReqError {
-	return NewReqError(http.StatusUnauthorized, http.StatusUnauthorized, err)
+func BindBadRequestError() *ReqError {
+	return NewReqError(http.StatusBadRequest, 790, errors.New("request body not valid"))
+}
+
+func UnauthorizedError(id int, err error) *ReqError {
+	return NewReqError(http.StatusUnauthorized, id, err)
 }
 
 func ForbiddenError(err error) *ReqError {
@@ -63,4 +68,11 @@ func NotFoundError(err error) *ReqError {
 
 func InternalServerError(err error) *ReqError {
 	return NewReqError(http.StatusInternalServerError, http.StatusInternalServerError, err)
+}
+
+func LoginError(err error) *ReqError {
+	if err.Error() == "invalid_grant" {
+		return NewReqError(http.StatusBadRequest, 480, errors.New("incorrect username or password"))
+	}
+	return NewReqError(http.StatusBadRequest, 481, errors.New("unsupported_grant_type"))
 }

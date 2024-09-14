@@ -74,41 +74,41 @@ func (alimento Alimento) GetModel() model.Alimento {
 func (alimento Alimento) VerifyAlimento() []RequestMessage {
 	var errs []RequestMessage
 	if alimento.ID != "" {
-		errs = append(errs, RequestMessage{ID: 461, Description: "request body id must not be set"})
+		errs = append(errs, *NewRequestMessage(451, "request body id must not be set"))
 	}
 	if alimento.Nombre == "" {
-		errs = append(errs, RequestMessage{ID: 462, Description: "nombre is required"})
+		errs = append(errs, *NewRequestMessage(452, "nombre is required"))
 	} else if len(alimento.Nombre) < 2 || len(alimento.Nombre) > 50 {
-		errs = append(errs, RequestMessage{ID: 463, Description: "nombre must be between 2 and 50 characters"})
+		errs = append(errs, *NewRequestMessage(453, "nombre must be between 2 and 50 characters"))
 	}
 
 	if alimento.Tipo == "" {
-		errs = append(errs, RequestMessage{ID: 464, Description: "tipo is required"})
+		errs = append(errs, *NewRequestMessage(454, "tipo is required"))
 	} else if !utils.StringExistsInSlice(alimento.Tipo, FoodType) {
-		errs = append(errs, RequestMessage{ID: 465, Description: "tipo is invalid. '" + alimento.Tipo + "' is not a valid food type. Must be one of: " + utils.SliceToString(FoodType)})
+		errs = append(errs, *NewRequestMessage(455, "tipo is invalid. '"+alimento.Tipo+"' is not a valid food type. Must be one of: "+utils.SliceToString(FoodType)))
 	}
 
 	if len(alimento.Momentos) == 0 {
-		errs = append(errs, RequestMessage{ID: 466, Description: "momentos is required"})
+		errs = append(errs, *NewRequestMessage(456, "momentos is required"))
 	} else if utils.HasDuplicates(alimento.Momentos) {
-		errs = append(errs, RequestMessage{ID: 467, Description: "momentos has duplicates"})
+		errs = append(errs, *NewRequestMessage(457, "momentos has duplicates"))
 	} else {
 		for _, momento := range alimento.Momentos {
 			if !utils.StringExistsInSlice(momento, Times) {
-				errs = append(errs, RequestMessage{ID: 468, Description: "momentos is invalid. '" + momento + "' is not a valid time. Must be one of: " + utils.SliceToString(Times)})
+				errs = append(errs, *NewRequestMessage(458, "momentos is invalid. '"+momento+"' is not a valid time. Must be one of: "+utils.SliceToString(Times)))
 				break
 			}
 		}
 	}
 
 	if alimento.Precio < 0 {
-		errs = append(errs, RequestMessage{ID: 459, Description: "precio must be a positive number"})
+		errs = append(errs, *NewRequestMessage(459, "precio must be a positive number"))
 	}
 	if alimento.CantidadActual < 0 {
-		errs = append(errs, RequestMessage{ID: 460, Description: "cantidad_actual must be a positive number"})
+		errs = append(errs, *NewRequestMessage(460, "cantidad_actual must be a positive number"))
 	}
 	if alimento.CantidadMinima < 0 {
-		errs = append(errs, RequestMessage{ID: 461, Description: "cantidad_minima must be a positive number"})
+		errs = append(errs, *NewRequestMessage(461, "cantidad_minima must be a positive number"))
 	}
 	return errs
 }

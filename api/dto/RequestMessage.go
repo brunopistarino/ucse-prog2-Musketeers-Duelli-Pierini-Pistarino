@@ -5,8 +5,8 @@ type RequestMessage struct {
 	Description string `json:"description"`
 }
 
-func NewRequestMessage(id int, description string) RequestMessage {
-	return RequestMessage{
+func NewRequestMessage(id int, description string) *RequestMessage {
+	return &RequestMessage{
 		ID:          id,
 		Description: description,
 	}
