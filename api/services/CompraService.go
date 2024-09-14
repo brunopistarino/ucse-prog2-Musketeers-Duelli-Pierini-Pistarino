@@ -84,6 +84,7 @@ func (service *CompraService) PostCompra(user string, ids []string) (*dto.Compra
 
 	compraDB := model.Compra{
 		CostoTotal:         total,
+		CodigoUsuario:      user,
 		FechaCreacion:      utils.GetPrimitiveDateTimeFromDate(time.Now()),
 		FechaActualizacion: primitive.NewDateTimeFromTime(time.Time{}),
 	}
