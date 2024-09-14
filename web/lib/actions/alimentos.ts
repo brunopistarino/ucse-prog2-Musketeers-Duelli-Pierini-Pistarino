@@ -5,16 +5,12 @@ import axios from "axios";
 import { alimentoFormSchema } from "../zod-schemas";
 import { revalidatePath } from "next/cache";
 
-const cookieStore = cookies();
-const token = cookieStore.get("token");
-const authHeader = { headers: { Authorization: `Bearer ${token?.value}` } };
-
 export async function getAlimentos() {
+  const cookieStore = cookies();
   try {
-    const response = await axios.get(
-      `${process.env.API_URL}alimentos`,
-      authHeader
-    );
+    const response = await axios.get(`${process.env.API_URL}alimentos`, {
+      headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+    });
     return { data: response.data, error: null };
   } catch (error) {
     return formatError(error);
@@ -22,12 +18,13 @@ export async function getAlimentos() {
 }
 
 export async function getAlimentosBelowMinimum(name?: string, type?: string) {
+  const cookieStore = cookies();
   try {
     const response = await axios.get(
       `${process.env.API_URL}alimentos/below_minimum`,
       {
         params: { name, type },
-        ...authHeader,
+        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
       }
     );
     return { data: response.data, error: null };
@@ -39,12 +36,15 @@ export async function getAlimentosBelowMinimum(name?: string, type?: string) {
 export async function createAlimento(values: unknown) {
   const result = alimentoFormSchema.safeParse(values);
   if (!result.success) return formatZodError(result.error);
+  const cookieStore = cookies();
 
   try {
     const response = await axios.post(
       `${process.env.API_URL}alimentos`,
       result.data,
-      authHeader
+      {
+        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+      }
     );
     revalidatePath("/alimentos");
     return { data: response.data, error: null };
@@ -56,12 +56,15 @@ export async function createAlimento(values: unknown) {
 export async function updateAlimento(values: unknown, id: string) {
   const result = alimentoFormSchema.safeParse(values);
   if (!result.success) return formatZodError(result.error);
+  const cookieStore = cookies();
 
   try {
     const response = await axios.put(
       `${process.env.API_URL}alimentos/${id}`,
       result.data,
-      authHeader
+      {
+        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+      }
     );
     revalidatePath("/alimentos");
     return { data: response.data, error: null };
@@ -71,10 +74,13 @@ export async function updateAlimento(values: unknown, id: string) {
 }
 
 export async function deleteAlimento(id: string) {
+  const cookieStore = cookies();
   try {
     const response = await axios.delete(
       `${process.env.API_URL}alimentos/${id}`,
-      authHeader
+      {
+        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+      }
     );
     revalidatePath("/alimentos");
     return { data: response.data, error: null };
