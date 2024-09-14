@@ -15,24 +15,24 @@ import (
 )
 
 type CompraInterface interface {
-	GetCompras() ([]*dto.Compra, dto.ReqError)
-	PostCompra(ids []string) (*dto.Compra, dto.ReqError)
+	GetCompras(user string) ([]*dto.Compra, dto.ReqError)
+	PostCompra(user string, ids []string) (*dto.Compra, dto.ReqError)
 }
 
 type CompraService struct {
-	AlimentoRepository repositories.AlimentoRepositoryInterface
+	alimentoRepository repositories.AlimentoRepositoryInterface
 	CompraRepository   repositories.CompraRepositoryInterface
 }
 
 func NewCompraService(alimentoRepository repositories.AlimentoRepositoryInterface, compraRepository repositories.CompraRepositoryInterface) *CompraService {
 	return &CompraService{
-		AlimentoRepository: alimentoRepository,
+		alimentoRepository: alimentoRepository,
 		CompraRepository:   compraRepository,
 	}
 }
 
-func (service *CompraService) GetCompras() ([]*dto.Compra, dto.ReqError) {
-	comprasDB, err := service.CompraRepository.GetCompras()
+func (service *CompraService) GetCompras(user string) ([]*dto.Compra, dto.ReqError) {
+	comprasDB, err := service.CompraRepository.GetCompras(user)
 
 	if err != nil {
 		return nil, *dto.InternalServerError(err)
@@ -49,12 +49,12 @@ func (service *CompraService) GetCompras() ([]*dto.Compra, dto.ReqError) {
 	return compras, dto.ReqError{}
 }
 
-func (service *CompraService) PostCompra(ids []string) (*dto.Compra, dto.ReqError) {
+func (service *CompraService) PostCompra(user string, ids []string) (*dto.Compra, dto.ReqError) {
 	var alimentosDB []model.Alimento
 	if len(ids) != 0 {
 		log.Printf("[service:CompraService][method:PostCompra][info:POST][ids:%v]", ids)
 		for _, id := range ids {
-			alimentoDB, err := service.AlimentoRepository.GetAlimento(id)
+			alimentoDB, err := service.alimentoRepository.GetAlimento(user, id)
 			if err != nil {
 				return nil, *dto.NotFoundError(fmt.Errorf("alimento with id %v not found", id))
 			}
@@ -62,7 +62,7 @@ func (service *CompraService) PostCompra(ids []string) (*dto.Compra, dto.ReqErro
 			alimentosDB = append(alimentosDB, alimentoDB)
 		}
 	} else {
-		results, err := service.AlimentoRepository.GetAlimentosBelowMinimum("", "")
+		results, err := service.alimentoRepository.GetAlimentosBelowMinimum(user, "", "")
 		if err != nil {
 			return nil, *dto.NewReqError(http.StatusInternalServerError, 500, err)
 		}
@@ -72,7 +72,7 @@ func (service *CompraService) PostCompra(ids []string) (*dto.Compra, dto.ReqErro
 		alimentosDB = results
 	}
 
-	total, err := service.AlimentoRepository.SetAlimentosQuantityToMinimum(alimentosDB)
+	total, err := service.alimentoRepository.SetAlimentosQuantityToMinimum(user, alimentosDB)
 
 	if err != nil {
 		return nil, *dto.InternalServerError(err)

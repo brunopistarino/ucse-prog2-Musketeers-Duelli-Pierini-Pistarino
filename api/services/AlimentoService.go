@@ -14,26 +14,26 @@ import (
 )
 
 type AlimentoInterface interface {
-	GetAlimentos() ([]*dto.Alimento, dto.ReqError)
-	GetAlimentosBelowMinimum(foodType string, name string) ([]*dto.Alimento, dto.ReqError)
-	GetAlimento(id string) (*dto.Alimento, dto.ReqError)
-	PostAlimento(alimento *dto.Alimento) dto.ReqError
-	PutAlimento(alimento *dto.Alimento, id string) dto.ReqError
-	DeleteAlimento(id string) dto.ReqError
+	GetAlimentos(user string) ([]*dto.Alimento, dto.ReqError)
+	GetAlimentosBelowMinimum(user string, foodType string, name string) ([]*dto.Alimento, dto.ReqError)
+	GetAlimento(user string, id string) (*dto.Alimento, dto.ReqError)
+	PostAlimento(user string, alimento *dto.Alimento) dto.ReqError
+	PutAlimento(user string, alimento *dto.Alimento, id string) dto.ReqError
+	DeleteAlimento(user string, id string) dto.ReqError
 }
 
 type AlimentoService struct {
-	AlimentoRepository repositories.AlimentoRepositoryInterface
+	alimentoRepository repositories.AlimentoRepositoryInterface
 }
 
 func NewAlimentoService(alimentoRepository repositories.AlimentoRepositoryInterface) *AlimentoService {
 	return &AlimentoService{
-		AlimentoRepository: alimentoRepository,
+		alimentoRepository: alimentoRepository,
 	}
 }
 
-func (service *AlimentoService) GetAlimentos() ([]*dto.Alimento, dto.ReqError) {
-	alimentosDB, err := service.AlimentoRepository.GetAlimentos()
+func (service *AlimentoService) GetAlimentos(user string) ([]*dto.Alimento, dto.ReqError) {
+	alimentosDB, err := service.alimentoRepository.GetAlimentos(user)
 
 	if err != nil {
 		return nil, *dto.InternalServerError(err)
@@ -50,8 +50,8 @@ func (service *AlimentoService) GetAlimentos() ([]*dto.Alimento, dto.ReqError) {
 	return alimentos, dto.ReqError{}
 }
 
-func (service *AlimentoService) GetAlimento(id string) (*dto.Alimento, dto.ReqError) {
-	alimentoDB, err := service.AlimentoRepository.GetAlimento(id)
+func (service *AlimentoService) GetAlimento(user string, id string) (*dto.Alimento, dto.ReqError) {
+	alimentoDB, err := service.alimentoRepository.GetAlimento(user, id)
 
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
@@ -64,7 +64,7 @@ func (service *AlimentoService) GetAlimento(id string) (*dto.Alimento, dto.ReqEr
 	return alimento, dto.ReqError{}
 }
 
-func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) dto.ReqError {
+func (service *AlimentoService) PostAlimento(user string, alimento *dto.Alimento) dto.ReqError {
 
 	err := alimento.VerifyAlimento()
 	log.Print(err)
@@ -73,12 +73,12 @@ func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) dto.ReqErro
 	}
 
 	alimentoDB := alimento.GetModel()
-
+	alimentoDB.CodigoUsuario = user
 	now := time.Now()
 
 	alimentoDB.FechaCreacion = primitive.NewDateTimeFromTime(now)
 	alimentoDB.FechaActualizacion = primitive.NewDateTimeFromTime(time.Time{})
-	insertOneResult, errInsert := service.AlimentoRepository.PostAlimento(alimentoDB)
+	insertOneResult, errInsert := service.alimentoRepository.PostAlimento(alimentoDB)
 	resultID := insertOneResult.InsertedID.(primitive.ObjectID)
 
 	if errInsert != nil {
@@ -88,7 +88,7 @@ func (service *AlimentoService) PostAlimento(alimento *dto.Alimento) dto.ReqErro
 	return dto.ReqError{}
 }
 
-func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) dto.ReqError {
+func (service *AlimentoService) PutAlimento(user string, alimento *dto.Alimento, id string) dto.ReqError {
 	err := alimento.VerifyAlimento()
 	if err != nil {
 		return *dto.NewReqErrorWithMessages(http.StatusUnprocessableEntity, err)
@@ -98,10 +98,11 @@ func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) d
 	}
 	alimento.ID = id
 	alimentoDB := alimento.GetModel()
+	alimentoDB.CodigoUsuario = user
 	now := time.Now()
 	alimentoDB.FechaActualizacion = primitive.NewDateTimeFromTime(now)
 
-	updateResult, errInsert := service.AlimentoRepository.PutAlimento(alimentoDB)
+	updateResult, errInsert := service.alimentoRepository.PutAlimento(alimentoDB)
 	if errInsert != nil {
 		return *dto.InternalServerError(errInsert)
 	}
@@ -111,10 +112,10 @@ func (service *AlimentoService) PutAlimento(alimento *dto.Alimento, id string) d
 	return dto.ReqError{}
 }
 
-func (service *AlimentoService) DeleteAlimento(id string) dto.ReqError {
+func (service *AlimentoService) DeleteAlimento(user string, id string) dto.ReqError {
 	objectID := utils.GetObjectIDFromStringID(id)
 
-	DeleteResult, err := service.AlimentoRepository.DeleteAlimento(objectID)
+	DeleteResult, err := service.alimentoRepository.DeleteAlimento(user, objectID)
 	if err != nil {
 		return *dto.InternalServerError(err)
 	}
@@ -125,13 +126,13 @@ func (service *AlimentoService) DeleteAlimento(id string) dto.ReqError {
 }
 
 // Used for 'Compras'
-func (service *AlimentoService) GetAlimentosBelowMinimum(foodType string, name string) ([]*dto.Alimento, dto.ReqError) {
+func (service *AlimentoService) GetAlimentosBelowMinimum(user string, foodType string, name string) ([]*dto.Alimento, dto.ReqError) {
 
 	if foodType != "" && !utils.StringExistsInSlice(foodType, dto.FoodType) {
 		return nil, *dto.NewReqError(http.StatusUnprocessableEntity, 465, errors.New("tipo is invalid. '"+foodType+"' is not a valid food type. Must be one of: "+utils.SliceToString(dto.FoodType)))
 	}
 
-	alimentosDB, err := service.AlimentoRepository.GetAlimentosBelowMinimum(foodType, name)
+	alimentosDB, err := service.alimentoRepository.GetAlimentosBelowMinimum(user, foodType, name)
 
 	if err != nil {
 		return nil, *dto.InternalServerError(err)

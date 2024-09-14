@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"api/dto"
 	"api/services"
+	"api/utils"
 	"log"
 	"net/http"
 
@@ -19,8 +21,9 @@ func NewCompraHandler(compraService services.CompraInterface) *CompraHandler {
 }
 
 func (handler *CompraHandler) GetCompras(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:CompraHandler][method:GetCompras][info:GET_ALL]")
-	compras, err := handler.compraService.GetCompras()
+	compras, err := handler.compraService.GetCompras(user.Codigo)
 
 	if err.IsDefined() {
 		log.Printf("[handler:CompraHandler][method:GetCompras][reason:ERROR_GET][error:%s]", err.Error())
@@ -32,6 +35,7 @@ func (handler *CompraHandler) GetCompras(c *gin.Context) {
 }
 
 func (handler *CompraHandler) PostCompra(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:CompraHandler][method:PostCompra][info:POST]")
 
 	// Bind an array of strings from a query parameter
@@ -42,7 +46,7 @@ func (handler *CompraHandler) PostCompra(c *gin.Context) {
 		log.Printf("[handler:CompraHandler][method:PostCompra][info:POST][ids:%s]", ids)
 	}
 
-	compra, err := handler.compraService.PostCompra(ids)
+	compra, err := handler.compraService.PostCompra(user.Codigo, ids)
 
 	if err.IsDefined() {
 		log.Printf("[handler:CompraHandler][method:PostCompra][reason:ERROR_POST][error:%s]", err.Error())

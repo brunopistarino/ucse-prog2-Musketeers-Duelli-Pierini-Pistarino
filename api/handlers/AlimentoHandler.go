@@ -3,6 +3,7 @@ package handlers
 import (
 	"api/dto"
 	"api/services"
+	"api/utils"
 	"log"
 	"net/http"
 
@@ -20,8 +21,11 @@ func NewAlimentoHandler(alimentoService services.AlimentoInterface) *AlimentoHan
 }
 
 func (handler *AlimentoHandler) GetAlimentos(c *gin.Context) {
-	log.Print("[handler:AlimentoHandler][method:GetAlimentos][info:GET_ALL]")
-	alimentos, err := handler.alimentoService.GetAlimentos()
+
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
+
+	log.Printf("[handler:AlimentoHandler][method:GetAlimentos][info:GET_ALL][user:%s]", user.Username)
+	alimentos, err := handler.alimentoService.GetAlimentos(user.Codigo)
 
 	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:GetAlimentos][reason:ERROR_GET][error:%s]", err.Error())
@@ -33,12 +37,13 @@ func (handler *AlimentoHandler) GetAlimentos(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) GetAlimentosBelowMinimum(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][info:GET_BELOW_MINIMUM]")
 
 	alimentoType := c.Query("type")
 	name := c.Query("name")
 
-	alimentos, err := handler.alimentoService.GetAlimentosBelowMinimum(alimentoType, name)
+	alimentos, err := handler.alimentoService.GetAlimentosBelowMinimum(user.Codigo, alimentoType, name)
 
 	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:GetAlimentosBelowMinimum][reason:ERROR_GET][error:%s]", err.Error())
@@ -50,10 +55,11 @@ func (handler *AlimentoHandler) GetAlimentosBelowMinimum(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) GetAlimento(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:AlimentoHandler][method:GetAlimento][info:GET_ONE]")
 
 	id := c.Param("id")
-	alimento, err := handler.alimentoService.GetAlimento(id)
+	alimento, err := handler.alimentoService.GetAlimento(user.Codigo, id)
 
 	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:GetAlimento][reason:ERROR_GET][error:%s]", err.Error())
@@ -65,17 +71,18 @@ func (handler *AlimentoHandler) GetAlimento(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) PostAlimento(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:AlimentoHandler][method:PostAlimento][info:POST]")
 
 	var alimento dto.Alimento
 	err := c.BindJSON(&alimento)
 	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PostAlimento][reason:ERROR_BIND][error:%s]", err.Error())
-		c.JSON(http.StatusBadRequest, dto.NewReqError(http.StatusBadRequest, 400, err))
+		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
 
-	errorService := handler.alimentoService.PostAlimento(&alimento)
+	errorService := handler.alimentoService.PostAlimento(user.Codigo, &alimento)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:PostAlimento][reason:ERROR_PUT][error:%s]", errorService.Error())
@@ -88,18 +95,19 @@ func (handler *AlimentoHandler) PostAlimento(c *gin.Context) {
 }
 
 func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:AlimentoHandler][method:PutAlimento][info:PUT]")
 
 	var alimento dto.Alimento
 	err := c.BindJSON(&alimento)
 	if err != nil {
 		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_BIND][error:%s]", err.Error())
-		c.JSON(http.StatusBadRequest, dto.NewReqError(http.StatusBadRequest, 400, err))
+		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
 	id := c.Param("id")
 
-	errorService := handler.alimentoService.PutAlimento(&alimento, id)
+	errorService := handler.alimentoService.PutAlimento(user.Codigo, &alimento, id)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:ERROR_PUT][error:%s]", errorService.Error())
@@ -108,14 +116,15 @@ func (handler *AlimentoHandler) PutAlimento(c *gin.Context) {
 	}
 
 	log.Printf("[handler:AlimentoHandler][method:PutAlimento][reason:SUCCESS_PUT][alimento:%s]", alimento.Nombre)
-	c.JSON(http.StatusCreated, alimento)
+	c.JSON(http.StatusOK, alimento)
 }
 
 func (handler *AlimentoHandler) DeleteAlimento(c *gin.Context) {
+	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:AlimentoHandler][method:DeleteAlimento][info:DELETE]")
 
 	id := c.Param("id")
-	err := handler.alimentoService.DeleteAlimento(id)
+	err := handler.alimentoService.DeleteAlimento(user.Codigo, id)
 
 	if err.IsDefined() {
 		log.Printf("[handler:AlimentoHandler][method:DeleteAlimento][reason:ERROR_DELETE][error:%s]", err.Error())

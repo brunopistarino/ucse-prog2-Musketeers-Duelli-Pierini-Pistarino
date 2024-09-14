@@ -11,7 +11,7 @@ import (
 
 type CompraRepositoryInterface interface {
 	PostCompra(compra model.Compra) (*mongo.InsertOneResult, error)
-	GetCompras() ([]model.Compra, error)
+	GetCompras(user string) ([]model.Compra, error)
 }
 
 type CompraRepository struct {
@@ -37,10 +37,10 @@ func (repository CompraRepository) PostCompra(compra model.Compra) (*mongo.Inser
 	return result, nil
 }
 
-func (repository CompraRepository) GetCompras() ([]model.Compra, error) {
+func (repository CompraRepository) GetCompras(user string) ([]model.Compra, error) {
 
 	collection := repository.db.GetClient().Database("superCook").Collection("compras")
-	filter := bson.M{}
+	filter := bson.M{"codigo_usuario": user}
 	findOptions := options.Find().SetSort(bson.D{{Key: "fecha_creacion", Value: -1}})
 
 	cursor, err := collection.Find(context.TODO(), filter, findOptions)
