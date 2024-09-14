@@ -1,6 +1,7 @@
 "use client";
 import ModeToggle from "@/components/mode-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { logout } from "@/lib/actions/usuario";
 import { pages } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { ChefHat, LogOut } from "lucide-react";
@@ -41,7 +42,7 @@ export default function Navigation() {
       </nav>
       <div className="mt-auto flex flex-col gap-2">
         <ModeToggle />
-        <Button className="gap-2" variant="secondary">
+        <Button className="gap-2" variant="secondary" onClick={() => logout()}>
           <LogOut size={16} />
           Cerrar sesión
         </Button>

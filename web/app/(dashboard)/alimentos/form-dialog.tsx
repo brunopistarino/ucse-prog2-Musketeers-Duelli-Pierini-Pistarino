@@ -34,7 +34,11 @@ import { useForm } from "react-hook-form";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Trash2 } from "lucide-react";
 import { AlimentosType, alimentosTypes, momentos } from "@/lib/constants";
-import { createAlimento, deleteAlimento, updateAlimento } from "@/lib/actions";
+import {
+  createAlimento,
+  deleteAlimento,
+  updateAlimento,
+} from "@/lib/actions/alimentos";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 

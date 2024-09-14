@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { getAlimentos } from "@/lib/actions";
+import { getAlimentos } from "@/lib/actions/alimentos";
 import FormDialog from "./form-dialog";
 import { Plus } from "lucide-react";
 import ErrorPage from "@/components/error-page";

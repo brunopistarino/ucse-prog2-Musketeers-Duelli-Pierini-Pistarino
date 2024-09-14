@@ -1,4 +1,4 @@
-import { getAlimentosBelowMinimum } from "@/lib/actions";
+import { getAlimentosBelowMinimum } from "@/lib/actions/alimentos";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
