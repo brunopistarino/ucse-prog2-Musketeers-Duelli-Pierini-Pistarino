@@ -3,14 +3,15 @@ package clients
 import (
 	"api/clients/responses"
 	"api/dto"
+	"api/utils"
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 )
 
 type AuthClientInterface interface {
@@ -52,7 +53,6 @@ func (auth *AuthClient) PostLoginUser(user *dto.UserLogin) (*responses.UserLogin
 		return nil, err
 	}
 	if response.StatusCode != 200 {
-		log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", response.Status)
 		return loginError(response)
 	}
 
@@ -127,8 +127,11 @@ func (auth *AuthClient) PostRegisterUser(user *dto.UserRegister) error {
 		return err
 	}
 	if response.StatusCode != 200 {
-		log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", response.Status)
-		return errors.New(strconv.Itoa(response.StatusCode))
+		if response.StatusCode == 500 {
+			log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", response.Status)
+			return errors.New("500")
+		}
+		return registerError(response)
 	}
 
 	defer response.Body.Close()
@@ -136,6 +139,40 @@ func (auth *AuthClient) PostRegisterUser(user *dto.UserRegister) error {
 	log.Printf("[client:AuthClient][method:PostRegisterUser][reason:SUCCESS_POST]")
 	return nil
 
+}
+
+// Custom error handler
+func registerError(resp *http.Response) error {
+	var apiResponse responses.RegisterError
+
+	err := json.NewDecoder(resp.Body).Decode(&apiResponse)
+	if err != nil {
+		return errors.New("500")
+	}
+
+	// Check if the status code is 400
+	if resp.StatusCode == http.StatusBadRequest {
+		result := ""
+		// Loop through the ModelState and concatenate the messages
+		for key, messages := range apiResponse.ModelState {
+			if (utils.ContainsSubstring(messages, "Name ")) && (utils.ContainsSubstring(messages, "Email ")) {
+				result += utils.EmailString(messages)
+				continue
+			}
+			for _, message := range messages {
+
+				if key != "" {
+					result += fmt.Sprintf("%s: %s. ", key, message)
+				} else {
+					result += fmt.Sprintf("%s. ", message)
+				}
+			}
+		}
+		log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", result)
+		return errors.New(result)
+	}
+
+	return errors.New("500")
 }
 
 func (auth *AuthClient) GetUserInfo(token string) (*responses.UserInfo, error) {

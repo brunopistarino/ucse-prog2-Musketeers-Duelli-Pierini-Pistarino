@@ -76,3 +76,7 @@ func LoginError(err error) *ReqError {
 	}
 	return NewReqError(http.StatusBadRequest, 481, errors.New("unsupported_grant_type"))
 }
+
+func RegisterError(err error) *ReqError {
+	return NewReqError(http.StatusBadRequest, 482, err)
+}

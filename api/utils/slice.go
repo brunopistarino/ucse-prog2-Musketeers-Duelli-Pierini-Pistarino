@@ -31,3 +31,25 @@ func HasDuplicates[T comparable](arr []T) bool {
 	}
 	return false
 }
+
+func ContainsSubstring(strings []string, substr string) bool {
+	// Check if the substring is in any of the strings in the slice
+	for _, str := range strings {
+		if len(str) >= len(substr) && str[:len(substr)] == substr {
+			return true
+		}
+	}
+	return false
+}
+
+func EmailString(strings []string) string {
+	// Return the string that starts with "Email"
+	result := ""
+	for _, str := range strings {
+		if len(str) >= len("Email") && str[:len("Email")] == "Email" {
+			result = str
+			return result
+		}
+	}
+	return result
+}

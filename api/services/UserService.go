@@ -50,8 +50,11 @@ func (service UserService) RegisterUser(user *dto.UserRegister) dto.ReqError {
 
 	err := service.authClient.PostRegisterUser(user)
 
+	if err != nil && err.Error() == "500" {
+		return *dto.InternalServerError(err)
+	}
 	if err != nil {
-		return *dto.BadRequestError(err)
+		return *dto.RegisterError(err)
 	}
 
 	return dto.ReqError{}
