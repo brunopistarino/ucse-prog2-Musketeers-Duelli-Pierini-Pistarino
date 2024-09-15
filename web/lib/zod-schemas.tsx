@@ -35,12 +35,15 @@ export const registerSchema = z
         message:
           "La contraseña debe contener al menos una letra mayúscula ('A'-'Z')",
       })
+      .regex(/[a-z]/, {
+        message:
+          "La contraseña debe contener al menos una letra minúscula ('a'-'z')",
+      })
       .regex(/\d/, {
         message: "La contraseña debe contener al menos un dígito ('0'-'9')",
       })
       .regex(/[^A-Za-z0-9]/, {
-        message:
-          "La contraseña debe contener al menos un carácter no alfabético",
+        message: "La contraseña debe contener al menos un carácter especial",
       }),
     confirm_password: z.string().min(1, { message: "Repita la contraseña" }),
   })
