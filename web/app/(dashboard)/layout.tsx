@@ -50,7 +50,7 @@ export default function RootLayout({
             </SheetContent>
           </Sheet>
         </header>
-        <Suspense
+        {/* <Suspense
           fallback={
             <div className="animate-pulse bg-slate-200 h-full rounded-lg" />
           }
@@ -58,7 +58,8 @@ export default function RootLayout({
           <main className="flex flex-1 flex-col overflow-y-auto bg-card rounded-lg border shadow-sm">
             {children}
           </main>
-        </Suspense>
+        </Suspense> */}
+        {children}
       </div>
     </div>
   );
