@@ -16,11 +16,12 @@ export async function login(values: unknown) {
       result.data
     );
     const token = response.headers.authorization;
+    console.log(response.headers["expires-in"]);
     if (token) {
       const cookieStore = cookies();
       cookieStore.set("token", token, {
         httpOnly: true,
-        maxAge: parseInt(response.headers["expires-in"], 10),
+        maxAge: parseInt(response.headers["expires-in"], 10) / 1000,
         path: "/",
       });
     }
