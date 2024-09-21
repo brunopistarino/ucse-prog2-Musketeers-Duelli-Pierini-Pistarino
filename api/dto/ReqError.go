@@ -51,7 +51,7 @@ func BadRequestError(err error) *ReqError {
 }
 
 func BindBadRequestError() *ReqError {
-	return NewReqError(http.StatusBadRequest, 790, errors.New("request body not valid"))
+	return NewReqError(http.StatusBadRequest, 40090, errors.New("request body not valid"))
 }
 
 func UnauthorizedError(id int, err error) *ReqError {
@@ -72,11 +72,11 @@ func InternalServerError(err error) *ReqError {
 
 func LoginError(err error) *ReqError {
 	if err.Error() == "invalid_grant" {
-		return NewReqError(http.StatusBadRequest, 480, errors.New("incorrect username or password"))
+		return NewReqError(http.StatusBadRequest, 40080, errors.New("incorrect username or password"))
 	}
-	return NewReqError(http.StatusBadRequest, 481, errors.New("unsupported_grant_type"))
+	return NewReqError(http.StatusBadRequest, 40081, errors.New("unsupported_grant_type"))
 }
 
 func RegisterError(err error) *ReqError {
-	return NewReqError(http.StatusBadRequest, 482, err)
+	return NewReqError(http.StatusBadRequest, 40082, err)
 }

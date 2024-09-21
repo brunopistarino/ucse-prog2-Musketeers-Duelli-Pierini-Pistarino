@@ -69,7 +69,7 @@ func (service *AlimentoService) PostAlimento(user string, alimento *dto.Alimento
 	err := alimento.VerifyAlimento()
 	log.Print(err)
 	if err != nil {
-		return *dto.NewReqErrorWithMessages(http.StatusUnprocessableEntity, err)
+		return *dto.NewReqErrorWithMessages(http.StatusBadRequest, err)
 	}
 
 	alimentoDB := alimento.GetModel()
@@ -91,10 +91,10 @@ func (service *AlimentoService) PostAlimento(user string, alimento *dto.Alimento
 func (service *AlimentoService) PutAlimento(user string, alimento *dto.Alimento, id string) dto.ReqError {
 	err := alimento.VerifyAlimento()
 	if err != nil {
-		return *dto.NewReqErrorWithMessages(http.StatusUnprocessableEntity, err)
+		return *dto.NewReqErrorWithMessages(http.StatusBadRequest, err)
 	}
 	if id == "" {
-		return *dto.NewReqError(http.StatusBadRequest, 460, errors.New("id is required"))
+		return *dto.NewReqError(http.StatusBadRequest, 40022, errors.New("id is required"))
 	}
 	alimento.ID = id
 	alimentoDB := alimento.GetModel()
@@ -129,7 +129,7 @@ func (service *AlimentoService) DeleteAlimento(user string, id string) dto.ReqEr
 func (service *AlimentoService) GetAlimentosBelowMinimum(user string, foodType string, name string) ([]*dto.Alimento, dto.ReqError) {
 
 	if foodType != "" && !utils.StringExistsInSlice(foodType, dto.FoodType) {
-		return nil, *dto.NewReqError(http.StatusUnprocessableEntity, 465, errors.New("tipo is invalid. '"+foodType+"' is not a valid food type. Must be one of: "+utils.SliceToString(dto.FoodType)))
+		return nil, *dto.NewReqError(http.StatusBadRequest, 40015, errors.New("tipo is invalid. '"+foodType+"' is not a valid food type. Must be one of: "+utils.SliceToString(dto.FoodType)))
 	}
 
 	alimentosDB, err := service.alimentoRepository.GetAlimentosBelowMinimum(user, foodType, name)

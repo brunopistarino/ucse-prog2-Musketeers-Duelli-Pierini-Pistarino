@@ -26,7 +26,7 @@ func (service UserService) LoginUser(user *dto.UserLogin) (*responses.UserLoginI
 	messages := user.VerifyLogin()
 
 	if len(messages) > 0 {
-		return nil, *dto.NewReqErrorWithMessages(http.StatusUnprocessableEntity, messages)
+		return nil, *dto.NewReqErrorWithMessages(http.StatusBadRequest, messages)
 	}
 
 	response, err := service.authClient.PostLoginUser(user)
@@ -45,7 +45,7 @@ func (service UserService) RegisterUser(user *dto.UserRegister) dto.ReqError {
 	messages := user.VerifyRegister()
 
 	if len(messages) > 0 {
-		return *dto.NewReqErrorWithMessages(http.StatusUnprocessableEntity, messages)
+		return *dto.NewReqErrorWithMessages(http.StatusBadRequest, messages)
 	}
 
 	err := service.authClient.PostRegisterUser(user)

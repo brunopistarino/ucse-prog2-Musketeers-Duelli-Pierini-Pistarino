@@ -25,7 +25,7 @@ func (auth *AuthMiddleware) ValidateToken(c *gin.Context) {
 	authToken := c.GetHeader("Authorization")
 
 	if authToken == "" {
-		err := dto.UnauthorizedError(490, errors.New("token not provided"))
+		err := dto.UnauthorizedError(40111, errors.New("token not provided"))
 		//log.Printf("[service:AulaService][method:ObtenerAulaPorId][reason:NOT_FOUND][id:%s]", id)
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
@@ -34,7 +34,7 @@ func (auth *AuthMiddleware) ValidateToken(c *gin.Context) {
 	//Obtener la informacion del usuario a partir del token desde el servicio externo
 	user, err := auth.authClient.GetUserInfo(authToken)
 	if err != nil {
-		err := dto.UnauthorizedError(491, errors.New("authorization has been denied for this request"))
+		err := dto.UnauthorizedError(40112, errors.New("authorization has been denied for this request"))
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
 	}

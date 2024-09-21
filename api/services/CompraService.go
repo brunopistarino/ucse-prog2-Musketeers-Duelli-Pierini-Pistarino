@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"net/http"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -64,10 +63,10 @@ func (service *CompraService) PostCompra(user string, ids []string) (*dto.Compra
 	} else {
 		results, err := service.alimentoRepository.GetAlimentosBelowMinimum(user, "", "")
 		if err != nil {
-			return nil, *dto.NewReqError(http.StatusInternalServerError, 500, err)
+			return nil, *dto.InternalServerError(err)
 		}
 		if len(results) == 0 {
-			return nil, *dto.NotFoundError(errors.New("no 'alimentos' to buy"))
+			return nil, *dto.NotFoundError(errors.New("unable to proceed with purchase: no food items are below minimum quantity"))
 		}
 		alimentosDB = results
 	}
@@ -79,7 +78,7 @@ func (service *CompraService) PostCompra(user string, ids []string) (*dto.Compra
 	}
 
 	if total == 0 {
-		return nil, *dto.NotFoundError(errors.New("no 'alimentos' to buy"))
+		return nil, *dto.NotFoundError(errors.New("unable to proceed with purchase: no food items are below minimum quantity"))
 	}
 
 	compraDB := model.Compra{
