@@ -1,82 +1,79 @@
 package dto
 
 import (
-	"errors"
 	"net/http"
 	"strconv"
 )
 
-type ReqError struct {
+type RequestError struct {
 	StatusCode int              `json:"status_code"`
 	Msg        []RequestMessage `json:"msg"`
 }
 
-func (e ReqError) Error() string {
+func (e RequestError) Error() string {
 	return "status_code: " + strconv.Itoa(e.StatusCode) + ", msg: " + e.Msg[0].Description
 }
 
-func NewReqError(statusCode int, id int, err error) *ReqError {
-	return &ReqError{
-		StatusCode: statusCode,
-		Msg: []RequestMessage{
-			{
-				ID:          id,
-				Description: err.Error(),
-			},
-		},
-	}
-}
-
-func NewReqErrorWithMessages(statusCode int, messages []RequestMessage) *ReqError {
-	return &ReqError{
+func NewRequestErrorWithMessages(statusCode int, messages []RequestMessage) *RequestError {
+	return &RequestError{
 		StatusCode: statusCode,
 		Msg:        messages,
 	}
 }
 
-func (e ReqError) HasMessages() bool {
+func NewRequestError(statusCode int, id int) *RequestError {
+	return &RequestError{
+		StatusCode: statusCode,
+		Msg: []RequestMessage{
+			*NewDefaultRequestMessage(id),
+		},
+	}
+}
+
+func NewGenericRequestError(statusCode int, id int, message string) *RequestError {
+	return &RequestError{
+		StatusCode: statusCode,
+		Msg: []RequestMessage{
+			*NewRequestMessage(id, message),
+		},
+	}
+}
+
+func (e RequestError) HasMessages() bool {
 	return len(e.Msg) > 0
 }
 
-func (e ReqError) HasStatusCode() bool {
+func (e RequestError) HasStatusCode() bool {
 	return e.StatusCode != 0
 }
 
-func (e ReqError) IsDefined() bool {
+func (e RequestError) IsDefined() bool {
 	return e.HasMessages() || e.HasStatusCode()
 }
 
-func BadRequestError(err error) *ReqError {
-	return NewReqError(http.StatusBadRequest, http.StatusBadRequest, err)
+func BindBadRequestError() *RequestError {
+	return NewRequestError(http.StatusBadRequest, InvalidRequestBody)
 }
 
-func BindBadRequestError() *ReqError {
-	return NewReqError(http.StatusBadRequest, 40090, errors.New("request body not valid"))
+func UnauthorizedError(id int) *RequestError {
+	return NewRequestError(http.StatusUnauthorized, id)
 }
 
-func UnauthorizedError(id int, err error) *ReqError {
-	return NewReqError(http.StatusUnauthorized, id, err)
+func NotFoundError(err error) *RequestError {
+	return NewGenericRequestError(http.StatusNotFound, http.StatusNotFound, err.Error())
 }
 
-func ForbiddenError(err error) *ReqError {
-	return NewReqError(http.StatusForbidden, http.StatusForbidden, err)
+func InternalServerError() *RequestError {
+	return NewGenericRequestError(http.StatusInternalServerError, http.StatusInternalServerError, "Internal Server Error")
 }
 
-func NotFoundError(err error) *ReqError {
-	return NewReqError(http.StatusNotFound, http.StatusNotFound, err)
-}
-
-func InternalServerError(err error) *ReqError {
-	return NewReqError(http.StatusInternalServerError, http.StatusInternalServerError, err)
-}
-
-func LoginError(err error) *ReqError {
+func LoginError(err error) *RequestError {
 	if err.Error() == "invalid_grant" {
-		return NewReqError(http.StatusBadRequest, 40080, errors.New("incorrect username or password"))
+		return NewRequestError(http.StatusBadRequest, IncorrectUsernameOrPassword)
 	}
-	return NewReqError(http.StatusBadRequest, 40081, errors.New("unsupported_grant_type"))
+	return NewRequestError(http.StatusBadRequest, UnsupportedGrantType)
 }
 
-func RegisterError(err error) *ReqError {
-	return NewReqError(http.StatusBadRequest, 40082, err)
+func RegisterError(err error) *RequestError {
+	return NewGenericRequestError(http.StatusBadRequest, RegisterAPIError, err.Error())
 }
