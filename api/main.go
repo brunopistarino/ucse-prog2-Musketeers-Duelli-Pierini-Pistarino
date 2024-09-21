@@ -11,11 +11,11 @@ import (
 )
 
 var (
-	alimentoHandler *handlers.AlimentoHandler
-	//recetaHandler   *handlers.RecetaHandler
-	compraHandler *handlers.CompraHandler
-	userHandler   *handlers.UserHandler
-	router        *gin.Engine
+	foodstuffHandler *handlers.FoodstuffHandler
+	recipeHandler    *handlers.RecipeHandler
+	purchaseHandler  *handlers.PurchaseHandler
+	userHandler      *handlers.UserHandler
+	router           *gin.Engine
 )
 
 func main() {
@@ -36,47 +36,51 @@ func mappingRoutes() {
 
 	authMiddleware := middlewares.NewAuthMiddleware(clients.NewAuthClient())
 
-	usuario := router.Group("/usuario")
-	usuario.POST("/login", userHandler.LoginUser)
-	usuario.POST("/register", userHandler.RegisterUser)
+	user := router.Group("/user")
+	user.POST("/login", userHandler.LoginUser)
+	user.POST("/register", userHandler.RegisterUser)
 
-	alimentos := router.Group("/alimentos")
-	alimentos.Use(authMiddleware.ValidateToken)
+	foodstuffs := router.Group("/foodstuffs")
+	foodstuffs.Use(authMiddleware.ValidateToken)
 
-	alimentos.GET("/", alimentoHandler.GetAlimentos)
-	alimentos.GET("/:id", alimentoHandler.GetAlimento)
-	alimentos.POST("/", alimentoHandler.PostAlimento)
-	alimentos.PUT("/:id", alimentoHandler.PutAlimento)
-	alimentos.DELETE("/:id", alimentoHandler.DeleteAlimento)
-	alimentos.GET("/below_minimum", alimentoHandler.GetAlimentosBelowMinimum)
+	foodstuffs.GET("/", foodstuffHandler.GetFoodstuffs)
+	foodstuffs.GET("/:id", foodstuffHandler.GetFoodstuff)
+	foodstuffs.POST("/", foodstuffHandler.PostFoodstuff)
+	foodstuffs.PUT("/:id", foodstuffHandler.PutFoodstuff)
+	foodstuffs.DELETE("/:id", foodstuffHandler.DeleteFoodstuff)
+	foodstuffs.GET("/below_minimum", foodstuffHandler.GetFoodstuffsBelowMinimum)
 
-	/*
-		recetas := router.Group("/recetas")
-		recetas.Use(authMiddleware)
-	*/
+	recipes := router.Group("/recipes")
+	recipes.Use(authMiddleware.ValidateToken)
 
-	compras := router.Group("/compras")
-	compras.Use(authMiddleware.ValidateToken)
+	recipes.GET("/", recipeHandler.GetRecipes)
+	recipes.GET("/:id", recipeHandler.GetRecipe)
+	recipes.POST("/", recipeHandler.PostRecipe)
+	//recipes.PUT("/:id", recipeHandler.PutRecipe)
+	recipes.DELETE("/:id", recipeHandler.DeleteRecipe)
 
-	compras.GET("/", compraHandler.GetCompras)
-	compras.POST("/", compraHandler.PostCompra)
+	purchases := router.Group("/purchases")
+	purchases.Use(authMiddleware.ValidateToken)
+
+	purchases.GET("/", purchaseHandler.GetPurchases)
+	purchases.POST("/", purchaseHandler.PostPurchase)
 
 }
 
 func dependencies() {
 	var database = repositories.NewMongoDB()
 
-	alimentoRepository := repositories.NewAlimentoRepository(database)
-	compraRepository := repositories.NewCompraRepository(database)
-	//recetaRepository := repositories.NewRecetaRepository(database)
+	foodstuffRepository := repositories.NewFoodstuffRepository(database)
+	purchaseRepository := repositories.NewPurchaseRepository(database)
+	recipeRepository := repositories.NewRecipeRepository(database)
 
-	alimentoService := services.NewAlimentoService(alimentoRepository)
-	compraService := services.NewCompraService(alimentoRepository, compraRepository)
-	//recetaService := services.NewRecetaService(recetaRepository)
+	foodstuffService := services.NewFoodstuffService(foodstuffRepository)
+	purchaseService := services.NewPurchaseService(foodstuffRepository, purchaseRepository)
+	recipeService := services.NewRecipeService(recipeRepository, foodstuffRepository)
 
-	alimentoHandler = handlers.NewAlimentoHandler(alimentoService)
-	compraHandler = handlers.NewCompraHandler(compraService)
-	//recetaHandler = handlers.NewRecetaHandler(recetaService)
+	foodstuffHandler = handlers.NewFoodstuffHandler(foodstuffService)
+	purchaseHandler = handlers.NewPurchaseHandler(purchaseService)
+	recipeHandler = handlers.NewRecipeHandler(recipeService)
 
 	var userClient = clients.NewAuthClient()
 	userService := services.NewUserService(userClient)

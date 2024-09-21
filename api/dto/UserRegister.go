@@ -19,26 +19,26 @@ func NewUserRegister(email string, password string, confirmPassword string) *Use
 func (register UserRegister) VerifyRegister() []RequestMessage {
 	var messages []RequestMessage
 	if register.Email == "" {
-		messages = append(messages, *NewRequestMessage(40070, "email is required"))
+		messages = append(messages, *NewDefaultRequestMessage(RequiredEmail))
 	}
 	// Email validation
 	if !utils.IsValidEmail(register.Email) {
-		messages = append(messages, *NewRequestMessage(40071, "email is not valid"))
+		messages = append(messages, *NewDefaultRequestMessage(InvalidEmail))
 	}
 	if register.Password == "" {
-		messages = append(messages, *NewRequestMessage(40072, "password is required"))
+		messages = append(messages, *NewDefaultRequestMessage(RequiredPassword))
 	}
 	if len(register.Password) < 6 {
-		messages = append(messages, *NewRequestMessage(40073, "password must be at least 6 characters long"))
+		messages = append(messages, *NewDefaultRequestMessage(InvalidPasswordLength))
 	}
 	if !utils.FindUpperNumberSpecialChar(register.Password) {
-		messages = append(messages, *NewRequestMessage(40074, "password must have at least one non letter character, one digit character ('0'-'9') and one uppercase character ('A'-'Z')"))
+		messages = append(messages, *NewDefaultRequestMessage(InvalidPasswordCharacters))
 	}
 	if register.ConfirmPassword == "" {
-		messages = append(messages, *NewRequestMessage(40075, "confirm_password is required"))
+		messages = append(messages, *NewDefaultRequestMessage(RequiredConfirmPassword))
 	}
 	if register.Password != register.ConfirmPassword {
-		messages = append(messages, *NewRequestMessage(40076, "passwords do not match"))
+		messages = append(messages, *NewDefaultRequestMessage(PasswordsDoNotMatch))
 	}
 	return messages
 }

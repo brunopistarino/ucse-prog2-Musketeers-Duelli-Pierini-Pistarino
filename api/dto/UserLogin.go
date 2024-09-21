@@ -15,10 +15,10 @@ func NewUserLogin(username string, password string) *UserLogin {
 func (login UserLogin) VerifyLogin() []RequestMessage {
 	var messages []RequestMessage
 	if login.Username == "" {
-		messages = append(messages, *NewRequestMessage(40077, "username is required"))
+		messages = append(messages, *NewDefaultRequestMessage(RequiredUsername))
 	}
 	if login.Password == "" {
-		messages = append(messages, *NewRequestMessage(40078, "password is required"))
+		messages = append(messages, *NewDefaultRequestMessage(RequiredPassword))
 	}
 	return messages
 }

@@ -3,19 +3,19 @@ package dto
 import "api/clients/responses"
 
 type User struct {
-	Codigo   string `json:codigo`
-	Email    string `json:email`
-	Username string `json:username`
-	Rol      string `json:rol`
+	Code     string `json:"codigo"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Role     string `json:"rol"`
 }
 
 func NewUser(userInfo *responses.UserInfo) User {
 	user := User{}
 	if userInfo != nil {
-		user.Codigo = userInfo.Codigo
+		user.Code = userInfo.Code
 		user.Email = userInfo.Email
 		user.Username = userInfo.Username
-		user.Rol = userInfo.Rol
+		user.Role = userInfo.Role
 	}
 	return user
 }

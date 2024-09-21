@@ -8,8 +8,8 @@ import (
 )
 
 type UserInterface interface {
-	LoginUser(user *dto.UserLogin) (*responses.UserLoginInfo, dto.ReqError)
-	RegisterUser(user *dto.UserRegister) dto.ReqError
+	LoginUser(user *dto.UserLogin) (*responses.UserLoginInfo, dto.RequestError)
+	RegisterUser(user *dto.UserRegister) dto.RequestError
 }
 
 type UserService struct {
@@ -22,40 +22,40 @@ func NewUserService(authClient clients.AuthClientInterface) *UserService {
 	}
 }
 
-func (service UserService) LoginUser(user *dto.UserLogin) (*responses.UserLoginInfo, dto.ReqError) {
+func (service UserService) LoginUser(user *dto.UserLogin) (*responses.UserLoginInfo, dto.RequestError) {
 	messages := user.VerifyLogin()
 
 	if len(messages) > 0 {
-		return nil, *dto.NewReqErrorWithMessages(http.StatusBadRequest, messages)
+		return nil, *dto.NewRequestErrorWithMessages(http.StatusBadRequest, messages)
 	}
 
 	response, err := service.authClient.PostLoginUser(user)
 
 	if err != nil && err.Error() == "500" {
-		return nil, *dto.InternalServerError(err)
+		return nil, *dto.InternalServerError()
 	}
 	if err != nil {
 		return nil, *dto.LoginError(err)
 	}
 
-	return response, dto.ReqError{}
+	return response, dto.RequestError{}
 }
 
-func (service UserService) RegisterUser(user *dto.UserRegister) dto.ReqError {
+func (service UserService) RegisterUser(user *dto.UserRegister) dto.RequestError {
 	messages := user.VerifyRegister()
 
 	if len(messages) > 0 {
-		return *dto.NewReqErrorWithMessages(http.StatusBadRequest, messages)
+		return *dto.NewRequestErrorWithMessages(http.StatusBadRequest, messages)
 	}
 
 	err := service.authClient.PostRegisterUser(user)
 
 	if err != nil && err.Error() == "500" {
-		return *dto.InternalServerError(err)
+		return *dto.InternalServerError()
 	}
 	if err != nil {
 		return *dto.RegisterError(err)
 	}
 
-	return dto.ReqError{}
+	return dto.RequestError{}
 }

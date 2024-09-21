@@ -4,7 +4,6 @@ import (
 	"api/clients"
 	"api/dto"
 	"api/utils"
-	"errors"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,20 +20,19 @@ func NewAuthMiddleware(authClient clients.AuthClientInterface) *AuthMiddleware {
 
 // Este middleware se ejecuta en el grupo de rutas privadas.
 func (auth *AuthMiddleware) ValidateToken(c *gin.Context) {
-	//Se obtiene el header necesario con nombre "Authorization"
+	//Se obtiene el header necesario con name "Authorization"
 	authToken := c.GetHeader("Authorization")
 
 	if authToken == "" {
-		err := dto.UnauthorizedError(40111, errors.New("token not provided"))
-		//log.Printf("[service:AulaService][method:ObtenerAulaPorId][reason:NOT_FOUND][id:%s]", id)
+		err := dto.UnauthorizedError(dto.RequiredToken)
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
 	}
 
-	//Obtener la informacion del usuario a partir del token desde el servicio externo
+	//Obtener la informacion del user a partir del token desde el servicio externo
 	user, err := auth.authClient.GetUserInfo(authToken)
 	if err != nil {
-		err := dto.UnauthorizedError(40112, errors.New("authorization has been denied for this request"))
+		err := dto.UnauthorizedError(dto.DeniedAuthorization)
 		c.AbortWithStatusJSON(err.StatusCode, err)
 		return
 	}
