@@ -2,12 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  foodstuffsTypes,
-  meals,
-  FoodstuffType,
-  mealsType,
-} from "@/lib/constants";
+import { foodstuffsTypes, FoodstuffType } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Alimento } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
