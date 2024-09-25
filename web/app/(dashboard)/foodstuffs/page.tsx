@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
-import { getAlimentos } from "@/lib/actions/foodstuffs";
+import { getFoodstuffs } from "@/lib/actions/foodstuffs";
 import FormDialog from "./form-dialog";
 import { Plus } from "lucide-react";
 import ErrorPage from "@/components/error-page";
 
 export default async function ProductsPage() {
-  const { data, error } = await getAlimentos();
+  const { data, error } = await getFoodstuffs();
   console.log(data);
 
-  if (error) {
+  if (error || !data) {
     return <ErrorPage error={error} />;
   }
 

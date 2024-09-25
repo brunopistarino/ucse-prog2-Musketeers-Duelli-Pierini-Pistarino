@@ -1,11 +1,15 @@
-import { getRecipes } from "@/lib/actions";
 import MasonryRecipes from "./masonry-recipes";
 import ModeToggle from "@/components/mode-toggle";
 import Filters from "./filters";
+import { getRecipes } from "@/lib/actions/recipes";
+import ErrorPage from "@/components/error-page";
 
 export default async function Page() {
-  // const data = await getRecipes();
-  const data = [];
+  const { data, error } = await getRecipes();
+
+  if (error || !data) {
+    return <ErrorPage error={error} />;
+  }
 
   return (
     <div className="flex flex-col flex-1">

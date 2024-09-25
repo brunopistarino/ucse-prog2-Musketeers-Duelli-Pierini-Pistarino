@@ -33,11 +33,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Trash2 } from "lucide-react";
-import { AlimentosType, alimentosTypes, momentos } from "@/lib/constants";
+import { FoodstuffType, foodstuffsTypes, momentos } from "@/lib/constants";
 import {
-  createAlimento,
-  deleteAlimento,
-  updateAlimento,
+  createFoodstuff,
+  deleteFoodstuff,
+  updateFoodstuff,
 } from "@/lib/actions/foodstuffs";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -73,8 +73,8 @@ export default function FormDialog({ children, alimento }: Props) {
   async function onSubmit(values: Alimento) {
     setIsPending(true);
     const response = alimento
-      ? await updateAlimento(values, alimento.id!)
-      : await createAlimento(values);
+      ? await updateFoodstuff(values, alimento.id!)
+      : await createFoodstuff(values);
     if (response?.error) {
       console.error(response.error);
       toast({
@@ -96,7 +96,7 @@ export default function FormDialog({ children, alimento }: Props) {
 
   async function onDelete() {
     setIsPending(true);
-    const response = await deleteAlimento(alimento?.id!);
+    const response = await deleteFoodstuff(alimento?.id!);
     if (response?.error) {
       toast({
         title: "Error",
@@ -160,9 +160,9 @@ export default function FormDialog({ children, alimento }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.keys(alimentosTypes).map((key) => (
+                      {Object.keys(foodstuffsTypes).map((key) => (
                         <SelectItem key={key} value={key}>
-                          {alimentosTypes[key as AlimentosType]}
+                          {foodstuffsTypes[key as FoodstuffType]}
                         </SelectItem>
                       ))}
                     </SelectContent>

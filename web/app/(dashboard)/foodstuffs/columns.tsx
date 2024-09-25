@@ -2,10 +2,10 @@
 
 import { Badge } from "@/components/ui/badge";
 import {
-  alimentosTypes,
+  foodstuffsTypes,
   momentos,
-  AlimentosType,
-  MomentosType,
+  FoodstuffType,
+  Meal,
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Alimento } from "@/lib/zod-schemas";
@@ -25,7 +25,7 @@ export const columns: ColumnDef<Alimento>[] = [
     // cell: (row) => tipos[row.getValue()],
     cell: (row) => (
       <Badge variant={"outline"}>
-        {alimentosTypes[row.getValue() as AlimentosType]}
+        {foodstuffsTypes[row.getValue() as FoodstuffType]}
       </Badge>
     ),
   },
@@ -34,7 +34,7 @@ export const columns: ColumnDef<Alimento>[] = [
     header: "Momento",
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-2">
-        {(row.getValue("meals") as MomentosType[]).map((momento) => {
+        {(row.getValue("meals") as Meal[]).map((momento) => {
           const Icon = momentos[momento]?.icon;
           return (
             <Badge

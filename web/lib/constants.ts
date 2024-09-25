@@ -17,7 +17,7 @@ export const pages = [
   },
   {
     name: "Alimentos",
-    href: "/alimentos",
+    href: "/foodstuffs",
     icon: Package,
   },
   {
@@ -32,7 +32,7 @@ export const pages = [
   },
 ];
 
-export const alimentosTypes = {
+export const foodstuffsTypes = {
   Vegetable: "🥬 Verdura",
   Fruit: "🍎 Fruta",
   Fish: "🐟 Pescado",
@@ -40,7 +40,7 @@ export const alimentosTypes = {
   Dairy: "🥛 Lácteo",
 };
 
-export type AlimentosType = keyof typeof alimentosTypes;
+export type FoodstuffType = keyof typeof foodstuffsTypes;
 
 export const momentos = {
   Breakfast: {
@@ -61,4 +61,4 @@ export const momentos = {
   },
 };
 
-export type MomentosType = keyof typeof momentos;
+export type Meal = keyof typeof momentos;

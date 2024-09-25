@@ -20,6 +20,19 @@ export const alimentoFormSchema = z.object({
   minimum_quantity: z.coerce.number().int(),
 });
 
+export const recipeSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1),
+  meal: z.string().min(1),
+  ingredients: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string().min(1),
+      quantity: z.coerce.number().int(),
+    })
+  ),
+});
+
 export const loginSchema = z.object({
   username: z.string().min(1),
   password: z.string().min(1),
@@ -53,5 +66,6 @@ export const registerSchema = z
   });
 
 export type Alimento = z.infer<typeof alimentoFormSchema>;
+export type Recipe = z.infer<typeof recipeSchema>;
 export type Login = z.infer<typeof loginSchema>;
 export type Register = z.infer<typeof registerSchema>;
