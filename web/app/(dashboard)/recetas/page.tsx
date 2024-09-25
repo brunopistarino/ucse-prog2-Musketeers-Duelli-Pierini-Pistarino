@@ -4,7 +4,8 @@ import ModeToggle from "@/components/mode-toggle";
 import Filters from "./filters";
 
 export default async function Page() {
-  const data = await getRecipes();
+  // const data = await getRecipes();
+  const data = [];
 
   return (
     <div className="flex flex-col flex-1">

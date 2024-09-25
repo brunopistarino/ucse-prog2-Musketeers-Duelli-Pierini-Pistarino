@@ -2,10 +2,10 @@ import { z } from "zod";
 
 export const alimentoFormSchema = z.object({
   id: z.string().optional(),
-  nombre: z.string().min(1),
-  tipo: z.string().min(1),
-  momentos: z.array(z.string().min(1)).nonempty(),
-  precio: z
+  name: z.string().min(1),
+  type: z.string().min(1),
+  meals: z.array(z.string().min(1)).nonempty(),
+  price: z
     .union([
       z.coerce
         .string()
@@ -16,8 +16,8 @@ export const alimentoFormSchema = z.object({
       z.literal(0),
     ])
     .refine((v) => v >= 0, { message: "El precio no puede ser negativo" }),
-  cantidad_actual: z.coerce.number().int(),
-  cantidad_minima: z.coerce.number().int(),
+  current_quantity: z.coerce.number().int(),
+  minimum_quantity: z.coerce.number().int(),
 });
 
 export const loginSchema = z.object({

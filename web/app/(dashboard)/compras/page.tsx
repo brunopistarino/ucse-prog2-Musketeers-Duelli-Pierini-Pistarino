@@ -1,4 +1,4 @@
-import { getAlimentosBelowMinimum } from "@/lib/actions/alimentos";
+import { getAlimentosBelowMinimum } from "@/lib/actions/foodstuffs";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ export default async function Page({ searchParams }: Props) {
   const { name, type } = searchParams;
   // Usar un global state para guardar los productos seleccionados para comprar
   const { data, error } = await getAlimentosBelowMinimum(name, type);
+  console.log(data);
 
   if (error) return <ErrorPage error={error} />;
 

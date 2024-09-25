@@ -11,9 +11,14 @@ export function formatError(error: unknown) {
   let errorMessage = "";
   if (axios.isAxiosError(error)) {
     if (error.response?.data) {
-      errorMessage = error.response.data.msg
-        .map((msg: any) => `${msg.msg_id} - ${msg.description}`)
-        .join(" | ");
+      const { msg } = error.response.data;
+      if (Array.isArray(msg)) {
+        errorMessage = msg
+          .map((m: any) => `${m.msg_id} - ${m.description}`)
+          .join(" | ");
+      } else {
+        errorMessage = error.response.data.message || error.message;
+      }
     } else {
       errorMessage = error.message;
     }

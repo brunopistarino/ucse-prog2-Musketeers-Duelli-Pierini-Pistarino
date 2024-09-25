@@ -8,7 +8,7 @@ import { revalidatePath } from "next/cache";
 export async function getAlimentos() {
   const cookieStore = cookies();
   try {
-    const response = await axios.get(`${process.env.API_URL}alimentos`, {
+    const response = await axios.get(`${process.env.API_URL}foodstuffs`, {
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
     return { data: response.data, error: null };
@@ -21,7 +21,7 @@ export async function getAlimentosBelowMinimum(name?: string, type?: string) {
   const cookieStore = cookies();
   try {
     const response = await axios.get(
-      `${process.env.API_URL}alimentos/below_minimum`,
+      `${process.env.API_URL}foodstuffs/below_minimum`,
       {
         params: { name, type },
         headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
@@ -40,7 +40,7 @@ export async function createAlimento(values: unknown) {
 
   try {
     const response = await axios.post(
-      `${process.env.API_URL}alimentos`,
+      `${process.env.API_URL}foodstuffs`,
       result.data,
       {
         headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
@@ -60,7 +60,7 @@ export async function updateAlimento(values: unknown, id: string) {
 
   try {
     const response = await axios.put(
-      `${process.env.API_URL}alimentos/${id}`,
+      `${process.env.API_URL}foodstuffs/${id}`,
       result.data,
       {
         headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
@@ -77,7 +77,7 @@ export async function deleteAlimento(id: string) {
   const cookieStore = cookies();
   try {
     const response = await axios.delete(
-      `${process.env.API_URL}alimentos/${id}`,
+      `${process.env.API_URL}foodstuffs/${id}`,
       {
         headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
       }

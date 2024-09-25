@@ -33,29 +33,29 @@ export const pages = [
 ];
 
 export const alimentosTypes = {
-  Verdura: "🥬 Verdura",
-  Fruta: "🍎 Fruta",
-  Pescado: "🐟 Pescado",
-  Carne: "🥩 Carne",
-  Lácteo: "🥛 Lácteo",
+  Vegetable: "🥬 Verdura",
+  Fruit: "🍎 Fruta",
+  Fish: "🐟 Pescado",
+  Meat: "🥩 Carne",
+  Dairy: "🥛 Lácteo",
 };
 
 export type AlimentosType = keyof typeof alimentosTypes;
 
 export const momentos = {
-  Desayuno: {
+  Breakfast: {
     label: "Desayuno",
     icon: Clock6,
   },
-  Almuerzo: {
+  Lunch: {
     label: "Almuerzo",
     icon: Clock12,
   },
-  Merienda: {
+  Supper: {
     label: "Merienda",
     icon: Clock3,
   },
-  Cena: {
+  Dinner: {
     label: "Cena",
     icon: Clock9,
   },

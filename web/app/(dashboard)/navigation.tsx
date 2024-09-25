@@ -1,7 +1,7 @@
 "use client";
 import ModeToggle from "@/components/mode-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { logout } from "@/lib/actions/usuario";
+import { logout } from "@/lib/actions/user";
 import { pages } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { ChefHat, LogOut } from "lucide-react";
