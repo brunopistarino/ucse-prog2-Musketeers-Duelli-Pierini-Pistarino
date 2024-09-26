@@ -12,7 +12,7 @@ export async function login(values: unknown) {
 
   try {
     const response = await axios.post(
-      `${process.env.API_URL}usuario/login`,
+      `${process.env.API_URL}user/login`,
       result.data
     );
     const token = response.headers.authorization;
@@ -37,7 +37,7 @@ export async function register(values: unknown) {
 
   try {
     const response = await axios.post(
-      `${process.env.API_URL}usuario/register`,
+      `${process.env.API_URL}user/register`,
       result.data
     );
 

@@ -8,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { AlimentosType, alimentosTypes } from "@/lib/constants";
+import { FoodstuffType, foodstuffsTypes } from "@/lib/constants";
 import { useQueryState } from "nuqs";
 
 export default function Filters() {
@@ -38,9 +38,9 @@ export default function Filters() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Todos los tipos</SelectItem>
-          {Object.keys(alimentosTypes).map((key) => (
+          {Object.keys(foodstuffsTypes).map((key) => (
             <SelectItem key={key} value={key}>
-              {alimentosTypes[key as AlimentosType]}
+              {foodstuffsTypes[key as FoodstuffType]}
             </SelectItem>
           ))}
         </SelectContent>

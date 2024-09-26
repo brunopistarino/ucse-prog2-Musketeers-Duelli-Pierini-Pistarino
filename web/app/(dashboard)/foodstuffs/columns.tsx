@@ -2,10 +2,10 @@
 
 import { Badge } from "@/components/ui/badge";
 import {
-  alimentosTypes,
+  foodstuffsTypes,
   momentos,
-  AlimentosType,
-  MomentosType,
+  FoodstuffType,
+  Meal,
 } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Alimento } from "@/lib/zod-schemas";
@@ -13,28 +13,28 @@ import { ColumnDef } from "@tanstack/react-table";
 
 export const columns: ColumnDef<Alimento>[] = [
   {
-    accessorKey: "nombre",
+    accessorKey: "name",
     header: "Nombre",
-    cell: ({ row }) => (
-      <span className="font-semibold">{row.getValue("nombre")}</span>
+    cell: (row) => (
+      <span className="font-semibold">{row.getValue() as string}</span>
     ),
   },
   {
-    accessorKey: "tipo",
+    accessorKey: "type",
     header: "Tipo",
     // cell: (row) => tipos[row.getValue()],
     cell: (row) => (
       <Badge variant={"outline"}>
-        {alimentosTypes[row.getValue() as AlimentosType]}
+        {foodstuffsTypes[row.getValue() as FoodstuffType]}
       </Badge>
     ),
   },
   {
-    accessorKey: "momentos",
+    accessorKey: "meals",
     header: "Momento",
     cell: ({ row }) => (
       <div className="flex flex-wrap gap-2">
-        {(row.getValue("momentos") as MomentosType[]).map((momento) => {
+        {(row.getValue("meals") as Meal[]).map((momento) => {
           const Icon = momentos[momento]?.icon;
           return (
             <Badge
@@ -51,20 +51,20 @@ export const columns: ColumnDef<Alimento>[] = [
     ),
   },
   {
-    accessorKey: "precio",
+    accessorKey: "price",
     header: "Precio",
-    cell: ({ row }) =>
+    cell: (row) =>
       new Intl.NumberFormat("es-AR", {
         style: "currency",
         currency: "ARS",
-      }).format(row.getValue("precio")),
+      }).format(row.getValue() as number),
   },
   {
-    accessorKey: "cantidad_actual",
+    accessorKey: "current_quantity",
     header: "Cantidad",
     cell: ({ row }) => {
-      const cantidadActual = row.getValue("cantidad_actual") as number;
-      const cantidadMinima = row.getValue("cantidad_minima") as number;
+      const cantidadActual = row.getValue("current_quantity") as number;
+      const cantidadMinima = row.getValue("minimum_quantity") as number;
 
       return (
         <div className="">
@@ -79,11 +79,11 @@ export const columns: ColumnDef<Alimento>[] = [
   //     header: "Cantidad Actual",
   //   },
   {
-    accessorKey: "cantidad_minima",
+    accessorKey: "minimum_quantity",
     header: () => <></>,
     cell: ({ row }) => {
-      const cantidadActual = row.getValue("cantidad_actual") as number;
-      const cantidadMinima = row.getValue("cantidad_minima") as number;
+      const cantidadActual = row.getValue("current_quantity") as number;
+      const cantidadMinima = row.getValue("minimum_quantity") as number;
 
       return (
         <div

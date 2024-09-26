@@ -18,7 +18,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { register } from "@/lib/actions/usuario";
+import { register } from "@/lib/actions/user";
 
 export default function ModeToggle() {
   const [isPending, setIsPending] = useState(false);

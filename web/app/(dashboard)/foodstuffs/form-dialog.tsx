@@ -33,12 +33,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Trash2 } from "lucide-react";
-import { AlimentosType, alimentosTypes, momentos } from "@/lib/constants";
+import { FoodstuffType, foodstuffsTypes, momentos } from "@/lib/constants";
 import {
-  createAlimento,
-  deleteAlimento,
-  updateAlimento,
-} from "@/lib/actions/alimentos";
+  createFoodstuff,
+  deleteFoodstuff,
+  updateFoodstuff,
+} from "@/lib/actions/foodstuffs";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -55,12 +55,12 @@ export default function FormDialog({ children, alimento }: Props) {
   const form = useForm<Alimento>({
     resolver: zodResolver(alimentoFormSchema),
     defaultValues: {
-      nombre: alimento?.nombre || "",
-      tipo: alimento?.tipo || "",
-      momentos: alimento?.momentos || [],
-      precio: alimento?.precio,
-      cantidad_actual: Number(alimento?.cantidad_actual) || undefined,
-      cantidad_minima: Number(alimento?.cantidad_minima) || undefined,
+      name: alimento?.name || "",
+      type: alimento?.type || "",
+      meals: alimento?.meals || [],
+      price: alimento?.price,
+      current_quantity: Number(alimento?.current_quantity) || undefined,
+      minimum_quantity: Number(alimento?.minimum_quantity) || undefined,
     },
   });
 
@@ -73,8 +73,8 @@ export default function FormDialog({ children, alimento }: Props) {
   async function onSubmit(values: Alimento) {
     setIsPending(true);
     const response = alimento
-      ? await updateAlimento(values, alimento.id!)
-      : await createAlimento(values);
+      ? await updateFoodstuff(values, alimento.id!)
+      : await createFoodstuff(values);
     if (response?.error) {
       console.error(response.error);
       toast({
@@ -96,7 +96,7 @@ export default function FormDialog({ children, alimento }: Props) {
 
   async function onDelete() {
     setIsPending(true);
-    const response = await deleteAlimento(alimento?.id!);
+    const response = await deleteFoodstuff(alimento?.id!);
     if (response?.error) {
       toast({
         title: "Error",
@@ -131,7 +131,7 @@ export default function FormDialog({ children, alimento }: Props) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="nombre"
+              name="name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nombre</FormLabel>
@@ -144,7 +144,7 @@ export default function FormDialog({ children, alimento }: Props) {
             />
             <FormField
               control={form.control}
-              name="tipo"
+              name="type"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Tipo de alimento</FormLabel>
@@ -160,9 +160,9 @@ export default function FormDialog({ children, alimento }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.keys(alimentosTypes).map((key) => (
+                      {Object.keys(foodstuffsTypes).map((key) => (
                         <SelectItem key={key} value={key}>
-                          {alimentosTypes[key as AlimentosType]}
+                          {foodstuffsTypes[key as FoodstuffType]}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -173,7 +173,7 @@ export default function FormDialog({ children, alimento }: Props) {
             />
             <FormField
               control={form.control}
-              name="momentos"
+              name="meals"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Momentos</FormLabel>
@@ -191,7 +191,7 @@ export default function FormDialog({ children, alimento }: Props) {
             />
             <FormField
               control={form.control}
-              name="precio"
+              name="price"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Precio</FormLabel>
@@ -215,7 +215,7 @@ export default function FormDialog({ children, alimento }: Props) {
             <div className="flex gap-4">
               <FormField
                 control={form.control}
-                name="cantidad_actual"
+                name="current_quantity"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Cantidad actual</FormLabel>
@@ -228,7 +228,7 @@ export default function FormDialog({ children, alimento }: Props) {
               />
               <FormField
                 control={form.control}
-                name="cantidad_minima"
+                name="minimum_quantity"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>Cantidad mínima</FormLabel>
@@ -245,7 +245,7 @@ export default function FormDialog({ children, alimento }: Props) {
               {alimento && (
                 <Button
                   variant="destructive"
-                  className="mr-auto gap-2"
+                  className="mr-auto gap-2 mt-2 sm:mt-0 w-full sm:w-auto"
                   disabled={isPending}
                   onClick={onDelete}
                 >

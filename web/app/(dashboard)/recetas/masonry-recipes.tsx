@@ -1,7 +1,8 @@
 "use client";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useEffect, useState } from "react";
-import { AlimentosType, alimentosTypes } from "@/lib/constants";
+import { FoodstuffType, foodstuffsTypes } from "@/lib/constants";
+import { Recipe } from "@/lib/zod-schemas";
 type ProductType = "verdura" | "fruta" | "carne" | "pescado" | "lacteo";
 
 const columns = {
@@ -10,19 +11,7 @@ const columns = {
   1200: 4,
 };
 
-type Receta = {
-  nombre: string;
-  momento: string;
-  ingredientes: {
-    producto: {
-      nombre: string;
-      tipo: string;
-    };
-    cantidad: number;
-  }[];
-};
-
-export default function MasonryRecipes({ recipes }: { recipes: Receta[] }) {
+export default function MasonryRecipes({ recipes }: { recipes: Recipe[] }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -45,30 +34,27 @@ export default function MasonryRecipes({ recipes }: { recipes: Receta[] }) {
   );
 }
 
-const RecetaItem = ({ receta }: { receta: Receta }) => (
+const RecetaItem = ({ receta }: { receta: Recipe }) => (
   <div className="bg-border p-1 rounded-lg">
     <div className="flex flex-col gap-2 border py-4 px-6 bg-card rounded-md">
-      <h2 className="text-lg font-semibold">{receta.nombre}</h2>
-      <p className="text-sm text-muted-foreground">{receta.momento}</p>
+      <h2 className="text-lg font-semibold">{receta.name}</h2>
+      <p className="text-sm text-muted-foreground">{receta.meal}</p>
       <ul className="list-disc list-inside">
-        {receta.ingredientes.map((ingrediente) => (
+        {receta.ingredients.map((ingredient) => (
           //   <li key={ingrediente.producto.nombre}>
           //     {productTypes[ingrediente.producto.tipo].slice(0, 2)}{" "}
           //     {ingrediente.producto.nombre} x {ingrediente.cantidad}
           //   </li>
-          <div
-            key={ingrediente.producto.nombre}
-            className="flex items-center gap-2"
-          >
+          <div key={ingredient.id} className="flex items-center gap-2">
             <p className="shrink-0">
-              {alimentosTypes[ingrediente.producto.tipo as AlimentosType].slice(
+              {/* {foodstuffsTypes[ingredient.producto.tipo as FoodstuffType].slice(
                 0,
                 2
-              )}{" "}
-              {ingrediente.producto.nombre}
+              )}{" "} */}
+              {ingredient.name}
             </p>
             <div className="border-b w-full border-dashed border-gray-300" />
-            <p className="font-mono">{ingrediente.cantidad}</p>
+            <p className="font-mono">{ingredient.quantity}</p>
           </div>
         ))}
       </ul>
