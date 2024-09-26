@@ -13,10 +13,10 @@ type Recipe struct {
 }
 
 type Ingredient struct {
-	ID            string `json:"id"`
-	Name          string `json:"name" binding:"omitempty"`
-	FoodstuffType string `json:"foodstuff_type" binding:"omitempty"`
-	Quantity      int    `json:"quantity"`
+	ID       string `json:"id"`
+	Name     string `json:"name" binding:"omitempty"`
+	Type     string `json:"type" binding:"omitempty"`
+	Quantity int    `json:"quantity"`
 }
 
 func NewRecipe(recipe model.Recipe, ingredients []Ingredient) *Recipe {
@@ -48,10 +48,10 @@ func NewIngredients(foodstuffs []model.Foodstuff, quantities []int) *[]Ingredien
 
 func newIngredient(foodstuff model.Foodstuff, quantity int) *Ingredient {
 	return &Ingredient{
-		ID:            utils.GetStringIDFromObjectID(foodstuff.ID),
-		Name:          foodstuff.Name,
-		FoodstuffType: foodstuff.Type,
-		Quantity:      quantity,
+		ID:       utils.GetStringIDFromObjectID(foodstuff.ID),
+		Name:     foodstuff.Name,
+		Type:     foodstuff.Type,
+		Quantity: quantity,
 	}
 }
 
