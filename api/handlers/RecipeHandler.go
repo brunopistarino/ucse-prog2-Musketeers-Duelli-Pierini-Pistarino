@@ -20,7 +20,7 @@ func NewRecipeHandler(recipeService services.RecipeInterface) *RecipeHandler {
 	}
 }
 
-func (handler RecipeHandler) GetRecipes(c *gin.Context) {
+func (handler *RecipeHandler) GetRecipes(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 
 	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][user:%s]", user.Username)
@@ -35,7 +35,7 @@ func (handler RecipeHandler) GetRecipes(c *gin.Context) {
 	c.JSON(200, recipes)
 }
 
-func (handler RecipeHandler) GetRecipe(c *gin.Context) {
+func (handler *RecipeHandler) GetRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:RecipeHandler][method:GetRecipe][info:GET_ONE]")
 
@@ -51,12 +51,12 @@ func (handler RecipeHandler) GetRecipe(c *gin.Context) {
 	c.JSON(http.StatusOK, recipe)
 }
 
-func (handler RecipeHandler) PostRecipe(c *gin.Context) {
+func (handler *RecipeHandler) PostRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:RecipeHandler][method:PostRecipe][info:POST]")
 
 	var recipe dto.Recipe
-	err := c.BindJSON(&recipe)
+	err := c.ShouldBindJSON(&recipe)
 	if err != nil {
 		log.Printf("[handler:RecipeHadler][method:PostRecipe][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
@@ -76,12 +76,12 @@ func (handler RecipeHandler) PostRecipe(c *gin.Context) {
 }
 
 /*
-	func (handler RecipeHandler) PutRecipe(c *gin.Context) {
+	func (handler *RecipeHandler) PutRecipe(c *gin.Context) {
 		user := dto.NewUser(utils.GetUserInfoFromContext(c))
 		log.Print("[handler:RecipeHandler][method:PutRecipe][info:PUT]")
 
 		var recipe dto.Recipe
-		err := c.BindJSON(&recipe)
+		err := c.ShouldBindJSON(&recipe)
 		if err != nil {
 			log.Printf("[handler:RecipeHandler][method:PutRecipe][reason:ERROR_BIND][error:%s]", err.Error())
 			c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
@@ -101,7 +101,7 @@ func (handler RecipeHandler) PostRecipe(c *gin.Context) {
 		c.JSON(http.StatusOK, recipe)
 	}
 */
-func (handler RecipeHandler) DeleteRecipe(c *gin.Context) {
+func (handler *RecipeHandler) DeleteRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:RecipeHandler][method:DeleteRecipe][info:DELETE]")
 

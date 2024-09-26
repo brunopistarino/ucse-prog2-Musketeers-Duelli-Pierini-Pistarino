@@ -75,7 +75,7 @@ func (handler *FoodstuffHandler) PostFoodstuff(c *gin.Context) {
 	log.Print("[handler:FoodstuffHandler][method:PostFoodstuff][info:POST]")
 
 	var foodstuff dto.Foodstuff
-	err := c.BindJSON(&foodstuff)
+	err := c.ShouldBindJSON(&foodstuff)
 	if err != nil {
 		log.Printf("[handler:FoodstuffHandler][method:PostFoodstuff][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
@@ -99,7 +99,7 @@ func (handler *FoodstuffHandler) PutFoodstuff(c *gin.Context) {
 	log.Print("[handler:FoodstuffHandler][method:PutFoodstuff][info:PUT]")
 
 	var foodstuff dto.Foodstuff
-	err := c.BindJSON(&foodstuff)
+	err := c.ShouldBindJSON(&foodstuff)
 	if err != nil {
 		log.Printf("[handler:FoodstuffHandler][method:PutFoodstuff][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())

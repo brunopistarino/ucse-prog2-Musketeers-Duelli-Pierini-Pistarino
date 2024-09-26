@@ -10,10 +10,26 @@ type RequestError struct {
 	Msg        []RequestMessage `json:"msg"`
 }
 
+// Validations
 func (e RequestError) Error() string {
 	return "status_code: " + strconv.Itoa(e.StatusCode) + ", msg: " + e.Msg[0].Description
 }
 
+func (e RequestError) HasMessages() bool {
+	return len(e.Msg) > 0
+}
+
+func (e RequestError) HasStatusCode() bool {
+	return e.StatusCode != 0
+}
+
+func (e RequestError) IsDefined() bool {
+	return e.HasMessages() || e.HasStatusCode()
+}
+
+//
+
+// Constructors
 func NewRequestErrorWithMessages(statusCode int, messages []RequestMessage) *RequestError {
 	return &RequestError{
 		StatusCode: statusCode,
@@ -37,18 +53,6 @@ func NewGenericRequestError(statusCode int, id int, message string) *RequestErro
 			*NewRequestMessage(id, message),
 		},
 	}
-}
-
-func (e RequestError) HasMessages() bool {
-	return len(e.Msg) > 0
-}
-
-func (e RequestError) HasStatusCode() bool {
-	return e.StatusCode != 0
-}
-
-func (e RequestError) IsDefined() bool {
-	return e.HasMessages() || e.HasStatusCode()
 }
 
 func BindBadRequestError() *RequestError {
