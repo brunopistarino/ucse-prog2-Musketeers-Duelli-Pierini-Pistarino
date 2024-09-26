@@ -13,17 +13,18 @@ type Recipe struct {
 }
 
 type Ingredient struct {
-	ID       string `json:"id"`
-	Name     string `json:"name" binding:"omitempty"`
-	Quantity int    `json:"quantity"`
+	ID            string `json:"id"`
+	Name          string `json:"name" binding:"omitempty"`
+	FoodstuffType string `json:"foodstuff_type" binding:"omitempty"`
+	Quantity      int    `json:"quantity"`
 }
 
-func NewRecipe(recipe model.Recipe) *Recipe {
+func NewRecipe(recipe model.Recipe, ingredients []Ingredient) *Recipe {
 	return &Recipe{
 		ID:          utils.GetStringIDFromObjectID(recipe.ID),
 		Name:        recipe.Name,
 		Meal:        recipe.Meal,
-		Ingredients: *NewIngredients(recipe.Ingredients),
+		Ingredients: ingredients,
 	}
 }
 
@@ -37,19 +38,20 @@ func (recipe Recipe) GetModel() model.Recipe {
 }
 
 // DTO ingredients
-func NewIngredients(ingredient []model.Ingredient) *[]Ingredient {
+func NewIngredients(foodstuffs []model.Foodstuff, quantities []int) *[]Ingredient {
 	var ingredients []Ingredient
-	for _, ingredient := range ingredient {
-		ingredients = append(ingredients, *newIngredient(ingredient))
+	for i, foodstuff := range foodstuffs {
+		ingredients = append(ingredients, *newIngredient(foodstuff, quantities[i]))
 	}
 	return &ingredients
 }
 
-func newIngredient(ingredient model.Ingredient) *Ingredient {
+func newIngredient(foodstuff model.Foodstuff, quantity int) *Ingredient {
 	return &Ingredient{
-		ID:       utils.GetStringIDFromObjectID(ingredient.ID),
-		Name:     ingredient.Name,
-		Quantity: ingredient.Quantity,
+		ID:            utils.GetStringIDFromObjectID(foodstuff.ID),
+		Name:          foodstuff.Name,
+		FoodstuffType: foodstuff.Type,
+		Quantity:      quantity,
 	}
 }
 
@@ -65,7 +67,6 @@ func getModelIngredients(ingredient []Ingredient) *[]model.Ingredient {
 func getModelIngredient(ingredient Ingredient) *model.Ingredient {
 	return &model.Ingredient{
 		ID:       utils.GetObjectIDFromStringID(ingredient.ID),
-		Name:     ingredient.Name,
 		Quantity: ingredient.Quantity,
 	}
 }

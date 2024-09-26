@@ -15,7 +15,7 @@ type RecipeRepositoryInterface interface {
 	GetRecipes(user string) ([]model.Recipe, error)
 	GetRecipe(user string, id string) (model.Recipe, error)
 	PostRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error)
-	PutRecipe(recipe model.Recipe) (*mongo.UpdateResult, error)
+	//PutRecipe(recipe model.Recipe) (*mongo.UpdateResult, error)
 	DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error)
 }
 
@@ -83,20 +83,21 @@ func (repository RecipeRepository) PostRecipe(recipe model.Recipe) (*mongo.Inser
 	return result, nil
 }
 
-func (repository RecipeRepository) PutRecipe(recipe model.Recipe) (*mongo.UpdateResult, error) {
-	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
-	filter := bson.M{"_id": recipe.ID}
-	update := bson.M{"$set": recipe}
+/*
+	func (repository RecipeRepository) PutRecipe(recipe model.Recipe) (*mongo.UpdateResult, error) {
+		collection := repository.db.GetClient().Database("superCook").Collection("recipes")
+		filter := bson.M{"_id": recipe.ID}
+		update := bson.M{"$set": recipe}
 
-	result, err := collection.UpdateOne(context.TODO(), filter, update)
+		result, err := collection.UpdateOne(context.TODO(), filter, update)
 
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
+
+		return result, nil
 	}
-
-	return result, nil
-}
-
+*/
 func (repository RecipeRepository) DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 	filter := bson.M{"user_code": user, "_id": id}

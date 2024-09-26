@@ -14,6 +14,5 @@ type Recipe struct {
 
 type Ingredient struct {
 	ID       primitive.ObjectID `bson:"id"`
-	Name     string             `bson:"name"`
 	Quantity int                `bson:"quantity"`
 }
