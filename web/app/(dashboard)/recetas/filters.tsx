@@ -14,6 +14,7 @@ import {
   momentos,
   Meal,
 } from "@/lib/constants";
+import { getFoodstuffType } from "@/lib/utils";
 import { useQueryState } from "nuqs";
 
 export default function Filters() {
@@ -47,11 +48,14 @@ export default function Filters() {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Todos los tipos</SelectItem>
-          {Object.keys(foodstuffsTypes).map((key) => (
-            <SelectItem key={key} value={key}>
-              {foodstuffsTypes[key as FoodstuffType]}
-            </SelectItem>
-          ))}
+          {Object.keys(foodstuffsTypes).map((key) => {
+            const foodstuffType = getFoodstuffType(key as FoodstuffType);
+            return (
+              <SelectItem key={key} value={key}>
+                {foodstuffType.emoji} {foodstuffType.name}
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
       <Select

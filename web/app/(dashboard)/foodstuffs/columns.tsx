@@ -7,7 +7,7 @@ import {
   FoodstuffType,
   Meal,
 } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn, getFoodstuffType } from "@/lib/utils";
 import { Alimento } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -22,12 +22,14 @@ export const columns: ColumnDef<Alimento>[] = [
   {
     accessorKey: "type",
     header: "Tipo",
-    // cell: (row) => tipos[row.getValue()],
-    cell: (row) => (
-      <Badge variant={"outline"}>
-        {foodstuffsTypes[row.getValue() as FoodstuffType]}
-      </Badge>
-    ),
+    cell: (row) => {
+      const foodstuffType = getFoodstuffType(row.getValue() as FoodstuffType);
+      return (
+        <Badge variant="outline">
+          {foodstuffType.emoji} {foodstuffType.name}
+        </Badge>
+      );
+    },
   },
   {
     accessorKey: "meals",

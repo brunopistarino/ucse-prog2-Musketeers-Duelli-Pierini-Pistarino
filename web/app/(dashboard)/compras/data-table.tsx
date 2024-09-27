@@ -32,6 +32,11 @@ export function DataTable<TData, TValue>({
     getCoreRowModel: getCoreRowModel(),
   });
 
+  useEffect(() => {
+    // show all selected rows
+    console.log(table.getSelectedRowModel());
+  }, []);
+
   return (
     <Table>
       <TableHeader>
@@ -76,6 +81,15 @@ export function DataTable<TData, TValue>({
           </TableRow>
         )}
       </TableBody>
+      {/* <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre> */}
+      {/* render all ids from each row from table.getsdelectedrowmodel().flatrows */}
+      <pre>
+        {JSON.stringify(
+          table.getSelectedRowModel().flatRows.map((row) => row.original.id),
+          null,
+          2
+        )}
+      </pre>
     </Table>
   );
 }

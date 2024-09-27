@@ -33,11 +33,26 @@ export const pages = [
 ];
 
 export const foodstuffsTypes = {
-  Vegetable: "🥬 Verdura",
-  Fruit: "🍎 Fruta",
-  Fish: "🐟 Pescado",
-  Meat: "🥩 Carne",
-  Dairy: "🥛 Lácteo",
+  Vegetable: {
+    name: "Verdura",
+    emoji: "🥬",
+  },
+  Fruit: {
+    name: "Fruta",
+    emoji: "🍎",
+  },
+  Fish: {
+    name: "Pescado",
+    emoji: "🐟",
+  },
+  Meat: {
+    name: "Carne",
+    emoji: "🥩",
+  },
+  Dairy: {
+    name: "Lácteo",
+    emoji: "🥛",
+  },
 };
 
 export type FoodstuffType = keyof typeof foodstuffsTypes;

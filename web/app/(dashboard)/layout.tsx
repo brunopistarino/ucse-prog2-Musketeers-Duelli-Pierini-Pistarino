@@ -1,30 +1,6 @@
-import Link from "next/link";
-import { LogOut, ChefHat, Search, Menu, CircleUser } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-import { pages } from "@/lib/constants";
-import { Suspense } from "react";
-import ModeToggle from "@/components/mode-toggle";
-import { cn } from "@/lib/utils";
 import Navigation from "./navigation";
 
 export default function RootLayout({

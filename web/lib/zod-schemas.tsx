@@ -28,6 +28,7 @@ export const recipeSchema = z.object({
     z.object({
       id: z.string().min(1),
       name: z.string().optional(),
+      type: z.string().optional(),
       quantity: z.coerce.number().int(),
     })
   ),

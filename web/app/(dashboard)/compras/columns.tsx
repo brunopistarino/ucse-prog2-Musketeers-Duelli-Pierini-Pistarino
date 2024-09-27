@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { foodstuffsTypes, FoodstuffType } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency, getFoodstuffType } from "@/lib/utils";
 import { Alimento } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -36,12 +36,14 @@ export const columns: ColumnDef<Alimento>[] = [
   {
     accessorKey: "type",
     header: "Tipo",
-    cell: (row) => (
-      <Badge variant={"outline"}>
-        {foodstuffsTypes[row.getValue() as FoodstuffType] ||
-          (row.getValue() as string)}
-      </Badge>
-    ),
+    cell: (row) => {
+      const foodstuffType = getFoodstuffType(row.getValue() as FoodstuffType);
+      return (
+        <Badge variant="outline">
+          {foodstuffType.emoji} {foodstuffType.name}
+        </Badge>
+      );
+    },
   },
   // {
   //   accessorKey: "meals",
@@ -68,11 +70,7 @@ export const columns: ColumnDef<Alimento>[] = [
   {
     accessorKey: "price",
     header: "Precio",
-    cell: (row) =>
-      new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "ARS",
-      }).format(row.getValue() as number),
+    cell: (row) => formatCurrency(row.getValue() as number),
   },
   {
     id: "missing",
@@ -92,10 +90,7 @@ export const columns: ColumnDef<Alimento>[] = [
       const cantidadMinima = row.getValue("minimum_quantity") as number;
       const precio = row.getValue("price") as number;
 
-      return new Intl.NumberFormat("es-AR", {
-        style: "currency",
-        currency: "ARS",
-      }).format(precio * (cantidadMinima - cantidadActual));
+      return formatCurrency(precio * (cantidadMinima - cantidadActual));
     },
   },
   {

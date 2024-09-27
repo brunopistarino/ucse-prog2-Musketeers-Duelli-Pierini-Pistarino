@@ -2,9 +2,29 @@ import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ZodError } from "zod";
+import { foodstuffsTypes, FoodstuffType } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function formatCurrency(value: number) {
+  return new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+  }).format(value);
+}
+
+export function getFoodstuffType(type: FoodstuffType) {
+  const foodstuff = foodstuffsTypes[type as FoodstuffType];
+  if (foodstuff) {
+    return foodstuff;
+  } else {
+    return {
+      name: type,
+      emoji: "❓",
+    };
+  }
 }
 
 export function formatError(error: unknown) {
