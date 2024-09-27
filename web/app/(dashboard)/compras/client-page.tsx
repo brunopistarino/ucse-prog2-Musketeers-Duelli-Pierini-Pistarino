@@ -53,6 +53,7 @@ export default function ClientPage({ data }: Props) {
           2
         )}
       </pre>
+      <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre>
     </div>
   );
 }

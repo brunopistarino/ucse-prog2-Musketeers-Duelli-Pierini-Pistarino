@@ -13,7 +13,7 @@ export default function RootLayout({
       <div className="hidden md:block p-2 lg:p-4">
         <Navigation />
       </div>
-      <div className="flex flex-col md:py-4 md:pr-4 h-[100dvh]">
+      <div className="flex flex-col md:py-2 lg:py-4 md:pr-2 lg:pr-4 h-[100dvh] overflow-x-auto">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 md:hidden">
           <Sheet>
             <SheetTrigger asChild>

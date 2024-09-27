@@ -39,7 +39,7 @@ export const columns: ColumnDef<Alimento>[] = [
     cell: (row) => {
       const foodstuffType = getFoodstuffType(row.getValue() as FoodstuffType);
       return (
-        <Badge variant="outline">
+        <Badge variant="outline" className="whitespace-nowrap">
           {foodstuffType.emoji} {foodstuffType.name}
         </Badge>
       );
@@ -97,21 +97,11 @@ export const columns: ColumnDef<Alimento>[] = [
     accessorKey: "current_quantity",
     header: "Cantidad",
     cell: ({ row }) => {
-      const cantidadActual = row.getValue("current_quantity") as number;
-      const cantidadMinima = row.getValue("minimum_quantity") as number;
-
-      return (
-        <div className="">
-          {cantidadActual} / {cantidadMinima}
-        </div>
-      );
-      //   return <Badge variant="outline">{row.getValue("cantidadActual")}</Badge>;
+      const cantidadActual = row.getValue("current_quantity");
+      const cantidadMinima = row.getValue("minimum_quantity");
+      return `${cantidadActual} / ${cantidadMinima}`;
     },
   },
-  //   {
-  //     accessorKey: "cantidadActual",
-  //     header: "Cantidad Actual",
-  //   },
   {
     accessorKey: "minimum_quantity",
     header: () => <></>,
