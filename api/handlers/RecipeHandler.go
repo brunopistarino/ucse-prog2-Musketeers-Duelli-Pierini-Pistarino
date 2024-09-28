@@ -115,5 +115,8 @@ func (handler *RecipeHandler) DeleteRecipe(c *gin.Context) {
 	}
 
 	log.Printf("[handler:RecipeHandler][method:DeleteRecipe][reason:SUCCESS_DELETE][id:%s]", id)
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, dto.DeleteResponse{
+		Message:    "Recipe deleted",
+		ResourceID: id,
+	})
 }

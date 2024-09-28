@@ -132,5 +132,8 @@ func (handler *FoodstuffHandler) DeleteFoodstuff(c *gin.Context) {
 		return
 	}
 	log.Printf("[handler:FoodstuffHandler][method:DeleteFoodstuff][reason:SUCCESS_DELETE][id:%s]", id)
-	c.JSON(http.StatusOK, nil)
+	c.JSON(http.StatusOK, dto.DeleteResponse{
+		Message:    "Foodstuff deleted",
+		ResourceID: id,
+	})
 }
