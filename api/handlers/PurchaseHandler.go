@@ -38,8 +38,14 @@ func (handler *PurchaseHandler) PostPurchase(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Print("[handler:PurchaseHandler][method:PostPurchase][info:POST]")
 
-	// Bind an array of strings from a query parameter
-	ids := c.QueryArray("ids")
+	// Bind an array of strings from JSON body
+	var ids []string
+	errBind := c.ShouldBindJSON(&ids)
+	if errBind != nil {
+		log.Printf("[handler:RecipeHadler][method:PostRecipe][reason:ERROR_BIND][error:%s]", errBind.Error())
+		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
+		return
+	}
 	if len(ids) == 0 {
 		log.Printf("[handler:PurchaseHandler][method:PostPurchase][info:No ids provided]")
 	} else {
