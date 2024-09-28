@@ -42,6 +42,7 @@ import {
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { getFoodstuffType } from "@/lib/utils";
+import { useFoodstuffsForm } from "@/hooks/use-foodstuffs-form";
 
 interface Props {
   children: React.ReactNode;
@@ -49,69 +50,14 @@ interface Props {
 }
 
 export default function FormDialog({ children, alimento }: Props) {
-  const [isPending, setIsPending] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
-
-  const form = useForm<Alimento>({
-    resolver: zodResolver(alimentoFormSchema),
-    defaultValues: {
-      name: alimento?.name || "",
-      type: alimento?.type || "",
-      meals: alimento?.meals || [],
-      price: alimento?.price,
-      current_quantity: Number(alimento?.current_quantity) || undefined,
-      minimum_quantity: Number(alimento?.minimum_quantity) || undefined,
-    },
-  });
+  const { form, isPending, isOpen, setIsOpen, onSubmit, onDelete } =
+    useFoodstuffsForm(alimento);
 
   const momentosList = Object.keys(momentos).map((key) => ({
     value: key,
     label: momentos[key as keyof typeof momentos].label,
     icon: momentos[key as keyof typeof momentos].icon,
   }));
-
-  async function onSubmit(values: Alimento) {
-    setIsPending(true);
-    const response = alimento
-      ? await updateFoodstuff(values, alimento.id!)
-      : await createFoodstuff(values);
-    if (response?.error) {
-      console.error(response.error);
-      toast({
-        title: "Error",
-        description: response.error,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: `Alimento ${alimento ? "modificado" : "agregado"}`,
-      });
-      if (!alimento) {
-        form.reset();
-      }
-      setIsOpen(false);
-    }
-    setIsPending(false);
-  }
-
-  async function onDelete() {
-    setIsPending(true);
-    const response = await deleteFoodstuff(alimento?.id!);
-    if (response?.error) {
-      toast({
-        title: "Error",
-        description: response.error,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: `Alimento eliminado`,
-      });
-    }
-    setIsPending(false);
-    setIsOpen(false);
-  }
 
   return (
     <AlertDialog open={isOpen}>
