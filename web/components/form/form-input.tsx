@@ -1,3 +1,4 @@
+import { Control, FieldPath, FieldValues } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -7,23 +8,37 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 
-interface Props {
-  form: any;
-  name: string;
-  title: string;
-  placeholder: string;
+type InputType = React.InputHTMLAttributes<HTMLInputElement>["type"];
+
+interface FormItemComponentProps<TFieldValues extends FieldValues> {
+  name: FieldPath<TFieldValues>;
+  label: string;
+  control: Control<TFieldValues>;
+  type?: InputType;
+  className?: string;
+  defaultValue?: string;
+  placeholder?: string;
 }
 
-export default function FormInput({ form, title, name, placeholder }: Props) {
+export default function FormInput<TFieldValues extends FieldValues>({
+  name,
+  label,
+  control,
+  type = "text",
+  className = "",
+  defaultValue = "",
+  placeholder = "",
+}: FormItemComponentProps<TFieldValues>) {
   return (
     <FormField
-      control={form.control}
+      control={control}
       name={name}
+      defaultValue={defaultValue as any}
       render={({ field }) => (
-        <FormItem>
-          <FormLabel>{title}</FormLabel>
+        <FormItem className={className}>
+          <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input placeholder={placeholder} {...field} />
+            <Input type={type} placeholder={placeholder} {...field} />
           </FormControl>
           <FormMessage />
         </FormItem>

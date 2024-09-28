@@ -27,22 +27,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Alimento, alimentoFormSchema } from "@/lib/zod-schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Alimento } from "@/lib/zod-schemas";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Trash2 } from "lucide-react";
 import { FoodstuffType, foodstuffsTypes, momentos } from "@/lib/constants";
-import {
-  createFoodstuff,
-  deleteFoodstuff,
-  updateFoodstuff,
-} from "@/lib/actions/foodstuffs";
-import { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useFoodstuffsForm } from "@/hooks/form/use-foodstuffs-form";
 import { getFoodstuffType } from "@/lib/utils";
-import { useFoodstuffsForm } from "@/hooks/use-foodstuffs-form";
+import FormInput from "@/components/form/form-input";
 
 interface Props {
   children: React.ReactNode;
@@ -76,18 +67,11 @@ export default function FormDialog({ children, alimento }: Props) {
         </AlertDialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
+            <FormInput
+              label="Nombre"
+              placeholder="Tomate"
               control={form.control}
               name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Tomate" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
             <FormField
               control={form.control}
@@ -141,55 +125,29 @@ export default function FormDialog({ children, alimento }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
+            <FormInput
+              label="Precio"
+              placeholder="50.00"
               control={form.control}
               name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Precio</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input placeholder="50.00" type="number" {...field} />
-                      {field.value && (
-                        <p className="absolute top-1/2 -translate-y-1/2 right-3 text-muted-foreground text-sm">
-                          {new Intl.NumberFormat("es-AR", {
-                            style: "currency",
-                            currency: "ARS",
-                          }).format(field.value)}
-                        </p>
-                      )}
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              type="number"
             />
             <div className="flex gap-4">
-              <FormField
+              <FormInput
+                label="Cantidad actual"
+                placeholder="10"
                 control={form.control}
                 name="current_quantity"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Cantidad actual</FormLabel>
-                    <FormControl>
-                      <Input placeholder="10" type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                type="number"
+                className="w-full"
               />
-              <FormField
+              <FormInput
+                label="Cantidad mínima"
+                placeholder="5"
                 control={form.control}
                 name="minimum_quantity"
-                render={({ field }) => (
-                  <FormItem className="w-full">
-                    <FormLabel>Cantidad mínima</FormLabel>
-                    <FormControl>
-                      <Input placeholder="5" type="number" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                type="number"
+                className="w-full"
               />
             </div>
 

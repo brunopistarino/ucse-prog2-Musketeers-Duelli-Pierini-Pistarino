@@ -1,7 +1,7 @@
 "use client";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useEffect, useState } from "react";
-import { FoodstuffType } from "@/lib/constants";
+import { FoodstuffType, momentos } from "@/lib/constants";
 import { Recipe } from "@/lib/zod-schemas";
 import { getFoodstuffType } from "@/lib/utils";
 
@@ -38,7 +38,9 @@ const RecetaItem = ({ receta }: { receta: Recipe }) => (
   <div className="bg-border p-1 rounded-lg">
     <div className="flex flex-col gap-2 border py-4 px-6 bg-card rounded-md">
       <h2 className="text-lg font-semibold">{receta.name}</h2>
-      <p className="text-sm text-muted-foreground">{receta.meal}</p>
+      <p className="text-sm text-muted-foreground">
+        {momentos[receta.meal]?.label}
+      </p>
       <ul className="list-disc list-inside">
         {receta.ingredients.map((ingredient) => (
           <div key={ingredient.id} className="flex items-center gap-2">
