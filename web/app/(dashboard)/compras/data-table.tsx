@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-
+import { flexRender, Table as ReactTable } from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -15,23 +9,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect } from "react";
+import { columns } from "./columns";
+import { Alimento } from "@/lib/zod-schemas";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  table: ReactTable<Alimento>;
 }
 
 export function DataTable<TData, TValue>({
-  columns,
-  data,
+  table,
 }: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
-
   return (
     <Table>
       <TableHeader>

@@ -1,30 +1,6 @@
-import Link from "next/link";
-import { LogOut, ChefHat, Search, Menu, CircleUser } from "lucide-react";
-
-import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-import { pages } from "@/lib/constants";
-import { Suspense } from "react";
-import ModeToggle from "@/components/mode-toggle";
-import { cn } from "@/lib/utils";
 import Navigation from "./navigation";
 
 export default function RootLayout({
@@ -37,7 +13,7 @@ export default function RootLayout({
       <div className="hidden md:block p-2 lg:p-4">
         <Navigation />
       </div>
-      <div className="flex flex-col md:py-4 md:pr-4 h-[100dvh]">
+      <div className="flex flex-col md:py-2 lg:py-4 md:pr-2 lg:pr-4 h-[100dvh] overflow-x-auto">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6 md:hidden">
           <Sheet>
             <SheetTrigger asChild>

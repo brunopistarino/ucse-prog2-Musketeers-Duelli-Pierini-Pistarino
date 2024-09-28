@@ -41,6 +41,7 @@ import {
 } from "@/lib/actions/foodstuffs";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { getFoodstuffType } from "@/lib/utils";
 
 interface Props {
   children: React.ReactNode;
@@ -160,11 +161,16 @@ export default function FormDialog({ children, alimento }: Props) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {Object.keys(foodstuffsTypes).map((key) => (
-                        <SelectItem key={key} value={key}>
-                          {foodstuffsTypes[key as FoodstuffType]}
-                        </SelectItem>
-                      ))}
+                      {Object.keys(foodstuffsTypes).map((key) => {
+                        const foodstuffType = getFoodstuffType(
+                          key as FoodstuffType
+                        );
+                        return (
+                          <SelectItem key={key} value={key}>
+                            {foodstuffType.emoji} {foodstuffType.name}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                   <FormMessage />

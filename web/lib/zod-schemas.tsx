@@ -26,8 +26,9 @@ export const recipeSchema = z.object({
   meal: z.string().min(1),
   ingredients: z.array(
     z.object({
-      id: z.string(),
-      name: z.string().min(1),
+      id: z.string().min(1),
+      name: z.string().optional(),
+      type: z.string().optional(),
       quantity: z.coerce.number().int(),
     })
   ),

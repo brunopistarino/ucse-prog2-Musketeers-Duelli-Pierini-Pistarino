@@ -29,7 +29,6 @@ export default function Navigation() {
             className={cn(
               buttonVariants({ variant: "ghost" }),
               "gap-2 justify-start",
-              // pathname === page.href && "bg-accent"
               pathname === page.href
                 ? "bg-muted text-primary"
                 : "text-muted-foreground hover:bg-transparent"

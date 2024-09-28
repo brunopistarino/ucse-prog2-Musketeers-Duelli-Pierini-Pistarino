@@ -1,9 +1,9 @@
 "use client";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { useEffect, useState } from "react";
-import { FoodstuffType, foodstuffsTypes } from "@/lib/constants";
+import { FoodstuffType } from "@/lib/constants";
 import { Recipe } from "@/lib/zod-schemas";
-type ProductType = "verdura" | "fruta" | "carne" | "pescado" | "lacteo";
+import { getFoodstuffType } from "@/lib/utils";
 
 const columns = {
   600: 2,
@@ -41,16 +41,9 @@ const RecetaItem = ({ receta }: { receta: Recipe }) => (
       <p className="text-sm text-muted-foreground">{receta.meal}</p>
       <ul className="list-disc list-inside">
         {receta.ingredients.map((ingredient) => (
-          //   <li key={ingrediente.producto.nombre}>
-          //     {productTypes[ingrediente.producto.tipo].slice(0, 2)}{" "}
-          //     {ingrediente.producto.nombre} x {ingrediente.cantidad}
-          //   </li>
           <div key={ingredient.id} className="flex items-center gap-2">
             <p className="shrink-0">
-              {/* {foodstuffsTypes[ingredient.producto.tipo as FoodstuffType].slice(
-                0,
-                2
-              )}{" "} */}
+              {getFoodstuffType(ingredient.type as FoodstuffType).emoji}{" "}
               {ingredient.name}
             </p>
             <div className="border-b w-full border-dashed border-gray-300" />
