@@ -10,8 +10,10 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 type AuthClientInterface interface {
@@ -30,7 +32,10 @@ func NewAuthClient() *AuthClient {
 func (auth *AuthClient) PostLoginUser(user *dto.UserLogin) (*responses.UserLoginInfo, error) {
 	apiUrl := "http://w230847.ferozo.com/tp_prog2/api/account/login"
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: auth.SetTransport(),
+		Timeout:   20 * time.Second,
+	}
 
 	form := url.Values{}
 	form.Add("grant_type", "password")
@@ -79,31 +84,13 @@ func (auth *AuthClient) PostLoginUser(user *dto.UserLogin) (*responses.UserLogin
 	return &login, nil
 }
 
-func loginError(response *http.Response) (*responses.UserLoginInfo, error) {
-
-	switch response.StatusCode {
-	case 400:
-		var loginError responses.LoginError
-		responseBody, err := io.ReadAll(response.Body)
-		if err != nil {
-			log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", err.Error())
-			return nil, err
-		}
-		bodyString := string(responseBody)
-		if err := json.Unmarshal([]byte(bodyString), &loginError); err != nil {
-			log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", err.Error())
-			return nil, err
-		}
-		return nil, errors.New(loginError.Error)
-	default:
-		return nil, errors.New("500")
-	}
-}
-
 func (auth *AuthClient) PostRegisterUser(user *dto.UserRegister) error {
 	apiUrl := "http://w230847.ferozo.com/tp_prog2/api/account/register"
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: auth.SetTransport(),
+		Timeout:   20 * time.Second,
+	}
 
 	form := url.Values{}
 	form.Add("email", user.Email)
@@ -141,44 +128,13 @@ func (auth *AuthClient) PostRegisterUser(user *dto.UserRegister) error {
 
 }
 
-// Custom error handler
-func registerError(resp *http.Response) error {
-	var apiResponse responses.RegisterError
-
-	err := json.NewDecoder(resp.Body).Decode(&apiResponse)
-	if err != nil {
-		return errors.New("500")
-	}
-
-	// Check if the status code is 400
-	if resp.StatusCode == http.StatusBadRequest {
-		result := ""
-		// Loop through the ModelState and concatenate the messages
-		for key, messages := range apiResponse.ModelState {
-			if (utils.ContainsSubstring(messages, "Name ")) && (utils.ContainsSubstring(messages, "Email ")) {
-				result += utils.EmailString(messages)
-				continue
-			}
-			for _, message := range messages {
-
-				if key != "" {
-					result += fmt.Sprintf("%s: %s. ", key, message)
-				} else {
-					result += fmt.Sprintf("%s. ", message)
-				}
-			}
-		}
-		log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", result)
-		return errors.New(result)
-	}
-
-	return errors.New("500")
-}
-
 func (auth *AuthClient) GetUserInfo(token string) (*responses.UserInfo, error) {
 	apiUrl := "http://w230847.ferozo.com/tp_prog2/api/Account/UserInfo"
 
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: auth.SetTransport(),
+		Timeout:   20 * time.Second,
+	}
 
 	req, err := http.NewRequest("GET", apiUrl, nil)
 	if err != nil {
@@ -219,4 +175,72 @@ func (auth *AuthClient) GetUserInfo(token string) (*responses.UserInfo, error) {
 	log.Printf("[client:AuthClient][method:GetUserInfo][reason:SUCCESS_GET][status:%d]", response.StatusCode)
 
 	return &userInfo, nil
+}
+
+func (auth *AuthClient) SetTransport() *http.Transport {
+	// Set up custom transport with timeouts
+	return &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout: 5 * time.Second,
+		}).DialContext,
+		TLSHandshakeTimeout:   5 * time.Second,
+		ResponseHeaderTimeout: 20 * time.Second,
+		IdleConnTimeout:       50 * time.Second,
+	}
+}
+
+// Custom error handlers
+
+func registerError(resp *http.Response) error {
+	var apiResponse responses.RegisterError
+
+	err := json.NewDecoder(resp.Body).Decode(&apiResponse)
+	if err != nil {
+		return errors.New("500")
+	}
+
+	// Check if the status code is 400
+	if resp.StatusCode == http.StatusBadRequest {
+		result := ""
+		// Loop through the ModelState and concatenate the messages
+		for key, messages := range apiResponse.ModelState {
+			if (utils.ContainsSubstring(messages, "Name ")) && (utils.ContainsSubstring(messages, "Email ")) {
+				result += utils.EmailString(messages)
+				continue
+			}
+			for _, message := range messages {
+
+				if key != "" {
+					result += fmt.Sprintf("%s: %s. ", key, message)
+				} else {
+					result += fmt.Sprintf("%s. ", message)
+				}
+			}
+		}
+		log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", result)
+		return errors.New(result)
+	}
+
+	return errors.New("500")
+}
+
+func loginError(response *http.Response) (*responses.UserLoginInfo, error) {
+
+	switch response.StatusCode {
+	case 400:
+		var loginError responses.LoginError
+		responseBody, err := io.ReadAll(response.Body)
+		if err != nil {
+			log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", err.Error())
+			return nil, err
+		}
+		bodyString := string(responseBody)
+		if err := json.Unmarshal([]byte(bodyString), &loginError); err != nil {
+			log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", err.Error())
+			return nil, err
+		}
+		return nil, errors.New(loginError.Error)
+	default:
+		return nil, errors.New("500")
+	}
 }
