@@ -65,6 +65,11 @@ func mappingRoutes() {
 	purchases.GET("/", purchaseHandler.GetPurchases)
 	purchases.POST("/", purchaseHandler.PostPurchase)
 
+	reports := router.Group("/reports")
+	reports.Use(authMiddleware.ValidateToken)
+	reports.GET("/foodstuffs", reportHandler.GetReportsByTypeOfUse)
+	reports.GET("/recipes", reportHandler.GetReportsByTypeOfFoodstuff)
+	reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
 }
 
 func dependencies() {
