@@ -2,8 +2,7 @@ package services
 
 import (
 	"api/dto"
-
-	"honnef.co/go/tools/analysis/report"
+	"api/repositories"
 )
 
 // reports := router.Group("/reports")
@@ -13,23 +12,24 @@ import (
 // reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
 
 type ReportInterface interface {
-	GetReportsByTypeOfUse() ([]ReportRecipeUse, RequestError)
-	GetReportsByTypeOfFoodstuff() ([]ReportRecipeFoodstuff, RequestError)
-	GetMonthlyCosts() ([]ReportAverageMonth, RequestError)
+	GetReportsByTypeOfUse() ([]dto.ReportRecipeUse, dto.RequestError)
+	GetReportsByTypeOfFoodstuff() ([]dto.ReportRecipeFoodstuff, dto.RequestError)
+	GetMonthlyCosts() ([]dto.ReportAverageMonth, dto.RequestError)
 }
 
 type ReportService struct {
-	recipeRepository    repositories.RecipeRepositoryInterface
-	purchaseRepository  repositories.PurchaseRepositoryInterface
+	recipeRepository   repositories.RecipeRepositoryInterface
+	purchaseRepository repositories.PurchaseRepositoryInterface
 }
 
 func NewReportService(recipeRepository repositories.RecipeRepositoryInterface, purchaseRepository repositories.PurchaseRepositoryInterface) *ReportService {
 	return &ReportService{
-		recipeRepository: recipeRepository,
+		recipeRepository:   recipeRepository,
 		purchaseRepository: purchaseRepository,
 	}
 }
 
+/*
 func (service *ReportService) GetReportsByTypeOfUse(user string) ([]ReportRecipeUse, RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user)
 
@@ -183,3 +183,4 @@ func isTypeOfFoodstuffNotInReport(typeOfFoodstuff string, reportRecipeFoodstuffs
 	return true
 }
 
+*/

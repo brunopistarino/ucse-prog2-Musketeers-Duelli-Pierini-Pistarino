@@ -1,8 +1,6 @@
 package dto
 
-import ()
-
-type ReportRecipeUse struct {
-	Month string
-	AverageCost     int
+type ReportAverageMonth struct {
+	Month       string
+	AverageCost int
 }
