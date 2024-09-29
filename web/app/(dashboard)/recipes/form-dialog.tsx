@@ -28,19 +28,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { createRecipe } from "@/lib/actions/recipes";
 import { Meal, momentos } from "@/lib/constants";
 import { Alimento, Recipe, recipeSchema } from "@/lib/zod-schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleMinus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface Props {
   children: React.ReactNode;
-  recipe?: Recipe;
   foodstuffs: Alimento[];
 }
 
-export default function FormDialog({ children, recipe, foodstuffs }: Props) {
+export default function FormDialog({ children, foodstuffs }: Props) {
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
@@ -48,9 +49,9 @@ export default function FormDialog({ children, recipe, foodstuffs }: Props) {
   const form = useForm<Recipe>({
     resolver: zodResolver(recipeSchema),
     defaultValues: {
-      name: recipe?.name || "",
-      meal: recipe?.meal || "",
-      ingredients: recipe?.ingredients || [{ id: "", quantity: 1 }], // Start with quantity 1
+      name: "",
+      meal: "",
+      ingredients: [{ id: "", quantity: 1 }],
     },
   });
 
@@ -64,12 +65,28 @@ export default function FormDialog({ children, recipe, foodstuffs }: Props) {
   };
 
   const onSubmit = async (data: Recipe) => {
+    setIsPending(true);
     // Filter out ingredients with quantity 0
     const filteredIngredients = data.ingredients.filter(
       (ingredient) => ingredient.quantity > 0
     );
     const updatedData = { ...data, ingredients: filteredIngredients };
-    console.log(updatedData);
+    const response = await createRecipe(updatedData);
+    if (response?.error) {
+      console.error(response.error);
+      toast({
+        title: "Error",
+        description: response.error,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Receta agregada",
+      });
+      form.reset();
+      setIsOpen(false);
+    }
+    setIsPending(false);
   };
 
   const allFormValues = form.watch(); // Watch all form values
@@ -86,9 +103,7 @@ export default function FormDialog({ children, recipe, foodstuffs }: Props) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            {recipe ? "Modificar" : "Agregar"} receta
-          </AlertDialogTitle>
+          <AlertDialogTitle>Agregar receta</AlertDialogTitle>
           <AlertDialogDescription>...</AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
@@ -146,76 +161,92 @@ export default function FormDialog({ children, recipe, foodstuffs }: Props) {
             {/* render one select for each ingredient with a numeric input for the quantity */}
             <div className="space-y-2">
               <FormLabel>Ingredientes</FormLabel>
-              {form.watch("ingredients").map((ingredient, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <FormField
-                    control={form.control}
-                    name={`ingredients.${index}.id`}
-                    render={({ field }) => (
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger
-                            className={
-                              field.value ? "" : "text-muted-foreground"
-                            }
-                          >
-                            <SelectValue placeholder="Elija un alimento" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {foodstuffs.map((foodstuff) => (
-                            <SelectItem
-                              key={foodstuff.id}
-                              value={foodstuff.id!}
+              {form.watch("ingredients").map((ingredient, index) => {
+                const selectedIngredients = form
+                  .watch("ingredients")
+                  .map((ing) => ing.id);
+
+                return (
+                  <div key={index} className="flex items-center gap-2">
+                    <FormField
+                      control={form.control}
+                      name={`ingredients.${index}.id`}
+                      render={({ field }) => (
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              className={
+                                field.value ? "" : "text-muted-foreground"
+                              }
                             >
-                              {foodstuff.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name={`ingredients.${index}.quantity`}
-                    render={({ field }) => (
-                      <FormItem>
-                        {/* <FormLabel>Cantidad</FormLabel> */}
-                        <FormControl>
-                          <Input
-                            type="number"
-                            min={0}
-                            {...field}
-                            value={field.value || 1} // Ensure initial value is 1
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => {
-                      form.setValue(
-                        "ingredients",
-                        form
-                          .getValues("ingredients")
-                          .filter((_, i) => i !== index)
-                      );
-                    }}
-                  >
-                    Eliminar
-                  </Button>
-                </div>
-              ))}
+                              <SelectValue placeholder="Elija un alimento" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {foodstuffs
+                              .filter(
+                                (foodstuff) =>
+                                  !selectedIngredients.includes(foodstuff.id) ||
+                                  foodstuff.id === ingredient.id
+                              ) // Filter out selected items, but allow the current one
+                              .map((foodstuff) => (
+                                <SelectItem
+                                  key={foodstuff.id}
+                                  value={foodstuff.id!}
+                                >
+                                  {foodstuff.name}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`ingredients.${index}.quantity`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min={0}
+                              {...field}
+                              value={field.value || 1} // Ensure initial value is 1
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="shrink-0 text-muted-foreground hover:text-red-500"
+                      onClick={() => {
+                        form.setValue(
+                          "ingredients",
+                          form
+                            .getValues("ingredients")
+                            .filter((_, i) => i !== index)
+                        );
+                      }}
+                    >
+                      <CircleMinus />
+                    </Button>
+                  </div>
+                );
+              })}
               <Button
                 type="button"
                 className="w-full"
                 variant="outline"
+                disabled={
+                  form.watch("ingredients").length === foodstuffs.length
+                }
                 onClick={() =>
                   form.setValue("ingredients", [
                     ...form.getValues("ingredients"),
@@ -226,6 +257,7 @@ export default function FormDialog({ children, recipe, foodstuffs }: Props) {
                   ])
                 }
               >
+                <Plus className="text-muted-foreground mr-1" size={16} />
                 Añadir ingrediente
               </Button>
             </div>

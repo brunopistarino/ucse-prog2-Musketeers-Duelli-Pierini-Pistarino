@@ -3,7 +3,8 @@
 import { cookies } from "next/headers";
 import { formatError } from "../utils";
 import axios from "axios";
-import { Recipe } from "../zod-schemas";
+import { Recipe, recipeSchema } from "../zod-schemas";
+import { revalidatePath } from "next/cache";
 
 export async function getRecipes() {
   const cookieStore = cookies();
@@ -12,6 +13,26 @@ export async function getRecipes() {
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
     return { data: response.data as Recipe[], error: null };
+  } catch (error) {
+    return formatError(error);
+  }
+}
+
+export async function createRecipe(values: unknown) {
+  const result = recipeSchema.safeParse(values);
+  if (!result.success) return formatError(result.error);
+  const cookieStore = cookies();
+
+  try {
+    const response = await axios.post(
+      `${process.env.API_URL}recipes`,
+      result.data,
+      {
+        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+      }
+    );
+    revalidatePath("/recipes");
+    return { data: response.data, error: null };
   } catch (error) {
     return formatError(error);
   }

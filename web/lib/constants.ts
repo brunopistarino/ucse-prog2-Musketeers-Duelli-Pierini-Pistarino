@@ -22,12 +22,12 @@ export const pages = [
   },
   {
     name: "Recetas",
-    href: "/recetas",
+    href: "/recipes",
     icon: NotepadText,
   },
   {
     name: "Compras",
-    href: "/compras",
+    href: "/purchases",
     icon: ShoppingCart,
   },
 ];
