@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { register } from "@/lib/actions/user";
+import { pages } from "@/lib/constants";
 
 export default function ModeToggle() {
   const [isPending, setIsPending] = useState(false);
@@ -45,7 +46,7 @@ export default function ModeToggle() {
       });
       setIsPending(false);
     } else {
-      router.push("/estadisticas");
+      router.push(pages[0].href);
     }
   }
 

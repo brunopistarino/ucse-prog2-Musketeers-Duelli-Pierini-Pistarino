@@ -21,12 +21,13 @@ export function useFoodstuffsForm(foodstuff?: Alimento) {
       type: foodstuff?.type || "",
       meals: foodstuff?.meals || [],
       price: foodstuff?.price,
-      current_quantity: Number(foodstuff?.current_quantity) || undefined,
-      minimum_quantity: Number(foodstuff?.minimum_quantity) || undefined,
+      current_quantity: foodstuff?.current_quantity,
+      minimum_quantity: foodstuff?.minimum_quantity,
     },
   });
 
   async function onSubmit(values: Alimento) {
+    console.log(values);
     setIsPending(true);
     const response = foodstuff
       ? await updateFoodstuff(values, foodstuff.id!)

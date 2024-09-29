@@ -196,6 +196,11 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                                 <SelectItem
                                   key={foodstuff.id}
                                   value={foodstuff.id!}
+                                  disabled={
+                                    !foodstuff.meals.includes(
+                                      form.getValues("meal")
+                                    )
+                                  }
                                 >
                                   {foodstuff.name}
                                 </SelectItem>

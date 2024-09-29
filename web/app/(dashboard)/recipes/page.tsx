@@ -1,12 +1,13 @@
 import MasonryRecipes from "./masonry-recipes";
-import ModeToggle from "@/components/mode-toggle";
-import Filters from "./filters";
 import { getRecipes } from "@/lib/actions/recipes";
 import ErrorPage from "@/components/error-page";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import FormDialog from "./form-dialog";
 import { getFoodstuffs } from "@/lib/actions/foodstuffs";
+import NameFilter from "@/components/filters/name-filter";
+import FoodstuffTypeFilter from "@/components/filters/foodstuff-type-filter";
+import MealFilter from "@/components/filters/meal-filter";
 
 export default async function Page() {
   const [
@@ -24,7 +25,11 @@ export default async function Page() {
       <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50">
         <h1 className="text-lg font-semibold md:text-2xl">Recetas</h1>
         <div className="flex gap-2">
-          <Filters />
+          {/* <div> */}
+          <NameFilter />
+          <FoodstuffTypeFilter />
+          <MealFilter />
+          {/* </div> */}
           {/* <Button className="gap-2">
             <DollarSign size={16} />
             Hacer compra

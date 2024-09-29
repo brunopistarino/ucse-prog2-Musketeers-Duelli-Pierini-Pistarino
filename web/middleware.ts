@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { pages } from "./lib/constants";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("token");
@@ -17,7 +18,7 @@ export function middleware(request: NextRequest) {
     authenticated &&
     (pathname === "/login" || pathname === "/register" || pathname === "/")
   ) {
-    return NextResponse.redirect(new URL("/estadisticas", request.url));
+    return NextResponse.redirect(new URL(pages[0].href, request.url));
   }
 
   return NextResponse.next();

@@ -1,6 +1,5 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import Filters from "./filters";
 import { DollarSign } from "lucide-react";
 import { columns } from "./columns";
 import { Alimento } from "@/lib/zod-schemas";
@@ -8,6 +7,8 @@ import { DataTable } from "./data-table";
 import { useState } from "react";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import FormDialog from "./form-dialog";
+import NameFilter from "@/components/filters/name-filter";
+import FoodstuffTypeFilter from "@/components/filters/foodstuff-type-filter";
 
 interface Props {
   data: Alimento[];
@@ -26,8 +27,9 @@ export default function ClientPage({ data }: Props) {
     <div className="flex flex-col flex-1">
       <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50">
         <h1 className="text-lg font-semibold md:text-2xl">Compras</h1>
-        <div className="flex gap-2">
-          <Filters />
+        <div className="flex gap-2 flex-col md:flex-row">
+          <NameFilter />
+          <FoodstuffTypeFilter />
           <FormDialog
             foodstuffs={
               table

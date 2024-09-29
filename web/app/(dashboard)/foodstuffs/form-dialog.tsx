@@ -20,20 +20,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Alimento } from "@/lib/zod-schemas";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Trash2 } from "lucide-react";
-import { FoodstuffType, foodstuffsTypes, momentos } from "@/lib/constants";
+import { momentos } from "@/lib/constants";
 import { useFoodstuffsForm } from "@/hooks/form/use-foodstuffs-form";
-import { getFoodstuffType } from "@/lib/utils";
+import { getFoodstuffTypes } from "@/lib/utils";
 import FormInput from "@/components/form/form-input";
+import FormSelect from "@/components/form/form-select";
 
 interface Props {
   children: React.ReactNode;
@@ -73,39 +67,12 @@ export default function FormDialog({ children, alimento }: Props) {
               control={form.control}
               name="name"
             />
-            <FormField
+            <FormSelect
+              label="Tipo de alimento"
+              placeholder="Elija un tipo de alimento"
+              options={getFoodstuffTypes()}
               control={form.control}
               name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tipo de alimento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger
-                        className={field.value ? "" : "text-muted-foreground"}
-                      >
-                        <SelectValue placeholder="Elija un tipo de alimento" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.keys(foodstuffsTypes).map((key) => {
-                        const foodstuffType = getFoodstuffType(
-                          key as FoodstuffType
-                        );
-                        return (
-                          <SelectItem key={key} value={key}>
-                            {foodstuffType.emoji} {foodstuffType.name}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
             <FormField
               control={form.control}
