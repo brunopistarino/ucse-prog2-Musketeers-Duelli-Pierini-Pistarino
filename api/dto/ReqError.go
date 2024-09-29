@@ -81,3 +81,7 @@ func LoginError(err error) *RequestError {
 func RegisterError(err error) *RequestError {
 	return NewGenericRequestError(http.StatusBadRequest, RegisterAPIError, err.Error())
 }
+
+func TimeoutError(err error) *RequestError {
+	return NewGenericRequestError(http.StatusGatewayTimeout, http.StatusGatewayTimeout, err.Error())
+}

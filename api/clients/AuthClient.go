@@ -13,6 +13,7 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -54,6 +55,10 @@ func (auth *AuthClient) PostLoginUser(user *dto.UserLogin) (*responses.UserLogin
 
 	response, err := client.Do(req)
 	if err != nil {
+		if os.IsTimeout(err) {
+			log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", err.Error())
+			return nil, err
+		}
 		log.Printf("[client:AuthClient][method:PostLoginUser][reason:ERROR_POST][error:%s]", err.Error())
 		return nil, err
 	}
@@ -110,6 +115,10 @@ func (auth *AuthClient) PostRegisterUser(user *dto.UserRegister) error {
 
 	response, err := client.Do(req)
 	if err != nil {
+		if os.IsTimeout(err) {
+			log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", err.Error())
+			return err
+		}
 		log.Printf("[client:AuthClient][method:PostRegisterUser][reason:ERROR_POST][error:%s]", err.Error())
 		return err
 	}
@@ -146,6 +155,10 @@ func (auth *AuthClient) GetUserInfo(token string) (*responses.UserInfo, error) {
 
 	response, err := client.Do(req)
 	if err != nil {
+		if os.IsTimeout(err) {
+			log.Printf("[client:AuthClient][method:GetUserInfo][reason:ERROR_GET][error:%s]", err.Error())
+			return nil, err
+		}
 		log.Printf("[client:AuthClient][method:GetUserInfo][reason:ERROR_GET][error:%s]", err.Error())
 		return nil, err
 	}
@@ -181,9 +194,9 @@ func (auth *AuthClient) SetTransport() *http.Transport {
 	// Set up custom transport with timeouts
 	return &http.Transport{
 		DialContext: (&net.Dialer{
-			Timeout: 5 * time.Second,
+			Timeout: 15 * time.Second,
 		}).DialContext,
-		TLSHandshakeTimeout:   5 * time.Second,
+		TLSHandshakeTimeout:   15 * time.Second,
 		ResponseHeaderTimeout: 20 * time.Second,
 		IdleConnTimeout:       50 * time.Second,
 	}

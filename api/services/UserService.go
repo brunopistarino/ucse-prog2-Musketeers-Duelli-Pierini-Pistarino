@@ -5,6 +5,7 @@ import (
 	"api/clients/responses"
 	"api/dto"
 	"net/http"
+	"os"
 )
 
 type UserInterface interface {
@@ -34,6 +35,9 @@ func (service UserService) LoginUser(user *dto.UserLogin) (*responses.UserLoginI
 	if err != nil && err.Error() == "500" {
 		return nil, *dto.InternalServerError()
 	}
+	if err != nil && os.IsTimeout(err) {
+		return nil, *dto.TimeoutError(err)
+	}
 	if err != nil {
 		return nil, *dto.LoginError(err)
 	}
@@ -52,6 +56,9 @@ func (service UserService) RegisterUser(user *dto.UserRegister) dto.RequestError
 
 	if err != nil && err.Error() == "500" {
 		return *dto.InternalServerError()
+	}
+	if err != nil && os.IsTimeout(err) {
+		return *dto.TimeoutError(err)
 	}
 	if err != nil {
 		return *dto.RegisterError(err)
