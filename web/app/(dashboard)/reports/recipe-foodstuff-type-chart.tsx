@@ -49,7 +49,7 @@ export default function RecipeFoodstuffTypeChart({ data }: Porps) {
             <ChartTooltip
               content={<ChartTooltipContent nameKey="count" hideLabel />}
             />
-            <Pie data={data} dataKey="count">
+            <Pie data={data} dataKey="count" nameKey="type_of_foodstuff">
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}

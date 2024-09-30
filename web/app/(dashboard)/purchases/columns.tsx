@@ -5,10 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { foodstuffsTypes, FoodstuffType } from "@/lib/constants";
 import { cn, formatCurrency, getFoodstuffType } from "@/lib/utils";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Alimento>[] = [
+export const columns: ColumnDef<Foodstuff>[] = [
   {
     id: "select",
     header: ({ table }) => (

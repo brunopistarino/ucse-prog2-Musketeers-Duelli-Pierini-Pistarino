@@ -10,10 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { columns } from "./columns";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 
 interface DataTableProps<TData, TValue> {
-  table: ReactTable<Alimento>;
+  table: ReactTable<Foodstuff>;
 }
 
 export function DataTable<TData, TValue>({

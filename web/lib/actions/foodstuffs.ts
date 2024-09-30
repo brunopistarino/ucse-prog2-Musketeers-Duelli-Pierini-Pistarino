@@ -2,7 +2,7 @@
 import { cookies } from "next/headers";
 import { formatError, formatZodError } from "../utils";
 import axios from "axios";
-import { Alimento, alimentoFormSchema } from "../zod-schemas";
+import { Foodstuff, foodstuffSchema } from "../zod-schemas";
 import { revalidatePath } from "next/cache";
 
 export async function getFoodstuffs() {
@@ -11,7 +11,7 @@ export async function getFoodstuffs() {
     const response = await axios.get(`${process.env.API_URL}foodstuffs`, {
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
-    return { data: response.data as Alimento[], error: null };
+    return { data: response.data as Foodstuff[], error: null };
   } catch (error) {
     return formatError(error);
   }
@@ -34,7 +34,7 @@ export async function getFoodstuffsBelowMinimum(name?: string, type?: string) {
 }
 
 export async function createFoodstuff(values: unknown) {
-  const result = alimentoFormSchema.safeParse(values);
+  const result = foodstuffSchema.safeParse(values);
   if (!result.success) return formatZodError(result.error);
   const cookieStore = cookies();
 
@@ -54,7 +54,7 @@ export async function createFoodstuff(values: unknown) {
 }
 
 export async function updateFoodstuff(values: unknown, id: string) {
-  const result = alimentoFormSchema.safeParse(values);
+  const result = foodstuffSchema.safeParse(values);
   if (!result.success) return formatZodError(result.error);
   const cookieStore = cookies();
 

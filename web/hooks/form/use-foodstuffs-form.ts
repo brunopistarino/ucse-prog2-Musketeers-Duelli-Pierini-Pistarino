@@ -1,4 +1,4 @@
-import { Alimento, alimentoFormSchema } from "@/lib/zod-schemas";
+import { Foodstuff, foodstuffSchema } from "@/lib/zod-schemas";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
@@ -9,13 +9,13 @@ import {
   updateFoodstuff,
 } from "@/lib/actions/foodstuffs";
 
-export default function useFoodstuffsForm(foodstuff?: Alimento) {
+export default function useFoodstuffsForm(foodstuff?: Foodstuff) {
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
 
-  const form = useForm<Alimento>({
-    resolver: zodResolver(alimentoFormSchema),
+  const form = useForm<Foodstuff>({
+    resolver: zodResolver(foodstuffSchema),
     defaultValues: {
       name: foodstuff?.name,
       type: foodstuff?.type,
@@ -26,7 +26,7 @@ export default function useFoodstuffsForm(foodstuff?: Alimento) {
     },
   });
 
-  async function onSubmit(values: Alimento) {
+  async function onSubmit(values: Foodstuff) {
     console.log(values);
     setIsPending(true);
     const response = foodstuff

@@ -31,12 +31,12 @@ import {
 } from "@/components/ui/select";
 import useRecipesForm from "@/hooks/form/use-recipes-form";
 import { getMeals } from "@/lib/utils";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 import { CircleMinus, Plus } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;
-  foodstuffs: Alimento[];
+  foodstuffs: Foodstuff[];
 }
 
 export default function FormDialog({ children, foodstuffs }: Props) {

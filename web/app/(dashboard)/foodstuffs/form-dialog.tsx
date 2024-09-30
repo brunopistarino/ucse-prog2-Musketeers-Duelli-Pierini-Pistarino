@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 import { Trash2 } from "lucide-react";
 import useFoodstuffsForm from "@/hooks/form/use-foodstuffs-form";
 import { getFoodstuffTypes, getMeals } from "@/lib/utils";
@@ -23,7 +23,7 @@ import FormMultiSelect from "@/components/form/form-multi-select";
 
 interface Props {
   children: React.ReactNode;
-  alimento?: Alimento;
+  alimento?: Foodstuff;
 }
 
 export default function FormDialog({ children, alimento }: Props) {

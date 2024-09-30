@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import FormDialog from "./form-dialog";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => {
-            const alimento = row.original as Alimento;
+            const alimento = row.original as Foodstuff;
             return (
               <FormDialog key={alimento.id} alimento={alimento}>
                 <TableRow
