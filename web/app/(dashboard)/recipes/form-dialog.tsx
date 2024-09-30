@@ -109,7 +109,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                                   value={foodstuff.id!}
                                   disabled={
                                     !foodstuff.meals.includes(
-                                      form.getValues("meal")
+                                      form.watch("meal")
                                     )
                                   }
                                 >
@@ -177,7 +177,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                 Añadir ingrediente
               </Button>
             </div>
-            <AlertDialogFooter>
+            <AlertDialogFooter className="pt-4">
               <AlertDialogCancel
                 disabled={isPending}
                 onClick={() => setIsOpen(false)}

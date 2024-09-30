@@ -18,8 +18,6 @@ import { getMeal, getMeals } from "@/lib/utils";
 import { Meal } from "@/lib/constants";
 import { RecipeMealReport } from "@/lib/types";
 
-export const description = "A pie chart with a label list";
-
 const chartConfig: ChartConfig = Object.fromEntries(
   getMeals().map((meal) => [
     meal.value,
