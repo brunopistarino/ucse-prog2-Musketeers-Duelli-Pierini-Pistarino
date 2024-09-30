@@ -15,6 +15,7 @@ var (
 	recipeHandler    *handlers.RecipeHandler
 	purchaseHandler  *handlers.PurchaseHandler
 	userHandler      *handlers.UserHandler
+	reportHandler    *handlers.ReportHandler
 	router           *gin.Engine
 )
 
@@ -67,11 +68,9 @@ func mappingRoutes() {
 
 	reports := router.Group("/reports")
 	reports.Use(authMiddleware.ValidateToken)
-	/*
-		reports.GET("/foodstuffs", reportHandler.GetReportsByTypeOfUse)
-		reports.GET("/recipes", reportHandler.GetReportsByTypeOfFoodstuff)
-		reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
-	*/
+	reports.GET("/foodstuffs", reportHandler.GetReportsByTypeOfUse)
+	reports.GET("/recipes", reportHandler.GetReportsByTypeOfFoodstuff)
+	reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
 }
 
 func dependencies() {
@@ -84,12 +83,12 @@ func dependencies() {
 	foodstuffService := services.NewFoodstuffService(foodstuffRepository)
 	purchaseService := services.NewPurchaseService(foodstuffRepository, purchaseRepository)
 	recipeService := services.NewRecipeService(recipeRepository, foodstuffRepository)
-	//reportService := services.NewReportService(recipeRepository, purchaseRepository)
-
+	reportService := services.NewReportService( recipeRepository, purchaseRepository, foodstuffRepository)
+	reportHandler = handlers.NewReportHandler(reportService)
+	foodstuffHandler = handlers.NewFoodstuffHandler(foodstuffService)
 	foodstuffHandler = handlers.NewFoodstuffHandler(foodstuffService)
 	purchaseHandler = handlers.NewPurchaseHandler(purchaseService)
 	recipeHandler = handlers.NewRecipeHandler(recipeService)
-	//reportHandler = handlers.NewReportHandler(reportService)
 
 	var userClient = clients.NewAuthClient()
 	userService := services.NewUserService(userClient)
