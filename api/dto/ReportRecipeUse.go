@@ -3,6 +3,6 @@ package dto
 import ()
 
 type ReportRecipeUse struct {
-	TypeOfUse string
-	Count     int
+	TypeOfUse string `json:"type_of_use"`
+	Count     int `json:"count"`
 }

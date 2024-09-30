@@ -1,6 +1,6 @@
 package dto
 
 type ReportRecipeFoodstuff struct {
-	TypeOfFoodstuff string
-	Count           int
+	TypeOfFoodstuff string `json:"type_of_foodstuff"`
+	Count           int `json:"count"`
 }
