@@ -68,8 +68,8 @@ func mappingRoutes() {
 
 	reports := router.Group("/reports")
 	reports.Use(authMiddleware.ValidateToken)
-	reports.GET("/foodstuffs", reportHandler.GetReportsByTypeOfUse)
-	reports.GET("/recipes", reportHandler.GetReportsByTypeOfFoodstuff)
+	reports.GET("/recipe_meal", reportHandler.GetReportsByTypeOfUse)
+	reports.GET("/recipe_foodstuff_type", reportHandler.GetReportsByTypeOfFoodstuff)
 	reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
 }
 
@@ -83,7 +83,7 @@ func dependencies() {
 	foodstuffService := services.NewFoodstuffService(foodstuffRepository)
 	purchaseService := services.NewPurchaseService(foodstuffRepository, purchaseRepository)
 	recipeService := services.NewRecipeService(recipeRepository, foodstuffRepository)
-	reportService := services.NewReportService( recipeRepository, purchaseRepository, foodstuffRepository)
+	reportService := services.NewReportService(recipeRepository, purchaseRepository, foodstuffRepository)
 	reportHandler = handlers.NewReportHandler(reportService)
 	foodstuffHandler = handlers.NewFoodstuffHandler(foodstuffService)
 	foodstuffHandler = handlers.NewFoodstuffHandler(foodstuffService)
