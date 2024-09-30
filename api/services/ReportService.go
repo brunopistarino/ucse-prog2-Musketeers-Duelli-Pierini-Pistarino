@@ -8,11 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
 type ReportInterface interface {
-	GetReportsByTypeOfUse(user string) ([]dto.ReportRecipeUse, dto.RequestError)
-	GetReportsByTypeOfFoodstuff(user string) ([]dto.ReportRecipeFoodstuff, dto.RequestError)
-	GetMonthlyCosts(user string) ([]dto.ReportAverageMonth, dto.RequestError)
+	GetReportsByTypeOfUse(user string) ([]*dto.ReportRecipeUse, dto.RequestError)
+	GetReportsByTypeOfFoodstuff(user string) ([]*dto.ReportRecipeFoodstuff, dto.RequestError)
+	GetMonthlyCosts(user string) ([]*dto.ReportAverageMonth, dto.RequestError)
 }
 
 type ReportService struct {
@@ -29,19 +28,19 @@ func NewReportService(recipeRepository repositories.RecipeRepositoryInterface, p
 	}
 }
 
-func (service *ReportService) GetReportsByTypeOfUse(user string) ([]dto.ReportRecipeUse, dto.RequestError) {
+func (service *ReportService) GetReportsByTypeOfUse(user string) ([]*dto.ReportRecipeUse, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
 	}
 
-	var reportRecipeUses []dto.ReportRecipeUse
+	var reportRecipeUses []*dto.ReportRecipeUse
 	for _, recipe := range recipesDB {
 		switch recipe.Meal {
 		case dto.Breakfast:
 			if isTypeOfUseNotInReport(dto.Breakfast, reportRecipeUses) {
-				reportRecipeUses = append(reportRecipeUses, dto.ReportRecipeUse{
+				reportRecipeUses = append(reportRecipeUses, &dto.ReportRecipeUse{
 					TypeOfUse: dto.Breakfast,
 					Count:     1,
 				})
@@ -55,7 +54,7 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]dto.ReportRe
 			}
 		case dto.Lunch:
 			if isTypeOfUseNotInReport(dto.Lunch, reportRecipeUses) {
-				reportRecipeUses = append(reportRecipeUses, dto.ReportRecipeUse{
+				reportRecipeUses = append(reportRecipeUses, &dto.ReportRecipeUse{
 					TypeOfUse: dto.Lunch,
 					Count:     1,
 				})
@@ -69,7 +68,7 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]dto.ReportRe
 			}
 		case dto.Supper:
 			if isTypeOfUseNotInReport(dto.Supper, reportRecipeUses) {
-				reportRecipeUses = append(reportRecipeUses, dto.ReportRecipeUse{
+				reportRecipeUses = append(reportRecipeUses, &dto.ReportRecipeUse{
 					TypeOfUse: dto.Supper,
 					Count:     1,
 				})
@@ -83,7 +82,7 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]dto.ReportRe
 			}
 		case dto.Dinner:
 			if isTypeOfUseNotInReport(dto.Dinner, reportRecipeUses) {
-				reportRecipeUses = append(reportRecipeUses, dto.ReportRecipeUse{
+				reportRecipeUses = append(reportRecipeUses, &dto.ReportRecipeUse{
 					TypeOfUse: dto.Dinner,
 					Count:     1,
 				})
@@ -100,7 +99,7 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]dto.ReportRe
 	return reportRecipeUses, dto.RequestError{}
 }
 
-func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]dto.ReportRecipeFoodstuff, dto.RequestError) {
+func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]*dto.ReportRecipeFoodstuff, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user)
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -129,9 +128,9 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]dto.Re
 		}
 	}
 
-	var reportRecipeFoodstuffList []dto.ReportRecipeFoodstuff
+	var reportRecipeFoodstuffList []*dto.ReportRecipeFoodstuff
 	for foodstuffType, count := range reportRecipeFoodstuffs {
-		reportRecipeFoodstuffList = append(reportRecipeFoodstuffList, dto.ReportRecipeFoodstuff{
+		reportRecipeFoodstuffList = append(reportRecipeFoodstuffList, &dto.ReportRecipeFoodstuff{
 			TypeOfFoodstuff: foodstuffType,
 			Count:           count,
 		})
@@ -140,7 +139,7 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]dto.Re
 	return reportRecipeFoodstuffList, dto.RequestError{}
 }
 
-func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageMonth, dto.RequestError) {
+func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportAverageMonth, dto.RequestError) {
 	purchasesDB, err := service.purchaseRepository.GetPurchases(user)
 
 	if err != nil {
@@ -163,7 +162,7 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageM
 		}
 	}
 
-	var reportAverageMonths []dto.ReportAverageMonth
+	var reportAverageMonths []*dto.ReportAverageMonth
 	for i := 0; i <= 12; i++ {
 		month := startTime.AddDate(0, i, 0).Format("2006-01")
 		totalCost := monthlyCosts[month]
@@ -172,7 +171,7 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageM
 		if count > 0 {
 			averageCost = totalCost / float64(count)
 		}
-		reportAverageMonths = append(reportAverageMonths, dto.ReportAverageMonth{
+		reportAverageMonths = append(reportAverageMonths, &dto.ReportAverageMonth{
 			Month:       month,
 			AverageCost: averageCost,
 		})
@@ -181,18 +180,9 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageM
 	return reportAverageMonths, dto.RequestError{}
 }
 
-func isTypeOfUseNotInReport(typeOfUse string, reportRecipeUses []dto.ReportRecipeUse) bool {
+func isTypeOfUseNotInReport(typeOfUse string, reportRecipeUses []*dto.ReportRecipeUse) bool {
 	for _, reportRecipeUse := range reportRecipeUses {
 		if reportRecipeUse.TypeOfUse == typeOfUse {
-			return false
-		}
-	}
-	return true
-}
-
-func isTypeOfFoodstuffNotInReport(typeOfFoodstuff string, reportRecipeFoodstuffs []dto.ReportRecipeFoodstuff) bool {
-	for _, reportRecipeFoodstuff := range reportRecipeFoodstuffs {
-		if reportRecipeFoodstuff.TypeOfFoodstuff == typeOfFoodstuff {
 			return false
 		}
 	}
