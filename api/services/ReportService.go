@@ -151,13 +151,12 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageM
 	monthlyCounts := make(map[string]int)
 
 	currentTime := time.Now()
-	startTime := currentTime.AddDate(-1, 0, 0) // 12 months ago
+	startTime := currentTime.AddDate(-1, 0, 0)
 
 	for _, purchase := range purchasesDB {
 		purchaseTime := purchase.CreatedAt.Time()
 
-		// Only consider purchases from the last 12 months
-		if purchaseTime.After(startTime) && purchaseTime.Before(currentTime) {
+		if purchaseTime.After(startTime) && purchaseTime.Before(currentTime.AddDate(0, 1, 0)) {
 			month := purchaseTime.Format("2006-01")
 			monthlyCosts[month] += float64(purchase.TotalCost)
 			monthlyCounts[month]++
@@ -165,7 +164,7 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageM
 	}
 
 	var reportAverageMonths []dto.ReportAverageMonth
-	for i := 0; i < 12; i++ {
+	for i := 0; i <= 12; i++ {
 		month := startTime.AddDate(0, i, 0).Format("2006-01")
 		totalCost := monthlyCosts[month]
 		count := monthlyCounts[month]
