@@ -59,11 +59,11 @@ interface MultiSelectProps
    */
   options: {
     /** The text to display for the option. */
-    label: string;
+    name: string;
     /** The unique value associated with the option. */
     value: string;
     /** Optional icon component to display alongside the option. */
-    icon?: React.ComponentType<{ className?: string }>;
+    emoji?: string;
   }[];
 
   /**
@@ -190,7 +190,6 @@ export const MultiSelect = React.forwardRef<
                 <div className="flex flex-wrap items-center">
                   {selectedValues.slice(0, maxCount).map((value) => {
                     const option = options.find((o) => o.value === value);
-                    const IconComponent = option?.icon;
                     return (
                       <Badge
                         key={value}
@@ -201,10 +200,7 @@ export const MultiSelect = React.forwardRef<
                         )}
                         style={{ animationDuration: `${animation}s` }}
                       >
-                        {IconComponent && (
-                          <IconComponent className="h-4 w-4 mr-2 text-muted-foreground" />
-                        )}
-                        {option?.label}
+                        {option?.emoji} {option?.name}
                       </Badge>
                     );
                   })}
@@ -273,10 +269,9 @@ export const MultiSelect = React.forwardRef<
                       >
                         <CheckIcon className="h-4 w-4" />
                       </div>
-                      {option.icon && (
-                        <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
-                      )}
-                      <span>{option.label}</span>
+                      <span>
+                        {option?.emoji} {option?.name}
+                      </span>
                     </CommandItem>
                   );
                 })}

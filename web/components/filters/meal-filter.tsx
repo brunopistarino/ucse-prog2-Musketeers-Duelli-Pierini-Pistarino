@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Meal, momentos } from "@/lib/constants";
+import { getMeals } from "@/lib/utils";
 
 export default function MealFilter() {
   const [meal, setMeal] = useQueryState("meal", {
@@ -22,9 +22,9 @@ export default function MealFilter() {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="all">Todos los momentos</SelectItem>
-        {Object.keys(momentos).map((key) => (
-          <SelectItem key={key} value={key}>
-            {momentos[key as Meal].label}
+        {getMeals().map((meal) => (
+          <SelectItem key={meal.value} value={meal.value}>
+            {meal.emoji} {meal.name}
           </SelectItem>
         ))}
       </SelectContent>

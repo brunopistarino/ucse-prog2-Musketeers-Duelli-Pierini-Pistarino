@@ -1,18 +1,9 @@
-import {
-  LineChart,
-  Package,
-  ShoppingCart,
-  NotepadText,
-  Clock12,
-  Clock3,
-  Clock6,
-  Clock9,
-} from "lucide-react";
+import { LineChart, Package, ShoppingCart, NotepadText } from "lucide-react";
 
 export const pages = [
   {
     name: "Estadísticas",
-    href: "/estadisticas",
+    href: "/reports",
     icon: LineChart,
   },
   {
@@ -55,25 +46,24 @@ export const foodstuffsTypes = {
   },
 };
 
-export type FoodstuffType = keyof typeof foodstuffsTypes;
-
-export const momentos = {
+export const meals = {
   Breakfast: {
-    label: "Desayuno",
-    icon: Clock6,
+    name: "Desayuno",
+    emoji: "🕕",
   },
   Lunch: {
-    label: "Almuerzo",
-    icon: Clock12,
+    name: "Almuerzo",
+    emoji: "🕛",
   },
   Supper: {
-    label: "Merienda",
-    icon: Clock3,
+    name: "Merienda",
+    emoji: "🕒",
   },
   Dinner: {
-    label: "Cena",
-    icon: Clock9,
+    name: "Cena",
+    emoji: "🕘",
   },
 };
 
-export type Meal = keyof typeof momentos;
+export type FoodstuffType = keyof typeof foodstuffsTypes;
+export type Meal = keyof typeof meals;

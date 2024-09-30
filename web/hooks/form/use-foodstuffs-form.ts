@@ -9,7 +9,7 @@ import {
   updateFoodstuff,
 } from "@/lib/actions/foodstuffs";
 
-export function useFoodstuffsForm(foodstuff?: Alimento) {
+export default function useFoodstuffsForm(foodstuff?: Alimento) {
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
@@ -17,8 +17,8 @@ export function useFoodstuffsForm(foodstuff?: Alimento) {
   const form = useForm<Alimento>({
     resolver: zodResolver(alimentoFormSchema),
     defaultValues: {
-      name: foodstuff?.name || "",
-      type: foodstuff?.type || "",
+      name: foodstuff?.name,
+      type: foodstuff?.type,
       meals: foodstuff?.meals || [],
       price: foodstuff?.price,
       current_quantity: foodstuff?.current_quantity,

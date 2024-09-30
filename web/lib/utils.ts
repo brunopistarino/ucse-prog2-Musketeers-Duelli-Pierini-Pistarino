@@ -2,7 +2,7 @@ import axios from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ZodError } from "zod";
-import { foodstuffsTypes, FoodstuffType, momentos } from "./constants";
+import { foodstuffsTypes, FoodstuffType, Meal, meals } from "./constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,13 +15,25 @@ export function formatCurrency(value: number) {
   }).format(value);
 }
 
-export function getFoodstuffType(type: FoodstuffType) {
-  const foodstuff = foodstuffsTypes[type as FoodstuffType];
+export function getFoodstuffType(value: FoodstuffType) {
+  const foodstuff = foodstuffsTypes[value as FoodstuffType];
   if (foodstuff) {
     return foodstuff;
   } else {
     return {
-      name: type,
+      name: value,
+      emoji: "❓",
+    };
+  }
+}
+
+export function getMeal(value: Meal) {
+  const meal = meals[value];
+  if (meal) {
+    return meal;
+  } else {
+    return {
+      name: value,
       emoji: "❓",
     };
   }
@@ -32,18 +44,21 @@ export function getFoodstuffTypes() {
     const foodstuffType = getFoodstuffType(key as FoodstuffType);
     return {
       value: key,
-      label: foodstuffType.name,
+      name: foodstuffType.name,
       emoji: foodstuffType.emoji,
     };
   });
 }
 
 export function getMeals() {
-  return Object.keys(momentos).map((key) => ({
-    value: key,
-    label: momentos[key as keyof typeof momentos].label,
-    icon: momentos[key as keyof typeof momentos].icon,
-  }));
+  return Object.keys(meals).map((key) => {
+    const meal = getMeal(key as Meal);
+    return {
+      value: key,
+      name: meal.name,
+      emoji: meal.emoji,
+    };
+  });
 }
 
 export function formatError(error: unknown) {

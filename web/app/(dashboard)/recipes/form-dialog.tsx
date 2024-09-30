@@ -1,4 +1,6 @@
 "use client";
+import FormInput from "@/components/form/form-input";
+import FormSelect from "@/components/form/form-select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,14 +29,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
-import { createRecipe } from "@/lib/actions/recipes";
-import { Meal, momentos } from "@/lib/constants";
-import { Alimento, Recipe, recipeSchema } from "@/lib/zod-schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
+import useRecipesForm from "@/hooks/form/use-recipes-form";
+import { getMeals } from "@/lib/utils";
+import { Alimento } from "@/lib/zod-schemas";
 import { CircleMinus, Plus } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 
 interface Props {
   children: React.ReactNode;
@@ -42,59 +40,7 @@ interface Props {
 }
 
 export default function FormDialog({ children, foodstuffs }: Props) {
-  const [isPending, setIsPending] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
-
-  const form = useForm<Recipe>({
-    resolver: zodResolver(recipeSchema),
-    defaultValues: {
-      name: "",
-      meal: "",
-      ingredients: [{ id: "", quantity: 1 }],
-    },
-  });
-
-  const handleOpen = () => {
-    setIsOpen(true);
-    form.reset();
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const onSubmit = async (data: Recipe) => {
-    setIsPending(true);
-    // Filter out ingredients with quantity 0
-    const filteredIngredients = data.ingredients.filter(
-      (ingredient) => ingredient.quantity > 0
-    );
-    const updatedData = { ...data, ingredients: filteredIngredients };
-    const response = await createRecipe(updatedData);
-    if (response?.error) {
-      console.error(response.error);
-      toast({
-        title: "Error",
-        description: response.error,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Receta agregada",
-      });
-      form.reset();
-      setIsOpen(false);
-    }
-    setIsPending(false);
-  };
-
-  const allFormValues = form.watch(); // Watch all form values
-
-  // Log form values each time they change
-  useEffect(() => {
-    console.log("Form values changed:", allFormValues);
-  }, [allFormValues]);
+  const { form, isPending, isOpen, setIsOpen, onSubmit } = useRecipesForm();
 
   return (
     <AlertDialog open={isOpen}>
@@ -108,54 +54,18 @@ export default function FormDialog({ children, foodstuffs }: Props) {
         </AlertDialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
+            <FormInput
+              label="Nombre"
+              placeholder="Ensalada de atún"
               control={form.control}
               name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ensalada de atún" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
-            <FormField
+            <FormSelect
+              label="Momento"
+              placeholder="Elija un momento"
+              options={getMeals()}
               control={form.control}
               name="meal"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Momento</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger
-                        className={field.value ? "" : "text-muted-foreground"}
-                      >
-                        <SelectValue placeholder="Elija un momento" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {Object.keys(momentos).map((key) => {
-                        const Icon = momentos[key as Meal].icon;
-
-                        return (
-                          <SelectItem key={key} value={key}>
-                            <div className="flex items-center gap-2">
-                              <Icon className="h-4 w-4 text-muted-foreground" />
-                              {momentos[key as Meal].label}
-                            </div>
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
 
             {/* render one select for each ingredient with a numeric input for the quantity */}
@@ -189,8 +99,9 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                             {foodstuffs
                               .filter(
                                 (foodstuff) =>
-                                  !selectedIngredients.includes(foodstuff.id) ||
-                                  foodstuff.id === ingredient.id
+                                  !selectedIngredients.includes(
+                                    foodstuff.id ?? ""
+                                  ) || foodstuff.id === ingredient.id
                               ) // Filter out selected items, but allow the current one
                               .map((foodstuff) => (
                                 <SelectItem
@@ -266,7 +177,6 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                 Añadir ingrediente
               </Button>
             </div>
-
             <AlertDialogFooter>
               <AlertDialogCancel
                 disabled={isPending}

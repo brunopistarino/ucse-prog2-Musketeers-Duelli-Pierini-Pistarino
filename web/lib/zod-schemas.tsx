@@ -1,10 +1,16 @@
 import { z } from "zod";
+import { foodstuffsTypes, FoodstuffType, Meal, meals } from "./constants";
+
+export const FoodstuffTypeEnum = z.enum(
+  Object.keys(foodstuffsTypes) as [FoodstuffType]
+);
+export const MealEnum = z.enum(Object.keys(meals) as [Meal]);
 
 export const alimentoFormSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1),
-  type: z.string().min(1),
-  meals: z.array(z.string().min(1)).nonempty(),
+  type: FoodstuffTypeEnum,
+  meals: z.array(MealEnum).nonempty(),
   price: z
     .union([
       z.coerce
@@ -23,12 +29,12 @@ export const alimentoFormSchema = z.object({
 export const recipeSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1),
-  meal: z.string().min(1),
+  meal: MealEnum,
   ingredients: z.array(
     z.object({
       id: z.string().min(1),
       name: z.string().optional(),
-      type: z.string().optional(),
+      type: FoodstuffTypeEnum.optional(),
       quantity: z.coerce.number().int(),
     })
   ),

@@ -7,8 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { foodstuffsTypes, FoodstuffType } from "@/lib/constants";
-import { getFoodstuffType } from "@/lib/utils";
+import { getFoodstuffTypes } from "@/lib/utils";
 
 export default function FoodstuffTypeFilter() {
   const [type, setType] = useQueryState("type", {
@@ -23,14 +22,11 @@ export default function FoodstuffTypeFilter() {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="all">Todos los tipos</SelectItem>
-        {Object.keys(foodstuffsTypes).map((key) => {
-          const foodstuffType = getFoodstuffType(key as FoodstuffType);
-          return (
-            <SelectItem key={key} value={key}>
-              {foodstuffType.emoji} {foodstuffType.name}
-            </SelectItem>
-          );
-        })}
+        {getFoodstuffTypes().map((foodstuffType) => (
+          <SelectItem key={foodstuffType.value} value={foodstuffType.value}>
+            {foodstuffType.emoji} {foodstuffType.name}
+          </SelectItem>
+        ))}
       </SelectContent>
     </Select>
   );

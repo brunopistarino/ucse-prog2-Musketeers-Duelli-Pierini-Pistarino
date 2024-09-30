@@ -12,22 +12,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form } from "@/components/ui/form";
 import { Alimento } from "@/lib/zod-schemas";
-import { MultiSelect } from "@/components/ui/multi-select";
 import { Trash2 } from "lucide-react";
-import { momentos } from "@/lib/constants";
-import { useFoodstuffsForm } from "@/hooks/form/use-foodstuffs-form";
-import { getFoodstuffTypes } from "@/lib/utils";
+import useFoodstuffsForm from "@/hooks/form/use-foodstuffs-form";
+import { getFoodstuffTypes, getMeals } from "@/lib/utils";
 import FormInput from "@/components/form/form-input";
 import FormSelect from "@/components/form/form-select";
+import FormMultiSelect from "@/components/form/form-multi-select";
 
 interface Props {
   children: React.ReactNode;
@@ -37,12 +29,6 @@ interface Props {
 export default function FormDialog({ children, alimento }: Props) {
   const { form, isPending, isOpen, setIsOpen, onSubmit, onDelete } =
     useFoodstuffsForm(alimento);
-
-  const momentosList = Object.keys(momentos).map((key) => ({
-    value: key,
-    label: momentos[key as keyof typeof momentos].label,
-    icon: momentos[key as keyof typeof momentos].icon,
-  }));
 
   return (
     <AlertDialog open={isOpen}>
@@ -74,23 +60,12 @@ export default function FormDialog({ children, alimento }: Props) {
               control={form.control}
               name="type"
             />
-            <FormField
+            <FormMultiSelect
+              label="Momentos"
+              placeholder="Elija un o varios momentos"
+              options={getMeals()}
               control={form.control}
               name="meals"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Momentos</FormLabel>
-                  <FormControl>
-                    <MultiSelect
-                      options={momentosList}
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      placeholder="Elija un o varios momentos"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
             <FormInput
               label="Precio"
@@ -117,7 +92,6 @@ export default function FormDialog({ children, alimento }: Props) {
                 className="w-full"
               />
             </div>
-
             <AlertDialogFooter className="pt-4">
               {alimento && (
                 <Button

@@ -1,3 +1,4 @@
+"use client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -9,11 +10,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
+import usePurchasesForm from "@/hooks/form/use-purchases-form";
 import { formatCurrency } from "@/lib/utils";
 import { Alimento } from "@/lib/zod-schemas";
-
-import { useState } from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -21,9 +20,8 @@ interface Props {
 }
 
 export default function FormDialog({ children, foodstuffs }: Props) {
-  const [isPending, setIsPending] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const { toast } = useToast();
+  const { isPending, isOpen, setIsOpen, onSubmit } =
+    usePurchasesForm(foodstuffs);
 
   const total = foodstuffs.reduce((acc, foodstuff) => {
     const quantity = foodstuff.minimum_quantity - foodstuff.current_quantity;
@@ -63,7 +61,11 @@ export default function FormDialog({ children, foodstuffs }: Props) {
           >
             Cancelar
           </AlertDialogCancel>
-          <AlertDialogAction type="submit" disabled={isPending}>
+          <AlertDialogAction
+            type="submit"
+            disabled={isPending}
+            onClick={onSubmit}
+          >
             Comprar
           </AlertDialogAction>
         </AlertDialogFooter>

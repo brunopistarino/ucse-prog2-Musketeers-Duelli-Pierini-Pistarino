@@ -17,7 +17,7 @@ import {
 
 interface SelectOption {
   value: string;
-  label: string;
+  name: string;
   emoji?: string;
 }
 
@@ -55,7 +55,7 @@ export default function FormSelect<TFieldValues extends FieldValues>({
               {options.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.emoji && `${option.emoji} `}
-                  {option.label}
+                  {option.name}
                 </SelectItem>
               ))}
             </SelectContent>

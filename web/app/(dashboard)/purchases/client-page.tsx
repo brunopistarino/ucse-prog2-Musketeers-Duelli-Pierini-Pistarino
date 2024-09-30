@@ -4,7 +4,6 @@ import { DollarSign } from "lucide-react";
 import { columns } from "./columns";
 import { Alimento } from "@/lib/zod-schemas";
 import { DataTable } from "./data-table";
-import { useState } from "react";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import FormDialog from "./form-dialog";
 import NameFilter from "@/components/filters/name-filter";
@@ -15,12 +14,11 @@ interface Props {
 }
 
 export default function ClientPage({ data }: Props) {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getRowId: (row, index) => row.id ?? `row-${index}`,
   });
 
   return (
@@ -48,14 +46,6 @@ export default function ClientPage({ data }: Props) {
         </div>
       </div>
       <DataTable table={table} />
-      <pre>
-        {JSON.stringify(
-          table.getSelectedRowModel().flatRows.map((row) => row.original.id),
-          null,
-          2
-        )}
-      </pre>
-      <pre>{JSON.stringify(table.getState().rowSelection, null, 2)}</pre>
     </div>
   );
 }
