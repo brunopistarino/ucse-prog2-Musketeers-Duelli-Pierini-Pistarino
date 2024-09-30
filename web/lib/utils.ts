@@ -23,6 +23,7 @@ export function getFoodstuffType(value: FoodstuffType) {
     return {
       name: value,
       emoji: "❓",
+      color: "hsl(var(--chart-1))",
     };
   }
 }
@@ -35,6 +36,7 @@ export function getMeal(value: Meal) {
     return {
       name: value,
       emoji: "❓",
+      color: "hsl(var(--chart-1))",
     };
   }
 }
@@ -46,6 +48,7 @@ export function getFoodstuffTypes() {
       value: key,
       name: foodstuffType.name,
       emoji: foodstuffType.emoji,
+      color: foodstuffType.color,
     };
   });
 }
@@ -57,6 +60,7 @@ export function getMeals() {
       value: key,
       name: meal.name,
       emoji: meal.emoji,
+      color: meal.color,
     };
   });
 }
