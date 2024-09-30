@@ -57,6 +57,7 @@ func mappingRoutes() {
 	recipes.GET("/", recipeHandler.GetRecipes)
 	recipes.GET("/:id", recipeHandler.GetRecipe)
 	recipes.POST("/", recipeHandler.PostRecipe)
+	recipes.POST("/repeated/:id", recipeHandler.PostRepeatedRecipe)
 	//recipes.PUT("/:id", recipeHandler.PutRecipe)
 	recipes.DELETE("/:id", recipeHandler.DeleteRecipe)
 
