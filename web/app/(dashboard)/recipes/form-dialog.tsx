@@ -31,12 +31,12 @@ import {
 } from "@/components/ui/select";
 import useRecipesForm from "@/hooks/form/use-recipes-form";
 import { getMeals } from "@/lib/utils";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 import { CircleMinus, Plus } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;
-  foodstuffs: Alimento[];
+  foodstuffs: Foodstuff[];
 }
 
 export default function FormDialog({ children, foodstuffs }: Props) {
@@ -109,7 +109,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                                   value={foodstuff.id!}
                                   disabled={
                                     !foodstuff.meals.includes(
-                                      form.getValues("meal")
+                                      form.watch("meal")
                                     )
                                   }
                                 >
@@ -177,7 +177,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                 Añadir ingrediente
               </Button>
             </div>
-            <AlertDialogFooter>
+            <AlertDialogFooter className="pt-4">
               <AlertDialogCancel
                 disabled={isPending}
                 onClick={() => setIsOpen(false)}

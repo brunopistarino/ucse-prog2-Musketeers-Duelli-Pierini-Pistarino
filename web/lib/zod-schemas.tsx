@@ -6,7 +6,7 @@ export const FoodstuffTypeEnum = z.enum(
 );
 export const MealEnum = z.enum(Object.keys(meals) as [Meal]);
 
-export const alimentoFormSchema = z.object({
+export const foodstuffSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1),
   type: FoodstuffTypeEnum,
@@ -72,7 +72,7 @@ export const registerSchema = z
     path: ["confirm_password"],
   });
 
-export type Alimento = z.infer<typeof alimentoFormSchema>;
+export type Foodstuff = z.infer<typeof foodstuffSchema>;
 export type Recipe = z.infer<typeof recipeSchema>;
 export type Login = z.infer<typeof loginSchema>;
 export type Register = z.infer<typeof registerSchema>;

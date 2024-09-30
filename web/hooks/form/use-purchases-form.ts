@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useToast } from "../use-toast";
 import { createPruchase } from "@/lib/actions/purchases";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 
-export default function usePurchasesForm(foodstuffs: Alimento[]) {
+export default function usePurchasesForm(foodstuffs: Foodstuff[]) {
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();

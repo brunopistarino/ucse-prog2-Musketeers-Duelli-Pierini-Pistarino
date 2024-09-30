@@ -37,3 +37,32 @@ export async function createRecipe(values: unknown) {
     return formatError(error);
   }
 }
+
+export async function deleteRecipe(id: string) {
+  const cookieStore = cookies();
+  try {
+    const response = await axios.delete(`${process.env.API_URL}recipes/${id}`, {
+      headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+    });
+    revalidatePath("/recipes");
+    return { data: response.data, error: null };
+  } catch (error) {
+    return formatError(error);
+  }
+}
+
+// export async function prepareRecipe(id: string) {
+//   const cookieStore = cookies();
+//   try {
+//     const response = await axios.post(
+//       `${process.env.API_URL}recipes/${id}/prepare`,
+//       {},
+//       {
+//         headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+//       }
+//     );
+//     return { data: response.data, error: null };
+//   } catch (error) {
+//     return formatError(error);
+//   }
+// }

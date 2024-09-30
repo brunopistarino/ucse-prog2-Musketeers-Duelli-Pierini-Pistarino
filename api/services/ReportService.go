@@ -2,19 +2,12 @@ package services
 
 import (
 	"api/dto"
-	// "api/model"
 	"api/repositories"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	// "honnef.co/go/tools/analysis/report"
 )
 
-// reports := router.Group("/reports")
-// reports.Use(authMiddleware.ValidateToken)
-// reports.GET("/foodstuffs", reportHandler.GetReportsByTypeOfUse)
-// reports.GET("/recipes", reportHandler.GetReportsByTypeOfFoodstuff)
-// reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
 
 type ReportInterface interface {
 	GetReportsByTypeOfUse(user string) ([]dto.ReportRecipeUse, dto.RequestError)
@@ -107,8 +100,6 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]dto.ReportRe
 	return reportRecipeUses, dto.RequestError{}
 }
 
-// cantidad de recetas que contienen cada tipo de alimento
-
 func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]dto.ReportRecipeFoodstuff, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user)
 	if err != nil {
@@ -149,7 +140,6 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]dto.Re
 	return reportRecipeFoodstuffList, dto.RequestError{}
 }
 
-// funcion para obtener los promedios mensuales del ultimo año agrupados por meses.
 func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageMonth, dto.RequestError) {
 	purchasesDB, err := service.purchaseRepository.GetPurchases(user)
 
@@ -160,26 +150,31 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]dto.ReportAverageM
 	monthlyCosts := make(map[string]float64)
 	monthlyCounts := make(map[string]int)
 
-	currentYear := time.Now().Year()
-	currentMonth := time.Now().Month()
+	currentTime := time.Now()
+	startTime := currentTime.AddDate(-1, 0, 0)
 
 	for _, purchase := range purchasesDB {
-		purchaseYear := purchase.CreatedAt.Time().Year()
-		purchaseMonth := purchase.CreatedAt.Time().Month()
+		purchaseTime := purchase.CreatedAt.Time()
 
-		// Only consider purchases from the current year and months that have already ended
-		if purchaseYear == currentYear && purchaseMonth <= currentMonth {
-			month := purchase.CreatedAt.Time().Format("2006-01")
+		if purchaseTime.After(startTime) && purchaseTime.Before(currentTime.AddDate(0, 1, 0)) {
+			month := purchaseTime.Format("2006-01")
 			monthlyCosts[month] += float64(purchase.TotalCost)
 			monthlyCounts[month]++
 		}
 	}
 
 	var reportAverageMonths []dto.ReportAverageMonth
-	for month, totalCost := range monthlyCosts {
+	for i := 0; i <= 12; i++ {
+		month := startTime.AddDate(0, i, 0).Format("2006-01")
+		totalCost := monthlyCosts[month]
+		count := monthlyCounts[month]
+		averageCost := 0.0
+		if count > 0 {
+			averageCost = totalCost / float64(count)
+		}
 		reportAverageMonths = append(reportAverageMonths, dto.ReportAverageMonth{
 			Month:       month,
-			AverageCost: totalCost / float64(monthlyCounts[month]),
+			AverageCost: averageCost,
 		})
 	}
 

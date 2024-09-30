@@ -3,10 +3,11 @@ import QuantityBar from "@/components/quantity-bar";
 import { Badge } from "@/components/ui/badge";
 import { FoodstuffType, Meal } from "@/lib/constants";
 import { formatCurrency, getFoodstuffType, getMeal } from "@/lib/utils";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
+import React from "react";
 
-export const columns: ColumnDef<Alimento>[] = [
+export const columns: ColumnDef<Foodstuff>[] = [
   {
     accessorKey: "name",
     header: "Nombre",

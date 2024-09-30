@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { DollarSign } from "lucide-react";
 import { columns } from "./columns";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 import { DataTable } from "./data-table";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
 import FormDialog from "./form-dialog";
@@ -10,7 +10,7 @@ import NameFilter from "@/components/filters/name-filter";
 import FoodstuffTypeFilter from "@/components/filters/foodstuff-type-filter";
 
 interface Props {
-  data: Alimento[];
+  data: Foodstuff[];
 }
 
 export default function ClientPage({ data }: Props) {
@@ -32,7 +32,7 @@ export default function ClientPage({ data }: Props) {
             foodstuffs={
               table
                 .getSelectedRowModel()
-                .flatRows.map((row) => row.original) as Alimento[]
+                .flatRows.map((row) => row.original) as Foodstuff[]
             }
           >
             <Button

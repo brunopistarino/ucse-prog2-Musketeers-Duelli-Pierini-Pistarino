@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import usePurchasesForm from "@/hooks/form/use-purchases-form";
 import { formatCurrency } from "@/lib/utils";
-import { Alimento } from "@/lib/zod-schemas";
+import { Foodstuff } from "@/lib/zod-schemas";
 
 interface Props {
   children: React.ReactNode;
-  foodstuffs: Alimento[];
+  foodstuffs: Foodstuff[];
 }
 
 export default function FormDialog({ children, foodstuffs }: Props) {
