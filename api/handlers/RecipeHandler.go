@@ -90,7 +90,6 @@ func (handler *RecipeHandler) PostRepeatedRecipe(c *gin.Context) {
 
 	// Get the recipe from the database
 	recipe, err := handler.recipeService.GetRecipe(user.Code, id)
-	log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:ERROR_GET][error:%s]", recipe.ID)
 	if err.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)
