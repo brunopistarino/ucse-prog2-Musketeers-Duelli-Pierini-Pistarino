@@ -63,7 +63,6 @@ func (handler *UserHandler) LoginUser(c *gin.Context) {
 
 	// Add header
 	c.Header("Authorization", response.AccessToken)
-	// Add header
 	// Expires in 20 seconds before the actual expiration to avoid token expiration
 	c.Header("Expires-In", strconv.Itoa(response.ExpiresIn-20))
 

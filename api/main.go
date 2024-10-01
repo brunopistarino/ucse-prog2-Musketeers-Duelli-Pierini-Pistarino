@@ -58,7 +58,6 @@ func mappingRoutes() {
 	recipes.GET("/:id", recipeHandler.GetRecipe)
 	recipes.POST("/", recipeHandler.PostRecipe)
 	recipes.POST("/repeated/:id", recipeHandler.PostRepeatedRecipe)
-	//recipes.PUT("/:id", recipeHandler.PutRecipe)
 	recipes.DELETE("/:id", recipeHandler.DeleteRecipe)
 
 	purchases := router.Group("/purchases")
