@@ -30,7 +30,7 @@ export default function Navigation() {
               buttonVariants({ variant: "ghost" }),
               "gap-2 justify-start",
               pathname === page.href
-                ? "bg-muted text-primary"
+                ? "bg-muted text-foreground"
                 : "text-muted-foreground hover:bg-transparent"
             )}
           >
