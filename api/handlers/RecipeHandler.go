@@ -23,7 +23,7 @@ func NewRecipeHandler(recipeService services.RecipeInterface) *RecipeHandler {
 func (handler *RecipeHandler) GetRecipes(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 
-	foodstuffType := c.Query("foodstuff_type")
+	foodstuffType := c.Query("type")
 	name := c.Query("name")
 	meal := c.Query("meal")
 
