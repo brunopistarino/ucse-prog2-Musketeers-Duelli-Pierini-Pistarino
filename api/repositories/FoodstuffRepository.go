@@ -67,6 +67,9 @@ func (repository FoodstuffRepository) GetFoodstuffsBelowMinimum(user string, typ
 	compareFilter := bson.M{"$expr": bson.M{"$lt": []string{"$current_quantity", "$minimum_quantity"}}}
 	filter := bson.M{"$and": []bson.M{userFilter, compareFilter}}
 	findOptions := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
+	// Sort by current_quantity / minimum_quantity ratio
+	findOptions.SetSort(bson.D{{Key: "current_quantity", Value: 1}, {Key: "minimum_quantity", Value: -1}})
+
 	// Type filter by exact match and name filter by approximate match
 	if typeFoodstuff != "" {
 		filter["type"] = typeFoodstuff
