@@ -7,7 +7,7 @@ import React from "react";
 import useRegisterFrom from "@/hooks/form/use-register-from";
 import FormInput from "@/components/form/form-input";
 
-export default function ModeToggle() {
+export default function RegisterPage() {
   const { isPending, form, onSubmit } = useRegisterFrom();
 
   return (

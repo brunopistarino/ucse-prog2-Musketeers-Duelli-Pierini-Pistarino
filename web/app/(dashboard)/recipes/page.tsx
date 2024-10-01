@@ -9,7 +9,7 @@ import NameFilter from "@/components/filters/name-filter";
 import FoodstuffTypeFilter from "@/components/filters/foodstuff-type-filter";
 import MealFilter from "@/components/filters/meal-filter";
 
-export default async function Page() {
+export default async function RecipesPage() {
   const [
     { data: recipes, error: recipesError },
     { data: foodstuffs, error: foodstuffsError },

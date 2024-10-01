@@ -9,7 +9,7 @@ interface Props {
   };
 }
 
-export default async function Page({ searchParams }: Props) {
+export default async function PurchasesPage({ searchParams }: Props) {
   const { name, type } = searchParams;
   const { data, error } = await getFoodstuffsBelowMinimum(name, type);
 
