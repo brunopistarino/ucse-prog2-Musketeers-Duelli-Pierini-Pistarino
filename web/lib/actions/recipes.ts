@@ -6,10 +6,11 @@ import axios from "axios";
 import { Recipe, recipeSchema } from "../zod-schemas";
 import { revalidatePath } from "next/cache";
 
-export async function getRecipes() {
+export async function getRecipes(name?: string, type?: string, meal?: string) {
   const cookieStore = cookies();
   try {
     const response = await axios.get(`${process.env.API_URL}recipes`, {
+      params: { name, type, meal },
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
     return { data: response.data as Recipe[], error: null };

@@ -9,11 +9,20 @@ import NameFilter from "@/components/filters/name-filter";
 import FoodstuffTypeFilter from "@/components/filters/foodstuff-type-filter";
 import MealFilter from "@/components/filters/meal-filter";
 
-export default async function RecipesPage() {
+interface Props {
+  searchParams: {
+    name: string;
+    type: string;
+    meal: string;
+  };
+}
+
+export default async function RecipesPage({ searchParams }: Props) {
+  const { name, type, meal } = searchParams;
   const [
     { data: recipes, error: recipesError },
     { data: foodstuffs, error: foodstuffsError },
-  ] = await Promise.all([getRecipes(), getFoodstuffs()]);
+  ] = await Promise.all([getRecipes(name, type, meal), getFoodstuffs()]);
 
   if (recipesError || !recipes || foodstuffsError || !foodstuffs) {
     const error = recipesError || foodstuffsError || "";
