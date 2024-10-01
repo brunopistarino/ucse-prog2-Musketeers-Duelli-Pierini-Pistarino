@@ -31,7 +31,7 @@ interface Porps {
 
 export default function RecipeFoodstuffTypeChart({ data }: Porps) {
   return (
-    <Card className="flex flex-col flex-1">
+    <Card className="flex flex-col flex-1 rounded">
       <CardHeader className="items-center pb-0">
         <CardTitle>Tipo de alimento</CardTitle>
         <CardDescription>
