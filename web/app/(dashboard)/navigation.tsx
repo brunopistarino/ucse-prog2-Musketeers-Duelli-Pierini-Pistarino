@@ -1,4 +1,5 @@
 "use client";
+
 import ModeToggle from "@/components/mode-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { logout } from "@/lib/actions/user";

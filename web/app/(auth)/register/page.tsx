@@ -2,53 +2,13 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useState } from "react";
-import { Register, registerSchema } from "@/lib/zod-schemas";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { register } from "@/lib/actions/user";
-import { pages } from "@/lib/constants";
+import { Form } from "@/components/ui/form";
+import React from "react";
+import useRegisterFrom from "@/hooks/form/use-register-from";
+import FormInput from "@/components/form/form-input";
 
 export default function ModeToggle() {
-  const [isPending, setIsPending] = useState(false);
-  const { toast } = useToast();
-  const router = useRouter();
-  const form = useForm<Register>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-      confirm_password: "",
-    },
-  });
-
-  async function onSubmit(values: Register) {
-    setIsPending(true);
-    const response = await register(values);
-    if (response?.error) {
-      console.error(response.error);
-      toast({
-        title: "Error",
-        description: response.error,
-        variant: "destructive",
-      });
-      setIsPending(false);
-    } else {
-      router.push(pages[0].href);
-    }
-  }
+  const { isPending, form, onSubmit } = useRegisterFrom();
 
   return (
     <>
@@ -57,44 +17,23 @@ export default function ModeToggle() {
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <FormField
+          <FormInput
+            label="Correo electrónico"
+            placeholder="nombre@ejemplo.com"
             control={form.control}
             name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Correo electrónico</FormLabel>
-                <FormControl>
-                  <Input placeholder="nombre@ejemplo.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
           />
-          <FormField
+          <FormInput
+            label="Contraseña"
             control={form.control}
             name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Contraseña</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            type="password"
           />
-          <FormField
+          <FormInput
+            label="Confirmar contraseña"
             control={form.control}
             name="confirm_password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirmar contraseña</FormLabel>
-                <FormControl>
-                  <Input type="password" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            type="password"
           />
           <Button type="submit" className="w-full" disabled={isPending}>
             Crear cuenta

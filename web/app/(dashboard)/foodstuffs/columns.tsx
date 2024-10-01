@@ -1,4 +1,5 @@
 "use client";
+
 import QuantityBar from "@/components/quantity-bar";
 import { Badge } from "@/components/ui/badge";
 import { FoodstuffType, Meal } from "@/lib/constants";

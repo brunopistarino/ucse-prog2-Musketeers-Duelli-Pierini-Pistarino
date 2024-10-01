@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import { DollarSign } from "lucide-react";
 import { columns } from "./columns";
