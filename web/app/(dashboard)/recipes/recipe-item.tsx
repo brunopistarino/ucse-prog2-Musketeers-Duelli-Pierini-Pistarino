@@ -1,39 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { deleteRecipe } from "@/lib/actions/recipes";
+import useRecipeForm from "@/hooks/form/use-recipe-form";
 import { getFoodstuffType, getMeal } from "@/lib/utils";
 import { Recipe } from "@/lib/zod-schemas";
 import { CookingPot, Trash2 } from "lucide-react";
-import { useState } from "react";
 
-export default function RecipeItem({ recipe }: { recipe: Recipe }) {
-  const [isPending, setIsPending] = useState(false);
-  const { toast } = useToast();
+interface Props {
+  recipe: Recipe;
+}
 
-  const onPrepare = async () => {
-    setIsPending(true);
-    // Prepare recipe
-    setIsPending(false);
-  };
-
-  const onDelete = async () => {
-    setIsPending(true);
-    const response = await deleteRecipe(recipe.id!);
-    if (response?.error) {
-      console.error(response.error);
-      toast({
-        title: "Error",
-        description: response.error,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Receta eliminada",
-      });
-    }
-    setIsPending(false);
-  };
+export default function RecipeItem({ recipe }: Props) {
+  const { isPending, onPrepare, onDelete } = useRecipeForm(recipe);
 
   return (
     <div className="bg-border p-1 rounded-lg group">

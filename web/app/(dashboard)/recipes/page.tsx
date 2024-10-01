@@ -25,15 +25,9 @@ export default async function Page() {
       <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50">
         <h1 className="text-lg font-semibold md:text-2xl">Recetas</h1>
         <div className="flex gap-2">
-          {/* <div> */}
           <NameFilter />
           <FoodstuffTypeFilter />
           <MealFilter />
-          {/* </div> */}
-          {/* <Button className="gap-2">
-            <DollarSign size={16} />
-            Hacer compra
-          </Button> */}
           <FormDialog foodstuffs={foodstuffs}>
             <Button className="gap-2">
               <Plus size={16} />

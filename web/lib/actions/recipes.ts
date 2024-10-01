@@ -51,18 +51,20 @@ export async function deleteRecipe(id: string) {
   }
 }
 
-// export async function prepareRecipe(id: string) {
-//   const cookieStore = cookies();
-//   try {
-//     const response = await axios.post(
-//       `${process.env.API_URL}recipes/${id}/prepare`,
-//       {},
-//       {
-//         headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
-//       }
-//     );
-//     return { data: response.data, error: null };
-//   } catch (error) {
-//     return formatError(error);
-//   }
-// }
+export async function prepareRecipe(id: string) {
+  const cookieStore = cookies();
+  console.log(`${process.env.API_URL}recipes/repeated/${id}`);
+  try {
+    const response = await axios.post(
+      `${process.env.API_URL}recipes/repeated/${id}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+      }
+    );
+    revalidatePath("/recipes");
+    return { data: response.data, error: null };
+  } catch (error) {
+    return formatError(error);
+  }
+}
