@@ -1,4 +1,5 @@
 "use client";
+
 import FormInput from "@/components/form/form-input";
 import FormSelect from "@/components/form/form-select";
 import {
@@ -68,7 +69,6 @@ export default function FormDialog({ children, foodstuffs }: Props) {
               options={getMeals()}
               control={form.control}
               valueChange={() => {
-                // set "ingredients" to default if the meal doesn't include the ingredient
                 let values = form
                   .getValues("ingredients")
                   .filter(
@@ -87,7 +87,6 @@ export default function FormDialog({ children, foodstuffs }: Props) {
               name="meal"
             />
 
-            {/* render one select for each ingredient with a numeric input for the quantity */}
             <div className="space-y-2">
               <FormLabel>Ingredientes</FormLabel>
               {form.watch("ingredients").map((ingredient, index) => {
@@ -118,7 +117,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                                   !selectedIngredients.includes(
                                     foodstuff.id ?? ""
                                   ) || foodstuff.id === ingredient.id
-                              ) // Filter out selected items, but allow the current one
+                              )
                               .map((foodstuff) => (
                                 <SelectItem
                                   key={foodstuff.id}
@@ -146,7 +145,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                               type="number"
                               min={0}
                               {...field}
-                              value={field.value || 1} // Ensure initial value is 1
+                              value={field.value || 1}
                             />
                           </FormControl>
                           <FormMessage />

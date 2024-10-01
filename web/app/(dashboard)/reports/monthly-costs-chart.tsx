@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Card,
@@ -16,6 +15,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { formatCurrency } from "@/lib/utils";
+import { useMemo } from "react";
 
 interface CostData {
   month: string;
@@ -34,7 +34,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
-  const total = React.useMemo(
+  const total = useMemo(
     () => data.reduce((acc, curr) => acc + curr.average_cost, 0),
     [data]
   );

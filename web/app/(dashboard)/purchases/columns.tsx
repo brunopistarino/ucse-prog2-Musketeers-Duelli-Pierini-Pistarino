@@ -3,10 +3,11 @@
 import QuantityBar from "@/components/quantity-bar";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { foodstuffsTypes, FoodstuffType } from "@/lib/constants";
-import { cn, formatCurrency, getFoodstuffType } from "@/lib/utils";
+import { FoodstuffType } from "@/lib/constants";
+import { formatCurrency, getFoodstuffType } from "@/lib/utils";
 import { Foodstuff } from "@/lib/zod-schemas";
 import { ColumnDef } from "@tanstack/react-table";
+import React from "react";
 
 export const columns: ColumnDef<Foodstuff>[] = [
   {

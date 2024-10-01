@@ -38,7 +38,7 @@ export default function FormDialog({ children, alimento }: Props) {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {alimento ? "Modificar" : "Agregar"} alimento
+            {alimento ? "Modificar alimento" : "Agregar alimento"}
           </AlertDialogTitle>
           <AlertDialogDescription>
             Los alimentos son usados para crear recetas y llevar registro de su
