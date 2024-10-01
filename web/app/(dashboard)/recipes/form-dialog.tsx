@@ -42,6 +42,8 @@ interface Props {
 export default function FormDialog({ children, foodstuffs }: Props) {
   const { form, isPending, isOpen, setIsOpen, onSubmit } = useRecipesForm();
 
+  const selectedIngredients = form.watch("ingredients").map((ing) => ing.id);
+
   return (
     <AlertDialog open={isOpen}>
       <AlertDialogTrigger asChild onClick={() => setIsOpen(true)}>
@@ -65,6 +67,23 @@ export default function FormDialog({ children, foodstuffs }: Props) {
               placeholder="Elija un momento"
               options={getMeals()}
               control={form.control}
+              valueChange={() => {
+                // set "ingredients" to default if the meal doesn't include the ingredient
+                let values = form
+                  .getValues("ingredients")
+                  .filter(
+                    (ing) =>
+                      ing.id == "" ||
+                      foodstuffs.find(
+                        (f) =>
+                          f.id == ing.id && f.meals.includes(form.watch("meal"))
+                      )
+                  );
+                form.setValue(
+                  "ingredients",
+                  values.length === 0 ? [{ id: "", quantity: 1 }] : values
+                );
+              }}
               name="meal"
             />
 
@@ -72,10 +91,6 @@ export default function FormDialog({ children, foodstuffs }: Props) {
             <div className="space-y-2">
               <FormLabel>Ingredientes</FormLabel>
               {form.watch("ingredients").map((ingredient, index) => {
-                const selectedIngredients = form
-                  .watch("ingredients")
-                  .map((ing) => ing.id);
-
                 return (
                   <div key={index} className="flex items-center gap-2">
                     <FormField
@@ -85,6 +100,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          value={field.value}
                         >
                           <FormControl>
                             <SelectTrigger
@@ -161,7 +177,9 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                 className="w-full"
                 variant="outline"
                 disabled={
-                  form.watch("ingredients").length === foodstuffs.length
+                  form.watch("ingredients").length ===
+                  foodstuffs.filter((f) => f.meals.includes(form.watch("meal")))
+                    .length
                 }
                 onClick={() =>
                   form.setValue("ingredients", [

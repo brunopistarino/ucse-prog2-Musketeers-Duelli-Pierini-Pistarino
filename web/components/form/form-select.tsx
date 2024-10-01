@@ -27,6 +27,7 @@ interface FormSelectComponentProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
   options: SelectOption[];
   placeholder?: string;
+  valueChange?: () => void;
 }
 
 export default function FormSelect<TFieldValues extends FieldValues>({
@@ -35,6 +36,7 @@ export default function FormSelect<TFieldValues extends FieldValues>({
   control,
   options,
   placeholder = "Select an option",
+  valueChange,
 }: FormSelectComponentProps<TFieldValues>) {
   return (
     <FormField
@@ -43,7 +45,13 @@ export default function FormSelect<TFieldValues extends FieldValues>({
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value}>
+          <Select
+            onValueChange={(value) => {
+              field.onChange(value);
+              valueChange && valueChange();
+            }}
+            defaultValue={field.value}
+          >
             <FormControl>
               <SelectTrigger
                 className={field.value ? "" : "text-muted-foreground"}
