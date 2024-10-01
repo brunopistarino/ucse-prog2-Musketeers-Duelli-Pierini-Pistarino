@@ -24,6 +24,7 @@ const (
 	RequiredIngredientID            = 40031
 	InvalidIngredientQuantity       = 40032
 	InvalidFoodstuffMeal            = 40033
+	DuplicatedFoodstuffIngredients  = 40034
 	RequiredEmail                   = 40070
 	InvalidEmail                    = 40071
 	RequiredPassword                = 40072
@@ -57,6 +58,7 @@ var messages = map[int]RequestMessage{
 	RequiredIngredientID:            {ID: RequiredIngredientID, Description: "ingredient id is required"},
 	InvalidIngredientQuantity:       {ID: InvalidIngredientQuantity, Description: "quantity of ingredients must be more than 0"},
 	InvalidFoodstuffMeal:            {ID: InvalidFoodstuffMeal, Description: "meal is invalid. Must be one of: " + utils.SliceToString(Meals)},
+	DuplicatedFoodstuffIngredients:  {ID: DuplicatedFoodstuffIngredients, Description: "ingredients has duplicates"},
 	RequiredEmail:                   {ID: RequiredEmail, Description: "email is required"},
 	InvalidEmail:                    {ID: InvalidEmail, Description: "email is not valid"},
 	RequiredPassword:                {ID: RequiredPassword, Description: "password is required"},

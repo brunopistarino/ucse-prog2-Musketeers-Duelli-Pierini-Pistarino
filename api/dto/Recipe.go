@@ -94,5 +94,13 @@ func (recipe Recipe) VerifyRecipe() []RequestMessage {
 			}
 		}
 	}
+	// find repeated IDs
+	var ids []string
+	for _, ingredient := range recipe.Ingredients {
+		ids = append(ids, ingredient.ID)
+	}
+	if utils.HasDuplicates(ids) {
+		errs = append(errs, *NewDefaultRequestMessage(DuplicatedFoodstuffIngredients))
+	}
 	return errs
 }
