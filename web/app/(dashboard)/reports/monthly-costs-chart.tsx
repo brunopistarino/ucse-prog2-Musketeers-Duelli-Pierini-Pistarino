@@ -72,7 +72,8 @@ export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value);
+                const [year, month] = value.split("-");
+                const date = new Date(Number(year), Number(month) - 1);
                 return date.toLocaleDateString("es-AR", {
                   month: "short",
                   year: "2-digit",
@@ -91,7 +92,9 @@ export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
                   className="w-[150px]"
                   nameKey="average_cost"
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("es-AR", {
+                    const [year, month] = value.split("-");
+                    const date = new Date(Number(year), Number(month) - 1);
+                    return date.toLocaleDateString("es-AR", {
                       month: "long",
                       year: "numeric",
                     });
