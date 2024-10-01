@@ -23,8 +23,16 @@ func NewRecipeHandler(recipeService services.RecipeInterface) *RecipeHandler {
 func (handler *RecipeHandler) GetRecipes(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 
-	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][user:%s]", user.Username)
-	recipes, err := handler.recipeService.GetRecipes(user.Code)
+	foodstuffType := c.Query("foodstuff_type")
+	name := c.Query("name")
+	meal := c.Query("meal")
+
+	// logs
+	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][foodstuff_type:%s]", foodstuffType)
+	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][name:%s]", name)
+	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][meal:%s]", meal)
+
+	recipes, err := handler.recipeService.GetRecipes(user.Code, meal, name, foodstuffType)
 
 	if err.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:GetRecipes][reason:ERROR_GET][error:%s]", err.Error())

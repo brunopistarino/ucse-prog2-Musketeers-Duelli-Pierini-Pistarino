@@ -5,6 +5,7 @@ import (
 	"api/services"
 	"api/utils"
 	"log"
+
 	// "net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,6 @@ import (
 // ReportHandler struct
 type ReportHandler struct {
 	reportService services.ReportInterface
-
 }
 
 // NewReportHandler creates a new ReportHandler
@@ -33,7 +33,7 @@ func (h *ReportHandler) GetReportsByTypeOfUse(c *gin.Context) {
 		return
 	}
 
-	log.Printf("[handler:ReportHandler][method:GetReportsByTypeOfUse][reason:SUCCESS_GET][user:%d]", len(reports))
+	log.Printf("[handler:ReportHandler][method:GetReportsByTypeOfUse][reason:SUCCESS_GET][report_items:%d]", len(reports))
 	c.JSON(200, reports)
 }
 
@@ -47,7 +47,7 @@ func (h *ReportHandler) GetReportsByTypeOfFoodstuff(c *gin.Context) {
 		return
 	}
 
-	log.Printf("[handler:ReportHandler][method:GetReportsByTypeOfFoodstuff][reason:SUCCESS_GET][user:%d]", len(reports))
+	log.Printf("[handler:ReportHandler][method:GetReportsByTypeOfFoodstuff][reason:SUCCESS_GET][report_items:%d]", len(reports))
 	c.JSON(200, reports)
 }
 
@@ -61,7 +61,6 @@ func (h *ReportHandler) GetMonthlyCosts(c *gin.Context) {
 		return
 	}
 
-	log.Printf("[handler:ReportHandler][method:GetMonthlyCosts][reason:SUCCESS_GET][user:%d]", len(reports))
+	log.Printf("[handler:ReportHandler][method:GetMonthlyCosts][reason:SUCCESS_GET][report_items:%d]", len(reports))
 	c.JSON(200, reports)
 }
-

@@ -13,10 +13,9 @@ import (
 )
 
 type RecipeInterface interface {
-	GetRecipes(user string) ([]*dto.Recipe, dto.RequestError)
+	GetRecipes(user string, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError)
 	GetRecipe(user string, id string) (*dto.Recipe, dto.RequestError)
 	PostRecipe(user string, recipe *dto.Recipe) dto.RequestError
-	//PutRecipe(user string, recipe *dto.Recipe, id string) dto.RequestError
 	DeleteRecipe(user string, id string) dto.RequestError
 }
 
@@ -32,21 +31,37 @@ func NewRecipeService(recipeRepository repositories.RecipeRepositoryInterface, f
 	}
 }
 
-func (service *RecipeService) GetRecipes(user string) ([]*dto.Recipe, dto.RequestError) {
-	recipesDB, err := service.recipeRepository.GetRecipes(user)
+func (service *RecipeService) GetRecipes(user string, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError) {
+	if meal != "" && !utils.StringExistsInSlice(meal, dto.Meals) {
+		return nil, *dto.NewRequestErrorWithMessages(http.StatusBadRequest, []dto.RequestMessage{*dto.NewDefaultRequestMessage(dto.InvalidFoodstuffMeal)})
+	}
+	if foodstuffType != "" && !utils.StringExistsInSlice(foodstuffType, dto.FoodstuffType) {
+		return nil, *dto.NewRequestErrorWithMessages(http.StatusBadRequest, []dto.RequestMessage{*dto.NewDefaultRequestMessage(dto.InvalidFoodstuffType)})
+	}
+
+	recipesDB, err := service.recipeRepository.GetRecipes(user, name, meal)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
 	}
-
 	var recipes []*dto.Recipe
+
 	for _, recipeDB := range recipesDB {
 		recipe, errorDB := service.setRecipeIngredients(&recipeDB, user)
 		if errorDB.IsDefined() {
 			return nil, errorDB
 		}
-
-		recipes = append(recipes, &recipe)
+		if foodstuffType != "" {
+			// Verify foodstuffType is in foodstuff types
+			for _, ingredient := range recipe.Ingredients {
+				if ingredient.Type == foodstuffType {
+					recipes = append(recipes, &recipe)
+					break
+				}
+			}
+		} else {
+			recipes = append(recipes, &recipe)
+		}
 	}
 	if len(recipes) == 0 {
 		recipes = []*dto.Recipe{}
@@ -119,31 +134,6 @@ func (service *RecipeService) PostRecipe(user string, recipe *dto.Recipe) dto.Re
 	return dto.RequestError{}
 }
 
-/*
-	func (service *RecipeService) PutRecipe(user string, recipe *dto.Recipe, id string) dto.RequestError {
-		err := recipe.VerifyRecipe()
-		if err != nil {
-			return *dto.NewRequestErrorWithMessages(http.StatusBadRequest, err)
-		}
-		if id == "" {
-			return *dto.NewRequestError(http.StatusBadRequest, dto.RequiredID)
-		}
-		recipe.ID = id
-		recipeDB := recipe.GetModel()
-		recipeDB.UserCode = user
-		now := time.Now()
-		recipeDB.UpdatedAt = primitive.NewDateTimeFromTime(now)
-
-		updateResult, errInsert := service.recipeRepository.PutRecipe(recipeDB)
-		if errInsert != nil {
-			return *dto.InternalServerError()
-		}
-		if updateResult.MatchedCount == 0 {
-			return *dto.NotFoundError(fmt.Errorf("foodstuff with id %v not found", id))
-		}
-		return dto.RequestError{}
-	}
-*/
 func (service *RecipeService) DeleteRecipe(user string, id string) dto.RequestError {
 	objectID := utils.GetObjectIDFromStringID(id)
 

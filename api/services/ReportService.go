@@ -29,7 +29,7 @@ func NewReportService(recipeRepository repositories.RecipeRepositoryInterface, p
 }
 
 func (service *ReportService) GetReportsByTypeOfUse(user string) ([]*dto.ReportRecipeUse, dto.RequestError) {
-	recipesDB, err := service.recipeRepository.GetRecipes(user)
+	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -100,7 +100,7 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]*dto.ReportR
 }
 
 func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]*dto.ReportRecipeFoodstuff, dto.RequestError) {
-	recipesDB, err := service.recipeRepository.GetRecipes(user)
+	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
 	if err != nil {
 		return nil, *dto.InternalServerError()
 	}

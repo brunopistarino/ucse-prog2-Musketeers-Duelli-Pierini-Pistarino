@@ -12,10 +12,9 @@ import (
 )
 
 type RecipeRepositoryInterface interface {
-	GetRecipes(user string) ([]model.Recipe, error)
+	GetRecipes(user string, name string, meal string) ([]model.Recipe, error)
 	GetRecipe(user string, id string) (model.Recipe, error)
 	PostRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error)
-	//PutRecipe(recipe model.Recipe) (*mongo.UpdateResult, error)
 	DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error)
 }
 
@@ -29,10 +28,17 @@ func NewRecipeRepository(db DB) *RecipeRepository {
 	}
 }
 
-func (repository RecipeRepository) GetRecipes(user string) ([]model.Recipe, error) {
+func (repository RecipeRepository) GetRecipes(user string, name string, meal string) ([]model.Recipe, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 	filter := bson.M{"user_code": user}
 	findOptions := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
+
+	if name != "" {
+		filter["name"] = bson.M{"$regex": name, "$options": "i"}
+	}
+	if meal != "" {
+		filter["meal"] = meal
+	}
 
 	cursor, err := collection.Find(context.TODO(), filter, findOptions)
 	if err != nil {
@@ -83,21 +89,6 @@ func (repository RecipeRepository) PostRecipe(recipe model.Recipe) (*mongo.Inser
 	return result, nil
 }
 
-/*
-	func (repository RecipeRepository) PutRecipe(recipe model.Recipe) (*mongo.UpdateResult, error) {
-		collection := repository.db.GetClient().Database("superCook").Collection("recipes")
-		filter := bson.M{"_id": recipe.ID}
-		update := bson.M{"$set": recipe}
-
-		result, err := collection.UpdateOne(context.TODO(), filter, update)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return result, nil
-	}
-*/
 func (repository RecipeRepository) DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 	filter := bson.M{"user_code": user, "_id": id}
