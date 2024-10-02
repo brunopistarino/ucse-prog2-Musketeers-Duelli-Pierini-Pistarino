@@ -1,0 +1,28 @@
+services:
+  web:
+    build: ./web
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - api
+    environment:
+      - API_URL=http://localhost:8080 
+  api:
+    build: ./api
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/api
+    depends_on:
+      - db
+  db:
+    build: ./mongo
+    ports:
+      - "27110:27017"
+    volumes:
+      - ./data:/data/db
+    restart: always
+    
