@@ -1,15 +1,10 @@
-db = db.getSiblingDB("superCook"); // Switch to superCook database
+db = db.getSiblingDB("superCook");
 
-// Create 'foodstuffs' collection with a dummy document
 db.foodstuffs.insertOne({ dummy: true });
-
-// Create 'purchases' collection with a dummy document
 db.purchases.insertOne({ dummy: true });
-
-// Create 'recipes' collection with a dummy document
 db.recipes.insertOne({ dummy: true });
 
-// Optionally, remove the dummy documents after the collections are created
+// Remove dummy documents
 db.foodstuffs.deleteOne({ dummy: true });
 db.purchases.deleteOne({ dummy: true });
 db.recipes.deleteOne({ dummy: true });
