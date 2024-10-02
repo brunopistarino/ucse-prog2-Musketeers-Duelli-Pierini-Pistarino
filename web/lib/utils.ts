@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { ZodError } from "zod";
@@ -98,4 +98,12 @@ export function formatZodError(error: ZodError) {
     data: null,
     error: errorMessage,
   };
+}
+
+export const axiosInstance = axios.create({
+  baseURL: process.env.API_URL,
+});
+
+export function isAuthError(error: unknown): boolean {
+  return error instanceof AxiosError && error.response?.status === 401;
 }

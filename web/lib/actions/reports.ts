@@ -1,25 +1,25 @@
 "use server";
 
-import axios from "axios";
-import { formatError } from "../utils";
+import { axiosInstance, formatError, isAuthError } from "../utils";
 import { cookies } from "next/headers";
 import {
   MonthlyCostsReport,
   RecipeFoodstuffTypeReport,
   RecipeMealReport,
 } from "../types";
+import { redirect } from "next/navigation";
 
 export async function getRecipeMealReports() {
   const cookieStore = cookies();
   try {
-    const response = await axios.get(
-      `${process.env.API_URL}reports/recipe_meal`,
-      {
-        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
-      }
-    );
+    const response = await axiosInstance.get("reports/recipe_meal", {
+      headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+    });
     return { data: response.data as RecipeMealReport[], error: null };
   } catch (error) {
+    if (isAuthError(error)) {
+      redirect("/login");
+    }
     return formatError(error);
   }
 }
@@ -27,14 +27,14 @@ export async function getRecipeMealReports() {
 export async function getRecipeFoodstuffTypeReports() {
   const cookieStore = cookies();
   try {
-    const response = await axios.get(
-      `${process.env.API_URL}reports/recipe_foodstuff_type`,
-      {
-        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
-      }
-    );
+    const response = await axiosInstance.get("reports/recipe_foodstuff_type", {
+      headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+    });
     return { data: response.data as RecipeFoodstuffTypeReport[], error: null };
   } catch (error) {
+    if (isAuthError(error)) {
+      redirect("/login");
+    }
     return formatError(error);
   }
 }
@@ -42,14 +42,14 @@ export async function getRecipeFoodstuffTypeReports() {
 export async function getMonthlyCostsReports() {
   const cookieStore = cookies();
   try {
-    const response = await axios.get(
-      `${process.env.API_URL}reports/monthly_costs`,
-      {
-        headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
-      }
-    );
+    const response = await axiosInstance.get("reports/monthly_costs", {
+      headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
+    });
     return { data: response.data as MonthlyCostsReport[], error: null };
   } catch (error) {
+    if (isAuthError(error)) {
+      redirect("/login");
+    }
     return formatError(error);
   }
 }

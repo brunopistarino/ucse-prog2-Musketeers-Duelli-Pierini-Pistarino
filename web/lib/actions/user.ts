@@ -1,7 +1,6 @@
 "use server";
 
-import axios from "axios";
-import { formatError, formatZodError } from "../utils";
+import { axiosInstance, formatError, formatZodError } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginSchema, registerSchema } from "../zod-schemas";
@@ -11,17 +10,14 @@ export async function login(values: unknown) {
   if (!result.success) return formatZodError(result.error);
 
   try {
-    const response = await axios.post(
-      `${process.env.API_URL}user/login`,
-      result.data
-    );
+    const response = await axiosInstance.post("user/login", result.data);
     const token = response.headers.authorization;
     console.log(response.headers["expires-in"]);
     if (token) {
       const cookieStore = cookies();
       cookieStore.set("token", token, {
         httpOnly: true,
-        maxAge: parseInt(response.headers["expires-in"], 10) / 1000,
+        maxAge: parseInt(response.headers["expires-in"], 10),
         path: "/",
       });
     }
@@ -36,10 +32,7 @@ export async function register(values: unknown) {
   if (!result.success) return formatZodError(result.error);
 
   try {
-    const response = await axios.post(
-      `${process.env.API_URL}user/register`,
-      result.data
-    );
+    const response = await axiosInstance.post("user/register", result.data);
 
     const responseLogin = await login({
       username: result.data.email,
