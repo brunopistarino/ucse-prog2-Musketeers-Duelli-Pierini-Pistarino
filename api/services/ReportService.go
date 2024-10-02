@@ -96,6 +96,9 @@ func (service *ReportService) GetReportsByTypeOfUse(user string) ([]*dto.ReportR
 			}
 		}
 	}
+	if len(reportRecipeUses) == 0 {
+		reportRecipeUses = []*dto.ReportRecipeUse{}
+	}
 	return reportRecipeUses, dto.RequestError{}
 }
 
@@ -134,6 +137,9 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]*dto.R
 			TypeOfFoodstuff: foodstuffType,
 			Count:           count,
 		})
+	}
+	if len(reportRecipeFoodstuffList) == 0 {
+		reportRecipeFoodstuffList = []*dto.ReportRecipeFoodstuff{}
 	}
 
 	return reportRecipeFoodstuffList, dto.RequestError{}
@@ -175,6 +181,10 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportAverage
 			Month:       month,
 			AverageCost: averageCost,
 		})
+	}
+
+	if len(reportAverageMonths) == 0 {
+		reportAverageMonths = []*dto.ReportAverageMonth{}
 	}
 
 	return reportAverageMonths, dto.RequestError{}
