@@ -12,7 +12,7 @@ export default function NameFilter() {
   return (
     <Input
       placeholder="Buscar por nombre..."
-      className="w-64"
+      className="md:w-48 w-full"
       value={name}
       onChange={(e) => setName(e.target.value)}
     />

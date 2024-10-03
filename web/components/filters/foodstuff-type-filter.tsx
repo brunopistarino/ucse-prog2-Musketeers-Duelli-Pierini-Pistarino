@@ -18,7 +18,7 @@ export default function FoodstuffTypeFilter() {
 
   return (
     <Select value={type} onValueChange={(v) => setType(v === "all" ? null : v)}>
-      <SelectTrigger className="w-40">
+      <SelectTrigger className="md:w-40 w-full">
         <SelectValue placeholder="Todos los tipos" />
       </SelectTrigger>
       <SelectContent>

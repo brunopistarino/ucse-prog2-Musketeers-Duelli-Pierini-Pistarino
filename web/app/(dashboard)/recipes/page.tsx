@@ -31,12 +31,14 @@ export default async function RecipesPage({ searchParams }: Props) {
 
   return (
     <div className="flex flex-col flex-1">
-      <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50">
+      <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50 flex-col md:flex-row gap-2 overflow-x-auto">
         <h1 className="text-lg font-semibold md:text-2xl">Recetas</h1>
-        <div className="flex gap-2 flex-col md:flex-row">
+        <div className="flex gap-2 flex-col md:flex-row w-full md:w-auto">
           <NameFilter />
-          <FoodstuffTypeFilter />
-          <MealFilter />
+          <div className="flex gap-2">
+            <FoodstuffTypeFilter />
+            <MealFilter />
+          </div>
           <FormDialog foodstuffs={foodstuffs}>
             <Button className="gap-2">
               <Plus size={16} />

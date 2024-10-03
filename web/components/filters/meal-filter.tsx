@@ -18,7 +18,7 @@ export default function MealFilter() {
 
   return (
     <Select value={meal} onValueChange={(v) => setMeal(v === "all" ? null : v)}>
-      <SelectTrigger className="w-48">
+      <SelectTrigger className="md:w-48 w-full">
         <SelectValue placeholder="Todos los momentos" />
       </SelectTrigger>
       <SelectContent>
