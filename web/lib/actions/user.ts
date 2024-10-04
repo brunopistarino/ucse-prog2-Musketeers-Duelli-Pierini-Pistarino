@@ -12,7 +12,6 @@ export async function login(values: unknown) {
   try {
     const response = await axiosInstance.post("user/login", result.data);
     const token = response.headers.authorization;
-    console.log(response.headers["expires-in"]);
     if (token) {
       const cookieStore = cookies();
       cookieStore.set("token", token, {

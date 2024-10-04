@@ -72,7 +72,6 @@ func getModelIngredient(ingredient Ingredient) *model.Ingredient {
 }
 
 func (recipe Recipe) VerifyRecipe() []RequestMessage {
-	// Verify name not empty
 	var errs []RequestMessage
 	if recipe.Name == "" {
 		errs = append(errs, *NewDefaultRequestMessage(RequiredName))

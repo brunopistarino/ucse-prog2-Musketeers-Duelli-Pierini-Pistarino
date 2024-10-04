@@ -22,7 +22,7 @@ func NewPurchaseHandler(purchaseService services.PurchaseInterface) *PurchaseHan
 
 func (handler *PurchaseHandler) GetPurchases(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:PurchaseHandler][method:GetPurchases][info:GET_ALL]")
+	log.Printf("[handler:PurchaseHandler][method:GetPurchases][info:GET_ALL][user:%s]", user.Username)
 	purchases, err := handler.purchaseService.GetPurchases(user.Code)
 
 	if err.IsDefined() {
@@ -36,9 +36,8 @@ func (handler *PurchaseHandler) GetPurchases(c *gin.Context) {
 
 func (handler *PurchaseHandler) PostPurchase(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:PurchaseHandler][method:PostPurchase][info:POST]")
+	log.Printf("[handler:PurchaseHandler][method:PostPurchase][info:POST][user:%s]", user.Username)
 
-	// Bind an array of strings from JSON body
 	var ids []string
 	errBind := c.ShouldBindJSON(&ids)
 	if errBind != nil {

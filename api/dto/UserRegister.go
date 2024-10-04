@@ -21,7 +21,6 @@ func (register UserRegister) VerifyRegister() []RequestMessage {
 	if register.Email == "" {
 		messages = append(messages, *NewDefaultRequestMessage(RequiredEmail))
 	}
-	// Email validation
 	if !utils.IsValidEmail(register.Email) {
 		messages = append(messages, *NewDefaultRequestMessage(InvalidEmail))
 	}

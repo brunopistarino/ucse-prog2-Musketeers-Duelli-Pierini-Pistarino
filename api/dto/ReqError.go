@@ -27,8 +27,6 @@ func (e RequestError) IsDefined() bool {
 	return e.HasMessages() || e.HasStatusCode()
 }
 
-//
-
 // Constructors
 func NewRequestErrorWithMessages(statusCode int, messages []RequestMessage) *RequestError {
 	return &RequestError{
@@ -55,6 +53,7 @@ func NewGenericRequestError(statusCode int, id int, message string) *RequestErro
 	}
 }
 
+// Errors
 func BindBadRequestError() *RequestError {
 	return NewRequestError(http.StatusBadRequest, InvalidRequestBody)
 }

@@ -38,7 +38,7 @@ func (handler *FoodstuffHandler) GetFoodstuffs(c *gin.Context) {
 
 func (handler *FoodstuffHandler) GetFoodstuffsBelowMinimum(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:FoodstuffHandler][method:GetFoodstuffsBelowMinimum][info:GET_BELOW_MINIMUM]")
+	log.Printf("[handler:FoodstuffHandler][method:GetFoodstuffsBelowMinimum][info:GET_BelowMinimum][user:%s]", user.Username)
 
 	foodstuffType := c.Query("type")
 	name := c.Query("name")
@@ -56,7 +56,7 @@ func (handler *FoodstuffHandler) GetFoodstuffsBelowMinimum(c *gin.Context) {
 
 func (handler *FoodstuffHandler) GetFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:FoodstuffHandler][method:GetFoodstuff][info:GET_ONE]")
+	log.Printf("[handler:FoodstuffHandler][method:GetFoodstuff][info:GET_ONE][user:%s]", user.Username)
 
 	id := c.Param("id")
 	foodstuff, err := handler.foodstuffService.GetFoodstuff(user.Code, id)
@@ -72,7 +72,7 @@ func (handler *FoodstuffHandler) GetFoodstuff(c *gin.Context) {
 
 func (handler *FoodstuffHandler) PostFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:FoodstuffHandler][method:PostFoodstuff][info:POST]")
+	log.Printf("[handler:FoodstuffHandler][method:PostFoodstuff][info:POST][user:%s]", user.Username)
 
 	var foodstuff dto.Foodstuff
 	err := c.ShouldBindJSON(&foodstuff)
@@ -96,7 +96,7 @@ func (handler *FoodstuffHandler) PostFoodstuff(c *gin.Context) {
 
 func (handler *FoodstuffHandler) PutFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:FoodstuffHandler][method:PutFoodstuff][info:PUT]")
+	log.Printf("[handler:FoodstuffHandler][method:PutFoodstuff][info:PUT][user:%s]", user.Username)
 
 	var foodstuff dto.Foodstuff
 	err := c.ShouldBindJSON(&foodstuff)
@@ -121,7 +121,7 @@ func (handler *FoodstuffHandler) PutFoodstuff(c *gin.Context) {
 
 func (handler *FoodstuffHandler) DeleteFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:FoodstuffHandler][method:DeleteFoodstuff][info:DELETE]")
+	log.Printf("[handler:FoodstuffHandler][method:DeleteFoodstuff][info:DELETE][user:%s]", user.Username)
 
 	id := c.Param("id")
 	err := handler.foodstuffService.DeleteFoodstuff(user.Code, id)

@@ -52,7 +52,6 @@ func (service *RecipeService) GetRecipes(user string, meal string, name string, 
 			return nil, errorDB
 		}
 		if foodstuffType != "" {
-			// Verify foodstuffType is in foodstuff types
 			for _, ingredient := range recipe.Ingredients {
 				if ingredient.Type == foodstuffType {
 					recipes = append(recipes, &recipe)

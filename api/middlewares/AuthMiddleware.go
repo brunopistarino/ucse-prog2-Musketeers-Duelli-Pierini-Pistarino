@@ -18,7 +18,6 @@ func NewAuthMiddleware(authClient clients.AuthClientInterface) *AuthMiddleware {
 	}
 }
 
-// Este middleware se ejecuta en el grupo de rutas privadas.
 func (auth *AuthMiddleware) ValidateToken(c *gin.Context) {
 	//Se obtiene el header necesario con name "Authorization"
 	authToken := c.GetHeader("Authorization")

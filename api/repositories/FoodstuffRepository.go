@@ -68,7 +68,6 @@ func (repository FoodstuffRepository) GetFoodstuffsBelowMinimum(user string, typ
 	filter := bson.M{"$and": []bson.M{userFilter, compareFilter}}
 	findOptions := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
 
-	// Type filter by exact match and name filter by approximate match
 	if typeFoodstuff != "" {
 		filter["type"] = typeFoodstuff
 	}
@@ -103,7 +102,6 @@ func (repository FoodstuffRepository) GetFoodstuffsBelowMinimum(user string, typ
 func (repository FoodstuffRepository) GetFoodstuffFromMealAndQuantity(user string, meal string, foodstuff primitive.ObjectID, quantity int) (model.Foodstuff, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	userFilter := bson.M{"user_code": user}
-	// Meal filter considering the DB object is an array of strings and the meal is a single string
 	mealFilter := bson.M{"meals": meal}
 	foodstuffFilter := bson.M{"_id": foodstuff}
 	quantityFilter := bson.M{"current_quantity": bson.M{"$gte": quantity}}

@@ -1,3 +1,4 @@
+// Initialize the database with dummy documents to create the collections
 db = db.getSiblingDB("superCook");
 
 db.foodstuffs.insertOne({ dummy: true });

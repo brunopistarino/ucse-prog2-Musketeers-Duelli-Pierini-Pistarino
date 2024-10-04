@@ -5,7 +5,6 @@ import (
 	"api/utils"
 )
 
-// Declare a constant array of types of food.
 const (
 	Vegetable = "Vegetable"
 	Fruit     = "Fruit"
@@ -22,7 +21,6 @@ var FoodstuffType = []string{
 	Fish,
 }
 
-// Declare a constant array of food 'moments'.
 const (
 	Breakfast = "Breakfast"
 	Lunch     = "Lunch"

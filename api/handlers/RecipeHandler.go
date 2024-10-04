@@ -22,15 +22,11 @@ func NewRecipeHandler(recipeService services.RecipeInterface) *RecipeHandler {
 
 func (handler *RecipeHandler) GetRecipes(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
+	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][user:%s]", user.Username)
 
 	foodstuffType := c.Query("type")
 	name := c.Query("name")
 	meal := c.Query("meal")
-
-	// logs
-	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][foodstuff_type:%s]", foodstuffType)
-	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][name:%s]", name)
-	log.Printf("[handler:RecipeHandler][method:GetRecipes][info:GET_ALL][meal:%s]", meal)
 
 	recipes, err := handler.recipeService.GetRecipes(user.Code, meal, name, foodstuffType)
 
@@ -45,7 +41,7 @@ func (handler *RecipeHandler) GetRecipes(c *gin.Context) {
 
 func (handler *RecipeHandler) GetRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:RecipeHandler][method:GetRecipe][info:GET_ONE]")
+	log.Printf("[handler:RecipeHandler][method:GetRecipe][info:GET_ONE][user:%s]", user.Username)
 
 	id := c.Param("id")
 	recipe, err := handler.recipeService.GetRecipe(user.Code, id)
@@ -61,7 +57,7 @@ func (handler *RecipeHandler) GetRecipe(c *gin.Context) {
 
 func (handler *RecipeHandler) PostRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:RecipeHandler][method:PostRecipe][info:POST]")
+	log.Printf("[handler:RecipeHandler][method:PostRecipe][info:POST][user:%s]", user.Username)
 
 	var recipe dto.Recipe
 	err := c.ShouldBindJSON(&recipe)
@@ -85,8 +81,8 @@ func (handler *RecipeHandler) PostRecipe(c *gin.Context) {
 
 func (handler *RecipeHandler) PostRepeatedRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
+	log.Printf("[handler:RecipeHandler][method:PostRecipe][info:POST][user:%s]", user.Username)
 
-	log.Print("[handler:RecipeHandler][method:PostRecipe][info:POST]")
 	// Bind the recipe id from the URL
 	id := c.Param("id")
 
@@ -117,35 +113,9 @@ func (handler *RecipeHandler) PostRepeatedRecipe(c *gin.Context) {
 	c.JSON(http.StatusCreated, recipe)
 }
 
-/*
-	func (handler *RecipeHandler) PutRecipe(c *gin.Context) {
-		user := dto.NewUser(utils.GetUserInfoFromContext(c))
-		log.Print("[handler:RecipeHandler][method:PutRecipe][info:PUT]")
-
-		var recipe dto.Recipe
-		err := c.ShouldBindJSON(&recipe)
-		if err != nil {
-			log.Printf("[handler:RecipeHandler][method:PutRecipe][reason:ERROR_BIND][error:%s]", err.Error())
-			c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
-			return
-		}
-		id := c.Param("id")
-
-		errorService := handler.recipeService.PutRecipe(user.Code, &recipe, id)
-
-		if errorService.IsDefined() {
-			log.Printf("[handler:RecipeHandler][method:PutRecipe][reason:ERROR_PUT][error:%s]", errorService.Error())
-			c.JSON(errorService.StatusCode, errorService)
-			return
-		}
-
-		log.Printf("[handler:RecipeHandler][method:PutRecipe][reason:SUCCESS_PUT][recipe:%s]", recipe.Name)
-		c.JSON(http.StatusOK, recipe)
-	}
-*/
 func (handler *RecipeHandler) DeleteRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Print("[handler:RecipeHandler][method:DeleteRecipe][info:DELETE]")
+	log.Printf("[handler:RecipeHandler][method:DeleteRecipe][info:DELETE][user:%s]", user.Username)
 
 	id := c.Param("id")
 	errorService := handler.recipeService.DeleteRecipe(user.Code, id)
