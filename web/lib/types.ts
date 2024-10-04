@@ -10,5 +10,5 @@ export interface RecipeFoodstuffTypeReport {
 
 export interface MonthlyCostsReport {
   month: string;
-  average_cost: number;
+  cost: number;
 }

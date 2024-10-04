@@ -19,7 +19,7 @@ import { useMemo } from "react";
 
 interface CostData {
   month: string;
-  average_cost: number;
+  cost: number;
 }
 
 interface MonthlyCostChartProps {
@@ -27,7 +27,7 @@ interface MonthlyCostChartProps {
 }
 
 const chartConfig = {
-  average_cost: {
+  cost: {
     label: "Average Cost",
     color: "hsl(var(--chart-1))",
   },
@@ -35,7 +35,7 @@ const chartConfig = {
 
 export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
   const total = useMemo(
-    () => data.reduce((acc, curr) => acc + curr.average_cost, 0),
+    () => data.reduce((acc, curr) => acc + curr.cost, 0),
     [data]
   );
 
@@ -90,7 +90,7 @@ export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
               content={
                 <ChartTooltipContent
                   className="w-[150px]"
-                  nameKey="average_cost"
+                  nameKey="cost"
                   labelFormatter={(value) => {
                     const [year, month] = value.split("-");
                     const date = new Date(Number(year), Number(month) - 1);
@@ -103,7 +103,7 @@ export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
                 />
               }
             />
-            <Bar dataKey="average_cost" fill={chartConfig.average_cost.color} />
+            <Bar dataKey="cost" fill={chartConfig.cost.color} />
           </BarChart>
         </ChartContainer>
       </CardContent>

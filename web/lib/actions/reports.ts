@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 export async function getRecipeMealReports() {
   const cookieStore = cookies();
   try {
-    const response = await axiosInstance.get("reports/recipe_meal", {
+    const response = await axiosInstance.get("reports/recipeMeal", {
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
     return { data: response.data as RecipeMealReport[], error: null };
@@ -27,7 +27,7 @@ export async function getRecipeMealReports() {
 export async function getRecipeFoodstuffTypeReports() {
   const cookieStore = cookies();
   try {
-    const response = await axiosInstance.get("reports/recipe_foodstuff_type", {
+    const response = await axiosInstance.get("reports/recipeFoodstuffType", {
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
     return { data: response.data as RecipeFoodstuffTypeReport[], error: null };
@@ -42,7 +42,7 @@ export async function getRecipeFoodstuffTypeReports() {
 export async function getMonthlyCostsReports() {
   const cookieStore = cookies();
   try {
-    const response = await axiosInstance.get("reports/monthly_costs", {
+    const response = await axiosInstance.get("reports/MonthlyCosts", {
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
     return { data: response.data as MonthlyCostsReport[], error: null };

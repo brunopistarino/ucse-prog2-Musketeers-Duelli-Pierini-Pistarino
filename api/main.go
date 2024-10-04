@@ -49,7 +49,7 @@ func mappingRoutes() {
 	foodstuffs.POST("/", foodstuffHandler.PostFoodstuff)
 	foodstuffs.PUT("/:id", foodstuffHandler.PutFoodstuff)
 	foodstuffs.DELETE("/:id", foodstuffHandler.DeleteFoodstuff)
-	foodstuffs.GET("/below_minimum", foodstuffHandler.GetFoodstuffsBelowMinimum)
+	foodstuffs.GET("/belowMinimum", foodstuffHandler.GetFoodstuffsBelowMinimum)
 
 	recipes := router.Group("/recipes")
 	recipes.Use(authMiddleware.ValidateToken)
@@ -68,9 +68,9 @@ func mappingRoutes() {
 
 	reports := router.Group("/reports")
 	reports.Use(authMiddleware.ValidateToken)
-	reports.GET("/recipe_meal", reportHandler.GetReportsByTypeOfUse)
-	reports.GET("/recipe_foodstuff_type", reportHandler.GetReportsByTypeOfFoodstuff)
-	reports.GET("/monthly_costs", reportHandler.GetMonthlyCosts)
+	reports.GET("/recipeMeal", reportHandler.GetReportsByMeal)
+	reports.GET("/recipeFoodstuffType", reportHandler.GetReportsByTypeOfFoodstuff)
+	reports.GET("/MonthlyCosts", reportHandler.GetMonthlyCosts)
 }
 
 func dependencies() {

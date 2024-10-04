@@ -29,7 +29,7 @@ export async function getFoodstuffs() {
 export async function getFoodstuffsBelowMinimum(name?: string, type?: string) {
   const cookieStore = cookies();
   try {
-    const response = await axiosInstance.get("foodstuffs/below_minimum", {
+    const response = await axiosInstance.get("foodstuffs/belowMinimum", {
       params: { name, type },
       headers: { Authorization: `Bearer ${cookieStore.get("token")?.value}` },
     });
