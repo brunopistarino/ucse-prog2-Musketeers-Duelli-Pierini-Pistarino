@@ -27,7 +27,6 @@ export default function useFoodstuffsForm(foodstuff?: Foodstuff) {
   });
 
   async function onSubmit(values: Foodstuff) {
-    console.log(values);
     setIsPending(true);
     const response = foodstuff
       ? await updateFoodstuff(values, foodstuff.id!)

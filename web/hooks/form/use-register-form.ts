@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { register } from "@/lib/actions/user";
 import { pages } from "@/lib/constants";
 
-export default function useRegisterFrom() {
+export default function useRegisterForm() {
   const [isPending, setIsPending] = useState(false);
   const { toast } = useToast();
   const router = useRouter();

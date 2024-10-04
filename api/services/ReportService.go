@@ -9,9 +9,9 @@ import (
 )
 
 type ReportInterface interface {
-	GetReportsByTypeOfUse(user string) ([]*dto.ReportRecipeUse, dto.RequestError)
+	GetReportsByMeal(user string) ([]*dto.ReportRecipeUse, dto.RequestError)
 	GetReportsByTypeOfFoodstuff(user string) ([]*dto.ReportRecipeFoodstuff, dto.RequestError)
-	GetMonthlyCosts(user string) ([]*dto.ReportAverageMonth, dto.RequestError)
+	GetMonthlyCosts(user string) ([]*dto.ReportMonthCost, dto.RequestError)
 }
 
 type ReportService struct {
@@ -28,7 +28,7 @@ func NewReportService(recipeRepository repositories.RecipeRepositoryInterface, p
 	}
 }
 
-func (service *ReportService) GetReportsByTypeOfUse(user string) ([]*dto.ReportRecipeUse, dto.RequestError) {
+func (service *ReportService) GetReportsByMeal(user string) ([]*dto.ReportRecipeUse, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
 
 	if err != nil {
@@ -145,7 +145,7 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]*dto.R
 	return reportRecipeFoodstuffList, dto.RequestError{}
 }
 
-func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportAverageMonth, dto.RequestError) {
+func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportMonthCost, dto.RequestError) {
 	purchasesDB, err := service.purchaseRepository.GetPurchases(user)
 
 	if err != nil {
@@ -153,7 +153,6 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportAverage
 	}
 
 	monthlyCosts := make(map[string]float64)
-	monthlyCounts := make(map[string]int)
 
 	currentTime := time.Now()
 	startTime := currentTime.AddDate(-1, 0, 0)
@@ -164,30 +163,24 @@ func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportAverage
 		if purchaseTime.After(startTime) && purchaseTime.Before(currentTime.AddDate(0, 1, 0)) {
 			month := purchaseTime.Format("2006-01")
 			monthlyCosts[month] += float64(purchase.TotalCost)
-			monthlyCounts[month]++
 		}
 	}
 
-	var reportAverageMonths []*dto.ReportAverageMonth
+	var ReportMonthCosts []*dto.ReportMonthCost
 	for i := 0; i <= 12; i++ {
 		month := startTime.AddDate(0, i, 0).Format("2006-01")
 		totalCost := monthlyCosts[month]
-		count := monthlyCounts[month]
-		averageCost := 0.0
-		if count > 0 {
-			averageCost = totalCost / float64(count)
-		}
-		reportAverageMonths = append(reportAverageMonths, &dto.ReportAverageMonth{
-			Month:       month,
-			AverageCost: averageCost,
+		ReportMonthCosts = append(ReportMonthCosts, &dto.ReportMonthCost{
+			Month: month,
+			Cost:  totalCost,
 		})
 	}
 
-	if len(reportAverageMonths) == 0 {
-		reportAverageMonths = []*dto.ReportAverageMonth{}
+	if len(ReportMonthCosts) == 0 {
+		ReportMonthCosts = []*dto.ReportMonthCost{}
 	}
 
-	return reportAverageMonths, dto.RequestError{}
+	return ReportMonthCosts, dto.RequestError{}
 }
 
 func isTypeOfUseNotInReport(typeOfUse string, reportRecipeUses []*dto.ReportRecipeUse) bool {

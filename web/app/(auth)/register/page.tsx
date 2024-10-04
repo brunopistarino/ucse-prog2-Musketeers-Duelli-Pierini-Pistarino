@@ -4,16 +4,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import React from "react";
-import useRegisterFrom from "@/hooks/form/use-register-from";
+import useRegisterForm from "@/hooks/form/use-register-form";
 import FormInput from "@/components/form/form-input";
 
 export default function RegisterPage() {
-  const { isPending, form, onSubmit } = useRegisterFrom();
+  const { isPending, form, onSubmit } = useRegisterForm();
 
   return (
     <>
       <div className="grid gap-2 text-center">
-        <h1 className="text-3xl font-bold">Crear un cuenta</h1>
+        <h1 className="text-3xl font-bold">Crear una cuenta</h1>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -41,7 +41,7 @@ export default function RegisterPage() {
         </form>
       </Form>
       <div className="mt-4 text-center text-sm">
-        ¿Ya tenes una cuenta?{" "}
+        ¿Ya tenés una cuenta?{" "}
         <Link href="/login" className="underline">
           Iniciar sesión
         </Link>

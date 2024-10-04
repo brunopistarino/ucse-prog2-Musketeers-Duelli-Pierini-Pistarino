@@ -62,7 +62,7 @@ export default function FormDialog({ children, alimento }: Props) {
             />
             <FormMultiSelect
               label="Momentos"
-              placeholder="Elija un o varios momentos"
+              placeholder="Elija uno o varios momentos"
               options={getMeals()}
               control={form.control}
               name="meals"
