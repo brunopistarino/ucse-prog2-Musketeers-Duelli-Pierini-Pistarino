@@ -24,7 +24,7 @@ export default function ClientPage({ data }: Props) {
 
   return (
     <div className="flex flex-col flex-1">
-      <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50 flex-col md:flex-row gap-2 md:overflow-x-auto">
+      <div className="flex items-center px-6 py-4 justify-between sticky top-0 bg-card z-50 flex-col md:flex-row gap-2 md:overflow-x-auto md:overflow-y-clip">
         <h1 className="text-lg font-semibold md:text-2xl">Compras</h1>
         <div className="flex gap-2 flex-col md:flex-row w-full md:w-auto">
           <NameFilter />
