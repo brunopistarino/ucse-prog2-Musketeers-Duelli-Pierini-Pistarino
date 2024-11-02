@@ -14,7 +14,6 @@ var (
 	foodstuffHandler *handlers.FoodstuffHandler
 	recipeHandler    *handlers.RecipeHandler
 	purchaseHandler  *handlers.PurchaseHandler
-	userHandler      *handlers.UserHandler
 	reportHandler    *handlers.ReportHandler
 	router           *gin.Engine
 )
@@ -36,10 +35,6 @@ func mappingRoutes() {
 	router.Use(middlewares.CORSMiddleware())
 
 	authMiddleware := middlewares.NewAuthMiddleware(clients.NewAuthClient())
-
-	user := router.Group("/user")
-	user.POST("/login", userHandler.LoginUser)
-	user.POST("/register", userHandler.RegisterUser)
 
 	foodstuffs := router.Group("/foodstuffs")
 	foodstuffs.Use(authMiddleware.ValidateToken)
@@ -89,9 +84,5 @@ func dependencies() {
 	foodstuffHandler = handlers.NewFoodstuffHandler(foodstuffService)
 	purchaseHandler = handlers.NewPurchaseHandler(purchaseService)
 	recipeHandler = handlers.NewRecipeHandler(recipeService)
-
-	var userClient = clients.NewAuthClient()
-	userService := services.NewUserService(userClient)
-	userHandler = handlers.NewUserHandler(userService)
 
 }

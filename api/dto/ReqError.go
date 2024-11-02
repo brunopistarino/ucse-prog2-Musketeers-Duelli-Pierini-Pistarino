@@ -70,17 +70,6 @@ func InternalServerError() *RequestError {
 	return NewGenericRequestError(http.StatusInternalServerError, http.StatusInternalServerError, "Internal Server Error")
 }
 
-func LoginError(err error) *RequestError {
-	if err.Error() == "invalid_grant" {
-		return NewRequestError(http.StatusBadRequest, IncorrectUsernameOrPassword)
-	}
-	return NewRequestError(http.StatusBadRequest, UnsupportedGrantType)
-}
-
-func RegisterError(err error) *RequestError {
-	return NewGenericRequestError(http.StatusBadRequest, RegisterAPIError, err.Error())
-}
-
 func TimeoutError(err error) *RequestError {
 	return NewGenericRequestError(http.StatusGatewayTimeout, http.StatusGatewayTimeout, err.Error())
 }
