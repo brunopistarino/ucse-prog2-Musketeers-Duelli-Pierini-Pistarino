@@ -13,37 +13,37 @@ export default function RegisterPage() {
   return (
     <>
       <div className="grid gap-2 text-center">
-        <h1 className="text-3xl font-bold">Crear una cuenta</h1>
+        <h1 className="text-3xl font-bold">Create an account</h1>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormInput
-            label="Correo electrónico"
+            label="Email address"
             placeholder="nombre@ejemplo.com"
             control={form.control}
             name="email"
           />
           <FormInput
-            label="Contraseña"
+            label="Password"
             control={form.control}
             name="password"
             type="password"
           />
           <FormInput
-            label="Confirmar contraseña"
+            label="Repeat password"
             control={form.control}
             name="confirm_password"
             type="password"
           />
           <Button type="submit" className="w-full" disabled={isPending}>
-            Crear cuenta
+            Continue
           </Button>
         </form>
       </Form>
       <div className="mt-4 text-center text-sm">
-        ¿Ya tenés una cuenta?{" "}
+        Already have an account?{" "}
         <Link href="/login" className="underline">
-          Iniciar sesión
+          Sign in
         </Link>
       </div>
     </>

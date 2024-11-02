@@ -44,7 +44,7 @@ export default function Navigation() {
         <ModeToggle />
         <Button className="gap-2" variant="secondary" onClick={() => logout()}>
           <LogOut size={16} />
-          Cerrar sesión
+          Log Out
         </Button>
       </div>
     </div>

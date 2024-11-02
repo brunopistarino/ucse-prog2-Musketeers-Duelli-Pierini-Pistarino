@@ -19,18 +19,18 @@ export default function ModeToggle() {
         <Button variant="outline" className="bg-transparent gap-2">
           <Sun className="h-[1.2rem] w-[1.2rem] block dark:hidden" />
           <Moon className="h-[1.2rem] w-[1.2rem] hidden dark:block" />
-          <p>Cambiar tema</p>
+          <p>Change Theme</p>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          Claro
+          Light
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          Oscuro
+          Dark
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          Sistema
+          System
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -36,8 +36,10 @@ export default function FormDialog({ children, foodstuffs }: Props) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Realizar compra</AlertDialogTitle>
-          <AlertDialogDescription>...</AlertDialogDescription>
+          <AlertDialogTitle>Make Purchase</AlertDialogTitle>
+          <AlertDialogDescription>
+            Purshcased foodstuffs will be added to the stock.
+          </AlertDialogDescription>
         </AlertDialogHeader>
         {foodstuffs.map((foodstuff) => {
           const quantity =
@@ -60,14 +62,14 @@ export default function FormDialog({ children, foodstuffs }: Props) {
             disabled={isPending}
             onClick={() => setIsOpen(false)}
           >
-            Cancelar
+            Cancel
           </AlertDialogCancel>
           <AlertDialogAction
             type="submit"
             disabled={isPending}
             onClick={onSubmit}
           >
-            Comprar
+            Confirm
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -30,14 +30,14 @@ export const columns: ColumnDef<Foodstuff>[] = [
   },
   {
     accessorKey: "name",
-    header: "Nombre",
+    header: "Name",
     cell: (row) => (
       <span className="font-semibold">{row.renderValue() as string}</span>
     ),
   },
   {
     accessorKey: "type",
-    header: "Tipo",
+    header: "Type",
     cell: (row) => {
       const foodstuffType = getFoodstuffType(row.getValue() as FoodstuffType);
       return (
@@ -49,12 +49,12 @@ export const columns: ColumnDef<Foodstuff>[] = [
   },
   {
     accessorKey: "price",
-    header: "Precio",
+    header: "Price",
     cell: (row) => formatCurrency(row.getValue() as number),
   },
   {
     id: "missing",
-    header: "Faltante",
+    header: "Missing",
     cell: ({ row }) => {
       const currentQuantity = row.getValue("current_quantity") as number;
       const minimumQuantity = row.getValue("minimum_quantity") as number;
@@ -75,7 +75,7 @@ export const columns: ColumnDef<Foodstuff>[] = [
   },
   {
     accessorKey: "current_quantity",
-    header: "Cantidad",
+    header: "Quantity",
     cell: ({ row }) => {
       const currentQuantity = row.getValue("current_quantity");
       const minimumQuantity = row.getValue("minimum_quantity");

@@ -11,14 +11,14 @@ import React from "react";
 export const columns: ColumnDef<Foodstuff>[] = [
   {
     accessorKey: "name",
-    header: "Nombre",
+    header: "Name",
     cell: (row) => (
       <span className="font-semibold">{row.getValue() as string}</span>
     ),
   },
   {
     accessorKey: "type",
-    header: "Tipo",
+    header: "Type",
     cell: (row) => {
       const foodstuffType = getFoodstuffType(row.getValue() as FoodstuffType);
       return (
@@ -30,7 +30,7 @@ export const columns: ColumnDef<Foodstuff>[] = [
   },
   {
     accessorKey: "meals",
-    header: "Momento",
+    header: "Meals",
     cell: (row) => {
       const meals = row.getValue() as Meal[];
       return (
@@ -49,12 +49,12 @@ export const columns: ColumnDef<Foodstuff>[] = [
   },
   {
     accessorKey: "price",
-    header: "Precio",
+    header: "Price",
     cell: (row) => formatCurrency(row.getValue() as number),
   },
   {
     accessorKey: "current_quantity",
-    header: "Cantidad",
+    header: "Quantity",
     cell: ({ row }) => {
       const currentQuantity = row.getValue("current_quantity");
       const minimumQuantity = row.getValue("minimum_quantity");

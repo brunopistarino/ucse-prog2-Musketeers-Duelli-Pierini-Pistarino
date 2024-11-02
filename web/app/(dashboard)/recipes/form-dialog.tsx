@@ -52,20 +52,23 @@ export default function FormDialog({ children, foodstuffs }: Props) {
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Agregar receta</AlertDialogTitle>
-          <AlertDialogDescription>...</AlertDialogDescription>
+          <AlertDialogTitle>Add Recipe</AlertDialogTitle>
+          <AlertDialogDescription>
+            Recipes are used to withdraw food from stock and to keep a record of
+            meals.
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormInput
-              label="Nombre"
-              placeholder="Ensalada de atún"
+              label="Name"
+              placeholder="Tuna salad"
               control={form.control}
               name="name"
             />
             <FormSelect
-              label="Momento"
-              placeholder="Elija un momento"
+              label="Meal"
+              placeholder="Choose a meal"
               options={getMeals()}
               control={form.control}
               valueChange={() => {
@@ -88,7 +91,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
             />
 
             <div className="space-y-2">
-              <FormLabel>Ingredientes</FormLabel>
+              <FormLabel>Ingredients</FormLabel>
               {form.watch("ingredients").map((ingredient, index) => {
                 return (
                   <div key={index} className="flex items-center gap-2">
@@ -107,7 +110,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                                 field.value ? "" : "text-muted-foreground"
                               }
                             >
-                              <SelectValue placeholder="Elija un alimento" />
+                              <SelectValue placeholder="Choose a foodstuff" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -191,7 +194,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                 }
               >
                 <Plus className="text-muted-foreground mr-1" size={16} />
-                Añadir ingrediente
+                Add ingredient
               </Button>
             </div>
             <AlertDialogFooter className="pt-4">
@@ -202,7 +205,7 @@ export default function FormDialog({ children, foodstuffs }: Props) {
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction type="submit" disabled={isPending}>
-                Guardar
+                Add
               </AlertDialogAction>
             </AlertDialogFooter>
           </form>

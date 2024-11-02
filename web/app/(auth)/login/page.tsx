@@ -13,31 +13,31 @@ export default function LoginPage() {
   return (
     <>
       <div className="grid gap-2 text-center">
-        <h1 className="text-3xl font-bold">Inicio de Sesión</h1>
+        <h1 className="text-3xl font-bold">Sign in</h1>
       </div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormInput
-            label="Correo electrónico"
+            label="Email address"
             placeholder="nombre@ejemplo.com"
             control={form.control}
             name="username"
           />
           <FormInput
-            label="Contraseña"
+            label="Password"
             control={form.control}
             name="password"
             type="password"
           />
           <Button type="submit" className="w-full" disabled={isPending}>
-            Iniciar sesión
+            Continue
           </Button>
         </form>
       </Form>
       <div className="mt-4 text-center text-sm">
-        ¿Sos un usuario nuevo?{" "}
+        New user?{" "}
         <Link href="/register" className="underline">
-          Crear una cuenta
+          Create an account
         </Link>
       </div>
     </>

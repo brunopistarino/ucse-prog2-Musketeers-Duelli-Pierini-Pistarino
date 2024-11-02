@@ -55,9 +55,9 @@ export function DataTable<TData, TValue>({
       <TableBody>
         {table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => {
-            const alimento = row.original as Foodstuff;
+            const foodstuff = row.original as Foodstuff;
             return (
-              <FormDialog key={alimento.id} alimento={alimento}>
+              <FormDialog key={foodstuff.id} foodstuff={foodstuff}>
                 <TableRow
                   className="cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
@@ -77,7 +77,7 @@ export function DataTable<TData, TValue>({
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-24 text-center">
-              Sin resultados.
+              No results.
             </TableCell>
           </TableRow>
         )}

@@ -25,10 +25,7 @@ export default function useLoginForm() {
     if (response?.error) {
       toast({
         title: "Error",
-        description:
-          response.error === "invalid_grant"
-            ? "Wrong email or password"
-            : response.error,
+        description: response.error,
         variant: "destructive",
       });
       setIsPending(false);

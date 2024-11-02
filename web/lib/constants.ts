@@ -2,22 +2,22 @@ import { LineChart, Package, ShoppingCart, NotepadText } from "lucide-react";
 
 export const pages = [
   {
-    name: "Estadísticas",
+    name: "Reports",
     href: "/reports",
     icon: LineChart,
   },
   {
-    name: "Alimentos",
+    name: "Foodstuffs",
     href: "/foodstuffs",
     icon: Package,
   },
   {
-    name: "Recetas",
+    name: "Recipes",
     href: "/recipes",
     icon: NotepadText,
   },
   {
-    name: "Compras",
+    name: "Purchases",
     href: "/purchases",
     icon: ShoppingCart,
   },
@@ -25,27 +25,27 @@ export const pages = [
 
 export const foodstuffsTypes = {
   Vegetable: {
-    name: "Verdura",
+    name: "Vegetable",
     emoji: "🥬",
     color: "hsl(var(--chart-1))",
   },
   Fruit: {
-    name: "Fruta",
+    name: "Fruit",
     emoji: "🍎",
     color: "hsl(var(--chart-2))",
   },
   Fish: {
-    name: "Pescado",
+    name: "Fish",
     emoji: "🐟",
     color: "hsl(var(--chart-3))",
   },
   Meat: {
-    name: "Carne",
+    name: "Meat",
     emoji: "🥩",
     color: "hsl(var(--chart-4))",
   },
   Dairy: {
-    name: "Lácteo",
+    name: "Dairy",
     emoji: "🥛",
     color: "hsl(var(--chart-5))",
   },
@@ -53,22 +53,22 @@ export const foodstuffsTypes = {
 
 export const meals = {
   Breakfast: {
-    name: "Desayuno",
+    name: "Breakfast",
     emoji: "🕕",
     color: "hsl(var(--chart-1))",
   },
   Lunch: {
-    name: "Almuerzo",
+    name: "Lunch",
     emoji: "🕛",
     color: "hsl(var(--chart-2))",
   },
   Supper: {
-    name: "Merienda",
+    name: "Supper",
     emoji: "🕒",
     color: "hsl(var(--chart-3))",
   },
   Dinner: {
-    name: "Cena",
+    name: "Dinner",
     emoji: "🕘",
     color: "hsl(var(--chart-4))",
   },

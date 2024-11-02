@@ -23,12 +23,12 @@ import FormMultiSelect from "@/components/form/form-multi-select";
 
 interface Props {
   children: React.ReactNode;
-  alimento?: Foodstuff;
+  foodstuff?: Foodstuff;
 }
 
-export default function FormDialog({ children, alimento }: Props) {
+export default function FormDialog({ children, foodstuff }: Props) {
   const { form, isPending, isOpen, setIsOpen, onSubmit, onDelete } =
-    useFoodstuffsForm(alimento);
+    useFoodstuffsForm(foodstuff);
 
   return (
     <AlertDialog open={isOpen}>
@@ -38,37 +38,37 @@ export default function FormDialog({ children, alimento }: Props) {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>
-            {alimento ? "Modificar alimento" : "Agregar alimento"}
+            {foodstuff ? "Modify Foodstuff" : "Add Foodstuff"}
           </AlertDialogTitle>
           <AlertDialogDescription>
-            Los alimentos son usados para crear recetas y llevar registro de su
-            cantidad en stock.
+            Foodstuffs are used to create recipes and control their quantity in
+            stock.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormInput
-              label="Nombre"
-              placeholder="Tomate"
+              label="Name"
+              placeholder="Tomato"
               control={form.control}
               name="name"
             />
             <FormSelect
-              label="Tipo de alimento"
-              placeholder="Elija un tipo de alimento"
+              label="Type of foodstuff"
+              placeholder="Choose a type of foodstuff"
               options={getFoodstuffTypes()}
               control={form.control}
               name="type"
             />
             <FormMultiSelect
-              label="Momentos"
-              placeholder="Elija uno o varios momentos"
+              label="Meals"
+              placeholder="Choose meals"
               options={getMeals()}
               control={form.control}
               name="meals"
             />
             <FormInput
-              label="Precio"
+              label="Price"
               placeholder="50.00"
               control={form.control}
               name="price"
@@ -76,7 +76,7 @@ export default function FormDialog({ children, alimento }: Props) {
             />
             <div className="flex gap-4">
               <FormInput
-                label="Cantidad actual"
+                label="Current quantity"
                 placeholder="10"
                 control={form.control}
                 name="current_quantity"
@@ -84,7 +84,7 @@ export default function FormDialog({ children, alimento }: Props) {
                 className="w-full"
               />
               <FormInput
-                label="Cantidad mínima"
+                label="Minimum quantity"
                 placeholder="5"
                 control={form.control}
                 name="minimum_quantity"
@@ -93,7 +93,7 @@ export default function FormDialog({ children, alimento }: Props) {
               />
             </div>
             <AlertDialogFooter className="pt-4">
-              {alimento && (
+              {foodstuff && (
                 <Button
                   variant="destructive"
                   className="mr-auto gap-2 mt-2 sm:mt-0 w-full sm:w-auto"
@@ -101,17 +101,17 @@ export default function FormDialog({ children, alimento }: Props) {
                   onClick={onDelete}
                 >
                   <Trash2 size={16} />
-                  Eliminar
+                  Delete
                 </Button>
               )}
               <AlertDialogCancel
                 disabled={isPending}
                 onClick={() => setIsOpen(false)}
               >
-                Cancelar
+                Cancel
               </AlertDialogCancel>
               <AlertDialogAction type="submit" disabled={isPending}>
-                Guardar
+                {foodstuff ? "Modify" : "Add"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </form>

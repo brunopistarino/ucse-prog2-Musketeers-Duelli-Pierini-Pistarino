@@ -14,11 +14,11 @@ export default async function ProductsPage() {
   return (
     <div className="flex flex-col flex-1">
       <div className="flex items-center px-6 py-4 justify-between border-b sticky top-0 bg-card z-50">
-        <h1 className="text-lg font-semibold md:text-2xl">Alimentos</h1>
+        <h1 className="text-lg font-semibold md:text-2xl">Foodstuffs</h1>
         <FormDialog>
           <Button className="gap-2">
             <Plus size={16} />
-            Agregar alimento
+            Add Foodstuff
           </Button>
         </FormDialog>
       </div>

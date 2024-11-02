@@ -41,7 +41,7 @@ export default async function ReportsPage() {
   return (
     <div className="flex flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div className="flex items-center">
-        <h1 className="text-lg font-semibold md:text-2xl">Estadísticas</h1>
+        <h1 className="text-lg font-semibold md:text-2xl">Reports</h1>
       </div>
       <div className="flex gap-4 flex-col sm:flex-row">
         <RecipeMealChart data={recipeMealReportsData} />

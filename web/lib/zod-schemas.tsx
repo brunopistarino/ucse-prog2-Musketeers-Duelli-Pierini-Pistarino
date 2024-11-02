@@ -16,7 +16,7 @@ export const foodstuffSchema = z.object({
       z.coerce
         .string()
         .regex(/^-?0$|^-?[1-9]\d*(\.\d+)?$/, {
-          message: "El precio es obligatorio",
+          message: "Price is required",
         })
         .transform(Number),
       z.literal(0),

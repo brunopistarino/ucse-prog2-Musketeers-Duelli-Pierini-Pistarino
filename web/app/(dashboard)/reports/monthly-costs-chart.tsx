@@ -43,9 +43,9 @@ export default function MonthlyCostChart({ data }: MonthlyCostChartProps) {
     <Card className="rounded">
       <CardHeader className="flex items-stretch space-y-0 border-b p-0 flex-row">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
-          <CardTitle>Costo mensual</CardTitle>
+          <CardTitle>Monthly cost</CardTitle>
           <CardDescription>
-            Costos del último año agrupado por mes
+            Costs for the last year grouped by month
           </CardDescription>
         </div>
         <div className="cursor-default relative z-30 flex flex-col justify-center gap-1 px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6">

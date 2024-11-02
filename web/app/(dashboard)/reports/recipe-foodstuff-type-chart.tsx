@@ -33,9 +33,9 @@ export default function RecipeFoodstuffTypeChart({ data }: Porps) {
   return (
     <Card className="flex flex-col flex-1 rounded">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Tipo de alimento</CardTitle>
+        <CardTitle>Foodstuff type</CardTitle>
         <CardDescription>
-          Cantidad de recetas por tipo de alimento
+          Number of recipes by type of foodstuff
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

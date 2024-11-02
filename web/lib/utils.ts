@@ -82,6 +82,9 @@ export function formatError(error: unknown) {
         errorMessage = Message;
       } else if (responseError) {
         errorMessage = responseError;
+        if (error.response.data.error_description) {
+          errorMessage += ` ${error.response.data.error_description}`;
+        }
       } else if (Array.isArray(msg)) {
         errorMessage = msg
           .map((m: any) => `${m.msg_id} - ${m.description}`)

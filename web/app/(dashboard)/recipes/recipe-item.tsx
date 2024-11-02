@@ -40,7 +40,7 @@ export default function RecipeItem({ recipe }: Props) {
           onClick={onDelete}
         >
           <Trash2 size={16} />
-          Eliminar
+          Delete
         </Button>
         <Button
           variant="ghost"
@@ -49,7 +49,7 @@ export default function RecipeItem({ recipe }: Props) {
           onClick={onPrepare}
         >
           <CookingPot size={16} />
-          Preparar
+          Prepare
         </Button>
       </div>
     </div>
