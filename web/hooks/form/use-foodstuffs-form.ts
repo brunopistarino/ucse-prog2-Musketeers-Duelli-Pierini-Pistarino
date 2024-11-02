@@ -32,7 +32,6 @@ export default function useFoodstuffsForm(foodstuff?: Foodstuff) {
       ? await updateFoodstuff(values, foodstuff.id!)
       : await createFoodstuff(values);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,

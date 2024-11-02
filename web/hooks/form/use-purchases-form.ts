@@ -13,7 +13,6 @@ export default function usePurchasesForm(foodstuffs: Foodstuff[]) {
     const foodstuffIds = foodstuffs.map((foodstuff) => foodstuff.id);
     const response = await createPruchase(foodstuffIds);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,

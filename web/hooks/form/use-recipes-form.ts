@@ -25,7 +25,6 @@ export default function useRecipesForm() {
     const updatedData = { ...data, ingredients: filteredIngredients };
     const response = await createRecipe(updatedData);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,

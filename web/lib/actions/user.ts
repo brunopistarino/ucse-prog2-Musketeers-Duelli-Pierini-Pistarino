@@ -4,14 +4,24 @@ import { axiosInstance, formatError, formatZodError } from "../utils";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginSchema, registerSchema } from "../zod-schemas";
+import axios from "axios";
 
 export async function login(values: unknown) {
   const result = loginSchema.safeParse(values);
   if (!result.success) return formatZodError(result.error);
 
   try {
-    const response = await axiosInstance.post("user/login", result.data);
-    const token = response.headers.authorization;
+    const formData = new URLSearchParams();
+    formData.append("grant_type", "password");
+    formData.append("username", result.data.username);
+    formData.append("password", result.data.password);
+
+    const response = await axios.post(
+      "http://w230847.ferozo.com/tp_prog2/api/account/login",
+      formData
+    );
+
+    const token = response.data.access_token;
     if (token) {
       const cookieStore = cookies();
       cookieStore.set("token", token, {
@@ -31,7 +41,16 @@ export async function register(values: unknown) {
   if (!result.success) return formatZodError(result.error);
 
   try {
-    const response = await axiosInstance.post("user/register", result.data);
+    const formData = new URLSearchParams();
+    formData.append("email", result.data.email);
+    formData.append("password", result.data.password);
+    formData.append("ConfirmPassword", result.data.confirm_password);
+    formData.append("Role", "OPERADOR");
+
+    const response = await axios.post(
+      "http://w230847.ferozo.com/tp_prog2/api/account/register",
+      formData
+    );
 
     const responseLogin = await login({
       username: result.data.email,

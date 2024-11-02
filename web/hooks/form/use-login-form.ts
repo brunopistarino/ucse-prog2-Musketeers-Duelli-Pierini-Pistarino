@@ -14,8 +14,8 @@ export default function useLoginForm() {
   const form = useForm<Login>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: "test@formato#importa?ok",
+      password: "Musketeer$01",
     },
   });
 
@@ -23,10 +23,12 @@ export default function useLoginForm() {
     setIsPending(true);
     const response = await login(values);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
-        description: response.error,
+        description:
+          response.error === "invalid_grant"
+            ? "Wrong email or password"
+            : response.error,
         variant: "destructive",
       });
       setIsPending(false);

@@ -47,28 +47,30 @@ export const loginSchema = z.object({
 
 export const registerSchema = z
   .object({
-    email: z.string().email({ message: "El email no es válido" }),
+    email: z.string().email({ message: "Invalid email address" }),
     password: z
       .string()
-      .min(6, { message: "La contraseña debe tener al menos 6 caracteres" })
+      .min(6, { message: "Password must be at least 6 characters long" })
       .regex(/[A-Z]/, {
         message:
-          "La contraseña debe contener al menos una letra mayúscula ('A'-'Z')",
+          "Password must contain at least one uppercase letter ('A'-'Z')",
       })
       .regex(/[a-z]/, {
         message:
-          "La contraseña debe contener al menos una letra minúscula ('a'-'z')",
+          "Password must contain at least one lowercase letter ('a'-'z')",
       })
       .regex(/\d/, {
-        message: "La contraseña debe contener al menos un dígito ('0'-'9')",
+        message: "Password must contain at least one digit ('0'-'9')",
       })
       .regex(/[^A-Za-z0-9]/, {
-        message: "La contraseña debe contener al menos un carácter especial",
+        message: "Password must contain at least one special character",
       }),
-    confirm_password: z.string().min(1, { message: "Repita la contraseña" }),
+    confirm_password: z
+      .string()
+      .min(1, { message: "Please confirm the password" }),
   })
   .refine((data) => data.password === data.confirm_password, {
-    message: "Las contraseñas no coinciden",
+    message: "Passwords do not match",
     path: ["confirm_password"],
   });
 

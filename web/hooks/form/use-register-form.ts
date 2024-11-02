@@ -24,7 +24,6 @@ export default function useRegisterForm() {
     setIsPending(true);
     const response = await register(values);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,

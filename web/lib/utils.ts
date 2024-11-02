@@ -69,8 +69,20 @@ export function formatError(error: unknown) {
   let errorMessage = "";
   if (axios.isAxiosError(error)) {
     if (error.response?.data) {
-      const { msg } = error.response.data;
-      if (Array.isArray(msg)) {
+      const {
+        msg,
+        error: responseError,
+        Message,
+        ModelState,
+      } = error.response.data;
+      if (ModelState && typeof ModelState === "object") {
+        const modelStateErrors = Object.values(ModelState).flat().join(" | ");
+        errorMessage = `${Message || "Invalid request"}: ${modelStateErrors}`;
+      } else if (Message) {
+        errorMessage = Message;
+      } else if (responseError) {
+        errorMessage = responseError;
+      } else if (Array.isArray(msg)) {
         errorMessage = msg
           .map((m: any) => `${m.msg_id} - ${m.description}`)
           .join(" | ");

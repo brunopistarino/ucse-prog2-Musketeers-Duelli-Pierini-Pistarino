@@ -11,7 +11,6 @@ export default function useRecipeForm(recipe: Recipe) {
     setIsPending(true);
     const response = await prepareRecipe(recipe.id!);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,
@@ -29,7 +28,6 @@ export default function useRecipeForm(recipe: Recipe) {
     setIsPending(true);
     const response = await deleteRecipe(recipe.id!);
     if (response?.error) {
-      console.error(response.error);
       toast({
         title: "Error",
         description: response.error,
