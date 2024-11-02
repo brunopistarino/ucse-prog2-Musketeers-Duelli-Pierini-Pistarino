@@ -96,7 +96,7 @@ export function formatError(error: unknown) {
       errorMessage = error.message;
     }
   } else {
-    errorMessage = "Se produjo un error inesperado";
+    errorMessage = "An unexpected error occurred";
   }
   return {
     data: null,
