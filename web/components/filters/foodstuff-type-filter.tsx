@@ -19,10 +19,10 @@ export default function FoodstuffTypeFilter() {
   return (
     <Select value={type} onValueChange={(v) => setType(v === "all" ? null : v)}>
       <SelectTrigger className="md:w-40 w-full">
-        <SelectValue placeholder="Todos los tipos" />
+        <SelectValue placeholder="All types" />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">Todos los tipos</SelectItem>
+        <SelectItem value="all">All types</SelectItem>
         {getFoodstuffTypes().map((foodstuffType) => (
           <SelectItem key={foodstuffType.value} value={foodstuffType.value}>
             {foodstuffType.emoji} {foodstuffType.name}
