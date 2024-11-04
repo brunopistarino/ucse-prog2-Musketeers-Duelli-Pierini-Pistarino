@@ -19,7 +19,7 @@ export default function RegisterPage() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormInput
             label="Email address"
-            placeholder="nombre@ejemplo.com"
+            placeholder="name@example.com"
             control={form.control}
             name="email"
           />
