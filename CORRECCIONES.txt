@@ -1,0 +1,21 @@
+NOTAS:
+Los metodos de servicio no deberian tener nombres como Post o Put, mas bien save, create, update, delete.
+Los metodos de servicio deberian recibir el usuario User completo
+Hay tipos de errores que no retornan un texto que indique cual es el error  como InternalServerError()
+
+
+CORRECCIONES
+Con el docker-compose al iniciar da error 500
+NO hay INFO en el readme para correrlo local.
+
+ runtime error: invalid memory address or nil pointer dereference
+api-1  | /usr/local/go/src/runtime/panic.go:262 (0x46f3f8)
+api-1  |        panicmem: panic(memoryError)
+api-1  | /usr/local/go/src/runtime/signal_unix.go:900 (0x46f3c8)
+api-1  |        sigpanic: panicmem()
+api-1  | /go/pkg/mod/go.mongodb.org/mongo-driver@v1.16.1/mongo/database.go:49 (0x9471ab)
+api-1  |        newDatabase: rc := client.readConcern
+api-1  | /go/pkg/mod/go.mongodb.org/mongo-driver@v1.16.1/mongo/client.go:645 (0x950307)
+api-1  |        (*Client).Database: return newDatabase(c, name, opts...)
+api-1  | /app/repositories/RecipeRepository.go:32 (0x9502e7)
+api-1  |        RecipeRepository.GetRecipes: collection := repository.db.GetClient().Database("superCook").Collection("recipes")
