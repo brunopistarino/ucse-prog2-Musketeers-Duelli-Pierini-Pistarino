@@ -56,14 +56,68 @@ Integrantes: Duelli Agustín, Pierini Luca y Pistarino Bruno.
 ## Instrucciones de Instalación
 
 1. Clona este repositorio:
+
     ```bash
     git clone https://github.com/brunopistarino/ucse-prog2-Musketeers-Duelli-Pierini-Pistarino.git
     ```
+
 2. Levanta los contenedores utilizando Docker Compose:
+
     ```bash
     docker-compose up
     ```
+
 3. Accede a la aplicación en el navegador en `http://localhost:3000`.
+
+## Instrucciones para correr Next.js en local
+
+1. Instalar [Node.js](https://nodejs.org/en/download/package-manager) (versión minima 18.18.0)
+
+2. Entrar a la carpeta de Next.js
+
+    ```bash
+    cd web
+    ```
+
+3. Crear el archivo de variable de entorno `.env.local` y agregar la url de la api
+
+    ```bash
+    API_URL=http://localhost:8080/
+    ```
+
+4. Instalar las dependendencias
+
+    ```bash
+    npm install
+    ```
+
+5. Correr el servidor de desarrollo
+
+    ```bash
+    npm run dev
+    ```
+
+6. Asegurarse de que la api esté corriendo
+
+7. Accede a la aplicación en el navegador en `http://localhost:3000`.
+
+## Instrucciones para Base de Datos Local
+
+1. Generar una base de datos de mongoDB llamada "superCook"
+
+2. Generar las siguientes colecciones
+
+    ```bash
+    - recipes
+    - foodstuffs
+    - purchases
+    ```
+
+3. Cambiar el archivo mongo.go de la API
+
+    ```bash
+    // LOCAL
+    ```
 
 ## Instrucciones de Uso
 
