@@ -41,8 +41,8 @@ func mappingRoutes() {
 
 	foodstuffs.GET("/", foodstuffHandler.GetFoodstuffs)
 	foodstuffs.GET("/:id", foodstuffHandler.GetFoodstuff)
-	foodstuffs.POST("/", foodstuffHandler.PostFoodstuff)
-	foodstuffs.PUT("/:id", foodstuffHandler.PutFoodstuff)
+	foodstuffs.POST("/", foodstuffHandler.CreateFoodstuff)
+	foodstuffs.PUT("/:id", foodstuffHandler.UpdateFoodstuff)
 	foodstuffs.DELETE("/:id", foodstuffHandler.DeleteFoodstuff)
 	foodstuffs.GET("/belowMinimum", foodstuffHandler.GetFoodstuffsBelowMinimum)
 
@@ -51,15 +51,15 @@ func mappingRoutes() {
 
 	recipes.GET("/", recipeHandler.GetRecipes)
 	recipes.GET("/:id", recipeHandler.GetRecipe)
-	recipes.POST("/", recipeHandler.PostRecipe)
-	recipes.POST("/repeated/:id", recipeHandler.PostRepeatedRecipe)
+	recipes.POST("/", recipeHandler.CreateRecipe)
+	recipes.POST("/repeated/:id", recipeHandler.CreateRepeatedRecipe)
 	recipes.DELETE("/:id", recipeHandler.DeleteRecipe)
 
 	purchases := router.Group("/purchases")
 	purchases.Use(authMiddleware.ValidateToken)
 
 	purchases.GET("/", purchaseHandler.GetPurchases)
-	purchases.POST("/", purchaseHandler.PostPurchase)
+	purchases.POST("/", purchaseHandler.CreatePurchase)
 
 	reports := router.Group("/reports")
 	reports.Use(authMiddleware.ValidateToken)

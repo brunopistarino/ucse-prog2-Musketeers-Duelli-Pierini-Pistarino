@@ -18,8 +18,8 @@ type FoodstuffRepositoryInterface interface {
 	GetFoodstuffsBelowMinimum(user string, typeFoodstuff string, name string) ([]model.Foodstuff, error)
 	SetFoodstuffsQuantityToMinimum(user string, foodstuffs []model.Foodstuff) (float32, error)
 	SetFoodstuffQuantityToValue(user string, foodstuffValues []model.Ingredient) error
-	PostFoodstuff(foodstuff model.Foodstuff) (*mongo.InsertOneResult, error)
-	PutFoodstuff(foodstuff model.Foodstuff) (*mongo.UpdateResult, error)
+	CreateFoodstuff(foodstuff model.Foodstuff) (*mongo.InsertOneResult, error)
+	UpdateFoodstuff(foodstuff model.Foodstuff) (*mongo.UpdateResult, error)
 	DeleteFoodstuff(user string, id primitive.ObjectID) (*mongo.DeleteResult, error)
 }
 
@@ -169,7 +169,7 @@ func (repository FoodstuffRepository) GetFoodstuff(user string, id string) (mode
 	return foodstuff, nil
 }
 
-func (repository FoodstuffRepository) PostFoodstuff(foodstuff model.Foodstuff) (*mongo.InsertOneResult, error) {
+func (repository FoodstuffRepository) CreateFoodstuff(foodstuff model.Foodstuff) (*mongo.InsertOneResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 
 	result, err := collection.InsertOne(context.TODO(), foodstuff)
@@ -180,7 +180,7 @@ func (repository FoodstuffRepository) PostFoodstuff(foodstuff model.Foodstuff) (
 	return result, nil
 }
 
-func (repository FoodstuffRepository) PutFoodstuff(foodstuff model.Foodstuff) (*mongo.UpdateResult, error) {
+func (repository FoodstuffRepository) UpdateFoodstuff(foodstuff model.Foodstuff) (*mongo.UpdateResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	filterUser := bson.M{"user_code": foodstuff.UserCode}
 	filterId := bson.M{"_id": foodstuff.ID}

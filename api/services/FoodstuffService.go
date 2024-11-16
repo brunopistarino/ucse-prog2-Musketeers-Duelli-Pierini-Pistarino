@@ -15,8 +15,8 @@ type FoodstuffInterface interface {
 	GetFoodstuffs(user string) ([]*dto.Foodstuff, dto.RequestError)
 	GetFoodstuffsBelowMinimum(user string, meal string, name string) ([]*dto.Foodstuff, dto.RequestError)
 	GetFoodstuff(user string, id string) (*dto.Foodstuff, dto.RequestError)
-	PostFoodstuff(user string, foodstuff *dto.Foodstuff) dto.RequestError
-	PutFoodstuff(user string, foodstuff *dto.Foodstuff, id string) dto.RequestError
+	CreateFoodstuff(user string, foodstuff *dto.Foodstuff) dto.RequestError
+	UpdateFoodstuff(user string, foodstuff *dto.Foodstuff, id string) dto.RequestError
 	DeleteFoodstuff(user string, id string) dto.RequestError
 }
 
@@ -62,7 +62,7 @@ func (service *FoodstuffService) GetFoodstuff(user string, id string) (*dto.Food
 	return foodstuff, dto.RequestError{}
 }
 
-func (service *FoodstuffService) PostFoodstuff(user string, foodstuff *dto.Foodstuff) dto.RequestError {
+func (service *FoodstuffService) CreateFoodstuff(user string, foodstuff *dto.Foodstuff) dto.RequestError {
 
 	err := foodstuff.VerifyFoodstuff()
 	if err != nil {
@@ -75,7 +75,7 @@ func (service *FoodstuffService) PostFoodstuff(user string, foodstuff *dto.Foods
 
 	foodstuffDB.CreatedAt = primitive.NewDateTimeFromTime(now)
 	foodstuffDB.UpdatedAt = primitive.NewDateTimeFromTime(time.Time{})
-	insertOneResult, errInsert := service.foodstuffRepository.PostFoodstuff(foodstuffDB)
+	insertOneResult, errInsert := service.foodstuffRepository.CreateFoodstuff(foodstuffDB)
 	resultID := insertOneResult.InsertedID.(primitive.ObjectID)
 
 	if errInsert != nil {
@@ -85,7 +85,7 @@ func (service *FoodstuffService) PostFoodstuff(user string, foodstuff *dto.Foods
 	return dto.RequestError{}
 }
 
-func (service *FoodstuffService) PutFoodstuff(user string, foodstuff *dto.Foodstuff, id string) dto.RequestError {
+func (service *FoodstuffService) UpdateFoodstuff(user string, foodstuff *dto.Foodstuff, id string) dto.RequestError {
 	err := foodstuff.VerifyFoodstuff()
 	if err != nil {
 		return *dto.NewRequestErrorWithMessages(http.StatusBadRequest, err)
@@ -99,7 +99,7 @@ func (service *FoodstuffService) PutFoodstuff(user string, foodstuff *dto.Foodst
 	now := time.Now()
 	foodstuffDB.UpdatedAt = primitive.NewDateTimeFromTime(now)
 
-	updateResult, errInsert := service.foodstuffRepository.PutFoodstuff(foodstuffDB)
+	updateResult, errInsert := service.foodstuffRepository.UpdateFoodstuff(foodstuffDB)
 	if errInsert != nil {
 		return *dto.InternalServerError()
 	}

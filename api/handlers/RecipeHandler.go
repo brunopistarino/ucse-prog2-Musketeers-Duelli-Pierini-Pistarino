@@ -55,39 +55,39 @@ func (handler *RecipeHandler) GetRecipe(c *gin.Context) {
 	c.JSON(http.StatusOK, recipe)
 }
 
-func (handler *RecipeHandler) PostRecipe(c *gin.Context) {
+func (handler *RecipeHandler) CreateRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Printf("[handler:RecipeHandler][method:PostRecipe][info:POST][user:%s]", user.Username)
+	log.Printf("[handler:RecipeHandler][method:CreateRecipe][info:POST][user:%s]", user.Username)
 
 	var recipe dto.Recipe
 	err := c.ShouldBindJSON(&recipe)
 	if err != nil {
-		log.Printf("[handler:RecipeHadler][method:PostRecipe][reason:ERROR_BIND][error:%s]", err.Error())
+		log.Printf("[handler:RecipeHadler][method:CreateRecipe][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
 
-	errorService := handler.recipeService.PostRecipe(user.Code, &recipe)
+	errorService := handler.recipeService.CreateRecipe(user.Code, &recipe)
 
 	if errorService.IsDefined() {
-		log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:ERROR_PUT][error:%s]", errorService.Error())
+		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_PUT][error:%s]", errorService.Error())
 		c.JSON(errorService.StatusCode, errorService)
 		return
 	}
 
-	log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:SUCCESS_PUT][recipe:%s]", recipe.Name)
+	log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:SUCCESS_PUT][recipe:%s]", recipe.Name)
 	c.JSON(http.StatusCreated, recipe)
 }
 
-func (handler *RecipeHandler) PostRepeatedRecipe(c *gin.Context) {
+func (handler *RecipeHandler) CreateRepeatedRecipe(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Printf("[handler:RecipeHandler][method:PostRecipe][info:POST][user:%s]", user.Username)
+	log.Printf("[handler:RecipeHandler][method:CreateRecipe][info:POST][user:%s]", user.Username)
 
 	// Bind the recipe id from the URL
 	id := c.Param("id")
 
 	if id == "" {
-		log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:ERROR_BIND][error:%s]", "id is required")
+		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_BIND][error:%s]", "id is required")
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
@@ -95,21 +95,21 @@ func (handler *RecipeHandler) PostRepeatedRecipe(c *gin.Context) {
 	// Get the recipe from the database
 	recipe, err := handler.recipeService.GetRecipe(user.Code, id)
 	if err.IsDefined() {
-		log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:ERROR_GET][error:%s]", err.Error())
+		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)
 		return
 	}
 	recipe.ID = ""
-	// Post recipe to the database
-	errorService := handler.recipeService.PostRecipe(user.Code, recipe)
+	// Create recipe to the database
+	errorService := handler.recipeService.CreateRecipe(user.Code, recipe)
 
 	if errorService.IsDefined() {
-		log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:ERROR_PUT_REPEATED][error:%s]", errorService.Error())
+		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_PUT_REPEATED][error:%s]", errorService.Error())
 		c.JSON(errorService.StatusCode, errorService)
 		return
 	}
 
-	log.Printf("[handler:RecipeHandler][method:PostRecipe][reason:SUCCESS_PUT_REPEATED][recipe:%s]", recipe.Name)
+	log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:SUCCESS_PUT_REPEATED][recipe:%s]", recipe.Name)
 	c.JSON(http.StatusCreated, recipe)
 }
 

@@ -14,7 +14,7 @@ import (
 type RecipeRepositoryInterface interface {
 	GetRecipes(user string, name string, meal string) ([]model.Recipe, error)
 	GetRecipe(user string, id string) (model.Recipe, error)
-	PostRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error)
+	CreateRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error)
 	DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error)
 }
 
@@ -77,7 +77,7 @@ func (repository RecipeRepository) GetRecipe(user string, id string) (model.Reci
 	return recipe, nil
 }
 
-func (repository RecipeRepository) PostRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error) {
+func (repository RecipeRepository) CreateRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 
 	result, err := collection.InsertOne(context.TODO(), recipe)

@@ -10,7 +10,7 @@ import (
 )
 
 type PurchaseRepositoryInterface interface {
-	PostPurchase(purchase model.Purchase) (*mongo.InsertOneResult, error)
+	CreatePurchase(purchase model.Purchase) (*mongo.InsertOneResult, error)
 	GetPurchases(user string) ([]model.Purchase, error)
 }
 
@@ -24,7 +24,7 @@ func NewPurchaseRepository(db DB) *PurchaseRepository {
 	}
 }
 
-func (repository PurchaseRepository) PostPurchase(purchase model.Purchase) (*mongo.InsertOneResult, error) {
+func (repository PurchaseRepository) CreatePurchase(purchase model.Purchase) (*mongo.InsertOneResult, error) {
 
 	collection := repository.db.GetClient().Database("superCook").Collection("purchases")
 

@@ -15,7 +15,7 @@ import (
 type RecipeInterface interface {
 	GetRecipes(user string, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError)
 	GetRecipe(user string, id string) (*dto.Recipe, dto.RequestError)
-	PostRecipe(user string, recipe *dto.Recipe) dto.RequestError
+	CreateRecipe(user string, recipe *dto.Recipe) dto.RequestError
 	DeleteRecipe(user string, id string) dto.RequestError
 }
 
@@ -85,7 +85,7 @@ func (service *RecipeService) GetRecipe(user string, id string) (*dto.Recipe, dt
 	return &recipe, dto.RequestError{}
 }
 
-func (service *RecipeService) PostRecipe(user string, recipe *dto.Recipe) dto.RequestError {
+func (service *RecipeService) CreateRecipe(user string, recipe *dto.Recipe) dto.RequestError {
 	err := recipe.VerifyRecipe()
 	if err != nil {
 		return *dto.NewRequestErrorWithMessages(http.StatusBadRequest, err)
@@ -121,7 +121,7 @@ func (service *RecipeService) PostRecipe(user string, recipe *dto.Recipe) dto.Re
 
 	recipeDB.CreatedAt = primitive.NewDateTimeFromTime(now)
 	recipeDB.UpdatedAt = primitive.NewDateTimeFromTime(time.Time{})
-	insertOneResult, errInsert := service.recipeRepository.PostRecipe(recipeDB)
+	insertOneResult, errInsert := service.recipeRepository.CreateRecipe(recipeDB)
 	resultID := insertOneResult.InsertedID.(primitive.ObjectID)
 
 	if errInsert != nil {
@@ -154,7 +154,7 @@ func (service *RecipeService) DeleteRecipe(user string, id string) dto.RequestEr
 			continue
 		}
 		foodstuffDB.CurrentQuantity += ingredient.Quantity
-		_, err = service.foodstuffRepository.PutFoodstuff(foodstuffDB)
+		_, err = service.foodstuffRepository.UpdateFoodstuff(foodstuffDB)
 		if err != nil {
 			return *dto.InternalServerError()
 		}

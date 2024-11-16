@@ -34,31 +34,31 @@ func (handler *PurchaseHandler) GetPurchases(c *gin.Context) {
 	c.JSON(200, purchases)
 }
 
-func (handler *PurchaseHandler) PostPurchase(c *gin.Context) {
+func (handler *PurchaseHandler) CreatePurchase(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Printf("[handler:PurchaseHandler][method:PostPurchase][info:POST][user:%s]", user.Username)
+	log.Printf("[handler:PurchaseHandler][method:CreatePurchase][info:POST][user:%s]", user.Username)
 
 	var ids []string
 	errBind := c.ShouldBindJSON(&ids)
 	if errBind != nil {
-		log.Printf("[handler:RecipeHadler][method:PostRecipe][reason:ERROR_BIND][error:%s]", errBind.Error())
+		log.Printf("[handler:RecipeHadler][method:CreateRecipe][reason:ERROR_BIND][error:%s]", errBind.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
 	if len(ids) == 0 {
-		log.Printf("[handler:PurchaseHandler][method:PostPurchase][info:No ids provided]")
+		log.Printf("[handler:PurchaseHandler][method:CreatePurchase][info:No ids provided]")
 	} else {
-		log.Printf("[handler:PurchaseHandler][method:PostPurchase][info:POST][ids:%s]", ids)
+		log.Printf("[handler:PurchaseHandler][method:CreatePurchase][info:POST][ids:%s]", ids)
 	}
 
-	purchase, err := handler.purchaseService.PostPurchase(user.Code, ids)
+	purchase, err := handler.purchaseService.CreatePurchase(user.Code, ids)
 
 	if err.IsDefined() {
-		log.Printf("[handler:PurchaseHandler][method:PostPurchase][reason:ERROR_POST][error:%s]", err.Error())
+		log.Printf("[handler:PurchaseHandler][method:CreatePurchase][reason:ERROR_POST][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)
 		return
 	}
-	log.Printf("[handler:PurchaseHandler][method:PostPurchase][reason:SUCCESS_POST]")
+	log.Printf("[handler:PurchaseHandler][method:CreatePurchase][reason:SUCCESS_POST]")
 
 	c.JSON(http.StatusCreated, purchase)
 }

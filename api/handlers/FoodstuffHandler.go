@@ -70,52 +70,52 @@ func (handler *FoodstuffHandler) GetFoodstuff(c *gin.Context) {
 	c.JSON(http.StatusOK, foodstuff)
 }
 
-func (handler *FoodstuffHandler) PostFoodstuff(c *gin.Context) {
+func (handler *FoodstuffHandler) CreateFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Printf("[handler:FoodstuffHandler][method:PostFoodstuff][info:POST][user:%s]", user.Username)
+	log.Printf("[handler:FoodstuffHandler][method:CreateFoodstuff][info:POST][user:%s]", user.Username)
 
 	var foodstuff dto.Foodstuff
 	err := c.ShouldBindJSON(&foodstuff)
 	if err != nil {
-		log.Printf("[handler:FoodstuffHandler][method:PostFoodstuff][reason:ERROR_BIND][error:%s]", err.Error())
+		log.Printf("[handler:FoodstuffHandler][method:CreateFoodstuff][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
 
-	errorService := handler.foodstuffService.PostFoodstuff(user.Code, &foodstuff)
+	errorService := handler.foodstuffService.CreateFoodstuff(user.Code, &foodstuff)
 
 	if errorService.IsDefined() {
-		log.Printf("[handler:FoodstuffHandler][method:PostFoodstuff][reason:ERROR_PUT][error:%s]", errorService.Error())
+		log.Printf("[handler:FoodstuffHandler][method:CreateFoodstuff][reason:ERROR_PUT][error:%s]", errorService.Error())
 		c.JSON(errorService.StatusCode, errorService)
 		return
 	}
 
-	log.Printf("[handler:FoodstuffHandler][method:PostFoodstuff][reason:SUCCESS_PUT][foodstuff:%s]", foodstuff.Name)
+	log.Printf("[handler:FoodstuffHandler][method:CreateFoodstuff][reason:SUCCESS_PUT][foodstuff:%s]", foodstuff.Name)
 	c.JSON(http.StatusCreated, foodstuff)
 }
 
-func (handler *FoodstuffHandler) PutFoodstuff(c *gin.Context) {
+func (handler *FoodstuffHandler) UpdateFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
-	log.Printf("[handler:FoodstuffHandler][method:PutFoodstuff][info:PUT][user:%s]", user.Username)
+	log.Printf("[handler:FoodstuffHandler][method:UpdateFoodstuff][info:PUT][user:%s]", user.Username)
 
 	var foodstuff dto.Foodstuff
 	err := c.ShouldBindJSON(&foodstuff)
 	if err != nil {
-		log.Printf("[handler:FoodstuffHandler][method:PutFoodstuff][reason:ERROR_BIND][error:%s]", err.Error())
+		log.Printf("[handler:FoodstuffHandler][method:UpdateFoodstuff][reason:ERROR_BIND][error:%s]", err.Error())
 		c.JSON(http.StatusBadRequest, dto.BindBadRequestError())
 		return
 	}
 	id := c.Param("id")
 
-	errorService := handler.foodstuffService.PutFoodstuff(user.Code, &foodstuff, id)
+	errorService := handler.foodstuffService.UpdateFoodstuff(user.Code, &foodstuff, id)
 
 	if errorService.IsDefined() {
-		log.Printf("[handler:FoodstuffHandler][method:PutFoodstuff][reason:ERROR_PUT][error:%s]", errorService.Error())
+		log.Printf("[handler:FoodstuffHandler][method:UpdateFoodstuff][reason:ERROR_PUT][error:%s]", errorService.Error())
 		c.JSON(errorService.StatusCode, errorService)
 		return
 	}
 
-	log.Printf("[handler:FoodstuffHandler][method:PutFoodstuff][reason:SUCCESS_PUT][foodstuff:%s]", foodstuff.Name)
+	log.Printf("[handler:FoodstuffHandler][method:UpdateFoodstuff][reason:SUCCESS_PUT][foodstuff:%s]", foodstuff.Name)
 	c.JSON(http.StatusOK, foodstuff)
 }
 
