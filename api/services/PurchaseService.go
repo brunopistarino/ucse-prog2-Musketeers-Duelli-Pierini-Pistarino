@@ -13,8 +13,8 @@ import (
 )
 
 type PurchaseInterface interface {
-	GetPurchases(user string) ([]*dto.Purchase, dto.RequestError)
-	CreatePurchase(user string, ids []string) (*dto.Purchase, dto.RequestError)
+	GetPurchases(user dto.User) ([]*dto.Purchase, dto.RequestError)
+	CreatePurchase(user dto.User, ids []string) (*dto.Purchase, dto.RequestError)
 }
 
 type PurchaseService struct {
@@ -29,7 +29,7 @@ func NewPurchaseService(foodstuffRepository repositories.FoodstuffRepositoryInte
 	}
 }
 
-func (service *PurchaseService) GetPurchases(user string) ([]*dto.Purchase, dto.RequestError) {
+func (service *PurchaseService) GetPurchases(user dto.User) ([]*dto.Purchase, dto.RequestError) {
 	purchasesDB, err := service.PurchaseRepository.GetPurchases(user)
 
 	if err != nil {
@@ -47,7 +47,7 @@ func (service *PurchaseService) GetPurchases(user string) ([]*dto.Purchase, dto.
 	return purchases, dto.RequestError{}
 }
 
-func (service *PurchaseService) CreatePurchase(user string, ids []string) (*dto.Purchase, dto.RequestError) {
+func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dto.Purchase, dto.RequestError) {
 	var foodstuffsDB []model.Foodstuff
 	if len(ids) != 0 {
 		for _, id := range ids {
@@ -81,7 +81,7 @@ func (service *PurchaseService) CreatePurchase(user string, ids []string) (*dto.
 
 	purchaseDB := model.Purchase{
 		TotalCost: total,
-		UserCode:  user,
+		UserCode:  user.Code,
 		CreatedAt: utils.GetPrimitiveDateTimeFromDate(time.Now()),
 		UpdatedAt: primitive.NewDateTimeFromTime(time.Time{}),
 	}

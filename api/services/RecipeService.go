@@ -13,10 +13,10 @@ import (
 )
 
 type RecipeInterface interface {
-	GetRecipes(user string, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError)
-	GetRecipe(user string, id string) (*dto.Recipe, dto.RequestError)
-	CreateRecipe(user string, recipe *dto.Recipe) dto.RequestError
-	DeleteRecipe(user string, id string) dto.RequestError
+	GetRecipes(user dto.User, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError)
+	GetRecipe(user dto.User, id string) (*dto.Recipe, dto.RequestError)
+	CreateRecipe(user dto.User, recipe *dto.Recipe) dto.RequestError
+	DeleteRecipe(user dto.User, id string) dto.RequestError
 }
 
 type RecipeService struct {
@@ -31,7 +31,7 @@ func NewRecipeService(recipeRepository repositories.RecipeRepositoryInterface, f
 	}
 }
 
-func (service *RecipeService) GetRecipes(user string, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError) {
+func (service *RecipeService) GetRecipes(user dto.User, meal string, name string, foodstuffType string) ([]*dto.Recipe, dto.RequestError) {
 	if meal != "" && !utils.StringExistsInSlice(meal, dto.Meals) {
 		return nil, *dto.NewRequestErrorWithMessages(http.StatusBadRequest, []dto.RequestMessage{*dto.NewDefaultRequestMessage(dto.InvalidFoodstuffMeal)})
 	}
@@ -68,7 +68,7 @@ func (service *RecipeService) GetRecipes(user string, meal string, name string, 
 	return recipes, dto.RequestError{}
 }
 
-func (service *RecipeService) GetRecipe(user string, id string) (*dto.Recipe, dto.RequestError) {
+func (service *RecipeService) GetRecipe(user dto.User, id string) (*dto.Recipe, dto.RequestError) {
 	recipeDB, err := service.recipeRepository.GetRecipe(user, id)
 
 	if err != nil {
@@ -85,7 +85,7 @@ func (service *RecipeService) GetRecipe(user string, id string) (*dto.Recipe, dt
 	return &recipe, dto.RequestError{}
 }
 
-func (service *RecipeService) CreateRecipe(user string, recipe *dto.Recipe) dto.RequestError {
+func (service *RecipeService) CreateRecipe(user dto.User, recipe *dto.Recipe) dto.RequestError {
 	err := recipe.VerifyRecipe()
 	if err != nil {
 		return *dto.NewRequestErrorWithMessages(http.StatusBadRequest, err)
@@ -116,7 +116,7 @@ func (service *RecipeService) CreateRecipe(user string, recipe *dto.Recipe) dto.
 
 	recipeDB := recipe.GetModel()
 	recipeDB.Ingredients = ingredientsDB
-	recipeDB.UserCode = user
+	recipeDB.UserCode = user.Code
 	now := time.Now()
 
 	recipeDB.CreatedAt = primitive.NewDateTimeFromTime(now)
@@ -133,7 +133,7 @@ func (service *RecipeService) CreateRecipe(user string, recipe *dto.Recipe) dto.
 	return dto.RequestError{}
 }
 
-func (service *RecipeService) DeleteRecipe(user string, id string) dto.RequestError {
+func (service *RecipeService) DeleteRecipe(user dto.User, id string) dto.RequestError {
 	objectID := utils.GetObjectIDFromStringID(id)
 
 	// Get recipe first and ensure it exists
@@ -172,7 +172,7 @@ func (service *RecipeService) DeleteRecipe(user string, id string) dto.RequestEr
 }
 
 // Set the recipe ingredients after search for the related foodstuffs
-func (service *RecipeService) setRecipeIngredients(recipe *model.Recipe, user string) (dto.Recipe, dto.RequestError) {
+func (service *RecipeService) setRecipeIngredients(recipe *model.Recipe, user dto.User) (dto.Recipe, dto.RequestError) {
 	var foodstuffsDB []model.Foodstuff
 	if len(recipe.Ingredients) != 0 {
 		for _, ingredient := range recipe.Ingredients {

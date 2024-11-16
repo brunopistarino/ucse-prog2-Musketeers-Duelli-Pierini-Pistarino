@@ -24,7 +24,7 @@ func (h *ReportHandler) GetReportsByMeal(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Printf("[handler:ReportHandler][method:GetReportsByMeal][info:GET_RECIPE_MEAL_REPORT][user:%s]", user.Username)
 
-	reports, err := h.reportService.GetReportsByMeal(user.Code)
+	reports, err := h.reportService.GetReportsByMeal(user)
 	if err.IsDefined() {
 		log.Printf("[handler:ReportHandler][method:GetReportsByMeal][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)
@@ -39,7 +39,7 @@ func (h *ReportHandler) GetReportsByTypeOfFoodstuff(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Printf("[handler:ReportHandler][method:GetReportsByTypeOfFoodstuff][info:GET_RECIPE_FOODSTUFF_TYPE_REPORT][user:%s]", user.Username)
 
-	reports, err := h.reportService.GetReportsByTypeOfFoodstuff(user.Code)
+	reports, err := h.reportService.GetReportsByTypeOfFoodstuff(user)
 	if err.IsDefined() {
 		log.Printf("[handler:ReportHandler][method:GetReportsByTypeOfFoodstuff][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)
@@ -54,7 +54,7 @@ func (h *ReportHandler) GetMonthlyCosts(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Printf("[handler:ReportHandler][method:GetMonthlyCosts][info:GET_MONTHLY_COSTS][user:%s]", user.Username)
 
-	reports, err := h.reportService.GetMonthlyCosts(user.Code)
+	reports, err := h.reportService.GetMonthlyCosts(user)
 	if err.IsDefined() {
 		log.Printf("[handler:ReportHandler][method:GetMonthlyCosts][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)

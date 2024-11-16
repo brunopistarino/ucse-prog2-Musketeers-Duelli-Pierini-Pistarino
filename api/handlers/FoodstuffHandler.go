@@ -25,7 +25,7 @@ func (handler *FoodstuffHandler) GetFoodstuffs(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 
 	log.Printf("[handler:FoodstuffHandler][method:GetFoodstuffs][info:GET_ALL][user:%s]", user.Username)
-	foodstuffs, err := handler.foodstuffService.GetFoodstuffs(user.Code)
+	foodstuffs, err := handler.foodstuffService.GetFoodstuffs(user)
 
 	if err.IsDefined() {
 		log.Printf("[handler:FoodstuffHandler][method:GetFoodstuffs][reason:ERROR_GET][error:%s]", err.Error())
@@ -43,7 +43,7 @@ func (handler *FoodstuffHandler) GetFoodstuffsBelowMinimum(c *gin.Context) {
 	foodstuffType := c.Query("type")
 	name := c.Query("name")
 
-	foodstuffs, err := handler.foodstuffService.GetFoodstuffsBelowMinimum(user.Code, foodstuffType, name)
+	foodstuffs, err := handler.foodstuffService.GetFoodstuffsBelowMinimum(user, foodstuffType, name)
 
 	if err.IsDefined() {
 		log.Printf("[handler:FoodstuffHandler][method:GetFoodstuffsBelowMinimum][reason:ERROR_GET][error:%s]", err.Error())
@@ -59,7 +59,7 @@ func (handler *FoodstuffHandler) GetFoodstuff(c *gin.Context) {
 	log.Printf("[handler:FoodstuffHandler][method:GetFoodstuff][info:GET_ONE][user:%s]", user.Username)
 
 	id := c.Param("id")
-	foodstuff, err := handler.foodstuffService.GetFoodstuff(user.Code, id)
+	foodstuff, err := handler.foodstuffService.GetFoodstuff(user, id)
 
 	if err.IsDefined() {
 		log.Printf("[handler:FoodstuffHandler][method:GetFoodstuff][reason:ERROR_GET][error:%s]", err.Error())
@@ -82,7 +82,7 @@ func (handler *FoodstuffHandler) CreateFoodstuff(c *gin.Context) {
 		return
 	}
 
-	errorService := handler.foodstuffService.CreateFoodstuff(user.Code, &foodstuff)
+	errorService := handler.foodstuffService.CreateFoodstuff(user, &foodstuff)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:FoodstuffHandler][method:CreateFoodstuff][reason:ERROR_PUT][error:%s]", errorService.Error())
@@ -107,7 +107,7 @@ func (handler *FoodstuffHandler) UpdateFoodstuff(c *gin.Context) {
 	}
 	id := c.Param("id")
 
-	errorService := handler.foodstuffService.UpdateFoodstuff(user.Code, &foodstuff, id)
+	errorService := handler.foodstuffService.UpdateFoodstuff(user, &foodstuff, id)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:FoodstuffHandler][method:UpdateFoodstuff][reason:ERROR_PUT][error:%s]", errorService.Error())
@@ -124,7 +124,7 @@ func (handler *FoodstuffHandler) DeleteFoodstuff(c *gin.Context) {
 	log.Printf("[handler:FoodstuffHandler][method:DeleteFoodstuff][info:DELETE][user:%s]", user.Username)
 
 	id := c.Param("id")
-	err := handler.foodstuffService.DeleteFoodstuff(user.Code, id)
+	err := handler.foodstuffService.DeleteFoodstuff(user, id)
 
 	if err.IsDefined() {
 		log.Printf("[handler:FoodstuffHandler][method:DeleteFoodstuff][reason:ERROR_DELETE][error:%s]", err.Error())

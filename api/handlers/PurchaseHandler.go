@@ -23,7 +23,7 @@ func NewPurchaseHandler(purchaseService services.PurchaseInterface) *PurchaseHan
 func (handler *PurchaseHandler) GetPurchases(c *gin.Context) {
 	user := dto.NewUser(utils.GetUserInfoFromContext(c))
 	log.Printf("[handler:PurchaseHandler][method:GetPurchases][info:GET_ALL][user:%s]", user.Username)
-	purchases, err := handler.purchaseService.GetPurchases(user.Code)
+	purchases, err := handler.purchaseService.GetPurchases(user)
 
 	if err.IsDefined() {
 		log.Printf("[handler:PurchaseHandler][method:GetPurchases][reason:ERROR_GET][error:%s]", err.Error())
@@ -51,7 +51,7 @@ func (handler *PurchaseHandler) CreatePurchase(c *gin.Context) {
 		log.Printf("[handler:PurchaseHandler][method:CreatePurchase][info:POST][ids:%s]", ids)
 	}
 
-	purchase, err := handler.purchaseService.CreatePurchase(user.Code, ids)
+	purchase, err := handler.purchaseService.CreatePurchase(user, ids)
 
 	if err.IsDefined() {
 		log.Printf("[handler:PurchaseHandler][method:CreatePurchase][reason:ERROR_POST][error:%s]", err.Error())

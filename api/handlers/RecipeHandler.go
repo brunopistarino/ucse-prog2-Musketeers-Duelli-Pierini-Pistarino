@@ -28,7 +28,7 @@ func (handler *RecipeHandler) GetRecipes(c *gin.Context) {
 	name := c.Query("name")
 	meal := c.Query("meal")
 
-	recipes, err := handler.recipeService.GetRecipes(user.Code, meal, name, foodstuffType)
+	recipes, err := handler.recipeService.GetRecipes(user, meal, name, foodstuffType)
 
 	if err.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:GetRecipes][reason:ERROR_GET][error:%s]", err.Error())
@@ -44,7 +44,7 @@ func (handler *RecipeHandler) GetRecipe(c *gin.Context) {
 	log.Printf("[handler:RecipeHandler][method:GetRecipe][info:GET_ONE][user:%s]", user.Username)
 
 	id := c.Param("id")
-	recipe, err := handler.recipeService.GetRecipe(user.Code, id)
+	recipe, err := handler.recipeService.GetRecipe(user, id)
 
 	if err.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:GetRecipe][reason:ERROR_GET][error:%s]", err.Error())
@@ -67,7 +67,7 @@ func (handler *RecipeHandler) CreateRecipe(c *gin.Context) {
 		return
 	}
 
-	errorService := handler.recipeService.CreateRecipe(user.Code, &recipe)
+	errorService := handler.recipeService.CreateRecipe(user, &recipe)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_PUT][error:%s]", errorService.Error())
@@ -93,7 +93,7 @@ func (handler *RecipeHandler) CreateRepeatedRecipe(c *gin.Context) {
 	}
 
 	// Get the recipe from the database
-	recipe, err := handler.recipeService.GetRecipe(user.Code, id)
+	recipe, err := handler.recipeService.GetRecipe(user, id)
 	if err.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_GET][error:%s]", err.Error())
 		c.JSON(err.StatusCode, err)
@@ -101,7 +101,7 @@ func (handler *RecipeHandler) CreateRepeatedRecipe(c *gin.Context) {
 	}
 	recipe.ID = ""
 	// Create recipe to the database
-	errorService := handler.recipeService.CreateRecipe(user.Code, recipe)
+	errorService := handler.recipeService.CreateRecipe(user, recipe)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:CreateRecipe][reason:ERROR_PUT_REPEATED][error:%s]", errorService.Error())
@@ -118,7 +118,7 @@ func (handler *RecipeHandler) DeleteRecipe(c *gin.Context) {
 	log.Printf("[handler:RecipeHandler][method:DeleteRecipe][info:DELETE][user:%s]", user.Username)
 
 	id := c.Param("id")
-	errorService := handler.recipeService.DeleteRecipe(user.Code, id)
+	errorService := handler.recipeService.DeleteRecipe(user, id)
 
 	if errorService.IsDefined() {
 		log.Printf("[handler:RecipeHandler][method:DeleteRecipe][reason:ERROR_DELETE][error:%s]", errorService.Error())

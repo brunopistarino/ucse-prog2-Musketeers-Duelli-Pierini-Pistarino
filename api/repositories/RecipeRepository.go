@@ -1,6 +1,7 @@
 package repositories
 
 import (
+	"api/dto"
 	"api/model"
 	"api/utils"
 	"context"
@@ -12,10 +13,10 @@ import (
 )
 
 type RecipeRepositoryInterface interface {
-	GetRecipes(user string, name string, meal string) ([]model.Recipe, error)
-	GetRecipe(user string, id string) (model.Recipe, error)
+	GetRecipes(user dto.User, name string, meal string) ([]model.Recipe, error)
+	GetRecipe(user dto.User, id string) (model.Recipe, error)
 	CreateRecipe(recipe model.Recipe) (*mongo.InsertOneResult, error)
-	DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error)
+	DeleteRecipe(user dto.User, id primitive.ObjectID) (*mongo.DeleteResult, error)
 }
 
 type RecipeRepository struct {
@@ -28,7 +29,7 @@ func NewRecipeRepository(db DB) *RecipeRepository {
 	}
 }
 
-func (repository RecipeRepository) GetRecipes(user string, name string, meal string) ([]model.Recipe, error) {
+func (repository RecipeRepository) GetRecipes(user dto.User, name string, meal string) ([]model.Recipe, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 	filter := bson.M{"user_code": user}
 	findOptions := options.Find().SetSort(bson.D{{Key: "created_at", Value: -1}})
@@ -63,7 +64,7 @@ func (repository RecipeRepository) GetRecipes(user string, name string, meal str
 	return recipes, nil
 }
 
-func (repository RecipeRepository) GetRecipe(user string, id string) (model.Recipe, error) {
+func (repository RecipeRepository) GetRecipe(user dto.User, id string) (model.Recipe, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 	objectID := utils.GetObjectIDFromStringID(id)
 	filter := bson.M{"user_code": user, "_id": objectID}
@@ -89,7 +90,7 @@ func (repository RecipeRepository) CreateRecipe(recipe model.Recipe) (*mongo.Ins
 	return result, nil
 }
 
-func (repository RecipeRepository) DeleteRecipe(user string, id primitive.ObjectID) (*mongo.DeleteResult, error) {
+func (repository RecipeRepository) DeleteRecipe(user dto.User, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("recipes")
 	filter := bson.M{"user_code": user, "_id": id}
 

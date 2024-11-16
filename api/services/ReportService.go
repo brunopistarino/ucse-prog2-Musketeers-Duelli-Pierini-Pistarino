@@ -9,9 +9,9 @@ import (
 )
 
 type ReportInterface interface {
-	GetReportsByMeal(user string) ([]*dto.ReportRecipeUse, dto.RequestError)
-	GetReportsByTypeOfFoodstuff(user string) ([]*dto.ReportRecipeFoodstuff, dto.RequestError)
-	GetMonthlyCosts(user string) ([]*dto.ReportMonthCost, dto.RequestError)
+	GetReportsByMeal(user dto.User) ([]*dto.ReportRecipeUse, dto.RequestError)
+	GetReportsByTypeOfFoodstuff(user dto.User) ([]*dto.ReportRecipeFoodstuff, dto.RequestError)
+	GetMonthlyCosts(user dto.User) ([]*dto.ReportMonthCost, dto.RequestError)
 }
 
 type ReportService struct {
@@ -28,7 +28,7 @@ func NewReportService(recipeRepository repositories.RecipeRepositoryInterface, p
 	}
 }
 
-func (service *ReportService) GetReportsByMeal(user string) ([]*dto.ReportRecipeUse, dto.RequestError) {
+func (service *ReportService) GetReportsByMeal(user dto.User) ([]*dto.ReportRecipeUse, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
 
 	if err != nil {
@@ -102,7 +102,7 @@ func (service *ReportService) GetReportsByMeal(user string) ([]*dto.ReportRecipe
 	return reportRecipeUses, dto.RequestError{}
 }
 
-func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]*dto.ReportRecipeFoodstuff, dto.RequestError) {
+func (service *ReportService) GetReportsByTypeOfFoodstuff(user dto.User) ([]*dto.ReportRecipeFoodstuff, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -145,7 +145,7 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user string) ([]*dto.R
 	return reportRecipeFoodstuffList, dto.RequestError{}
 }
 
-func (service *ReportService) GetMonthlyCosts(user string) ([]*dto.ReportMonthCost, dto.RequestError) {
+func (service *ReportService) GetMonthlyCosts(user dto.User) ([]*dto.ReportMonthCost, dto.RequestError) {
 	purchasesDB, err := service.purchaseRepository.GetPurchases(user)
 
 	if err != nil {

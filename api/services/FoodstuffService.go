@@ -12,12 +12,12 @@ import (
 )
 
 type FoodstuffInterface interface {
-	GetFoodstuffs(user string) ([]*dto.Foodstuff, dto.RequestError)
-	GetFoodstuffsBelowMinimum(user string, meal string, name string) ([]*dto.Foodstuff, dto.RequestError)
-	GetFoodstuff(user string, id string) (*dto.Foodstuff, dto.RequestError)
-	CreateFoodstuff(user string, foodstuff *dto.Foodstuff) dto.RequestError
-	UpdateFoodstuff(user string, foodstuff *dto.Foodstuff, id string) dto.RequestError
-	DeleteFoodstuff(user string, id string) dto.RequestError
+	GetFoodstuffs(user dto.User) ([]*dto.Foodstuff, dto.RequestError)
+	GetFoodstuffsBelowMinimum(user dto.User, meal string, name string) ([]*dto.Foodstuff, dto.RequestError)
+	GetFoodstuff(user dto.User, id string) (*dto.Foodstuff, dto.RequestError)
+	CreateFoodstuff(user dto.User, foodstuff *dto.Foodstuff) dto.RequestError
+	UpdateFoodstuff(user dto.User, foodstuff *dto.Foodstuff, id string) dto.RequestError
+	DeleteFoodstuff(user dto.User, id string) dto.RequestError
 }
 
 type FoodstuffService struct {
@@ -30,7 +30,7 @@ func NewFoodstuffService(foodstuffRepository repositories.FoodstuffRepositoryInt
 	}
 }
 
-func (service *FoodstuffService) GetFoodstuffs(user string) ([]*dto.Foodstuff, dto.RequestError) {
+func (service *FoodstuffService) GetFoodstuffs(user dto.User) ([]*dto.Foodstuff, dto.RequestError) {
 	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffs(user)
 
 	if err != nil {
@@ -48,7 +48,7 @@ func (service *FoodstuffService) GetFoodstuffs(user string) ([]*dto.Foodstuff, d
 	return foodstuffs, dto.RequestError{}
 }
 
-func (service *FoodstuffService) GetFoodstuff(user string, id string) (*dto.Foodstuff, dto.RequestError) {
+func (service *FoodstuffService) GetFoodstuff(user dto.User, id string) (*dto.Foodstuff, dto.RequestError) {
 	foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user, id)
 
 	if err != nil {
@@ -62,7 +62,7 @@ func (service *FoodstuffService) GetFoodstuff(user string, id string) (*dto.Food
 	return foodstuff, dto.RequestError{}
 }
 
-func (service *FoodstuffService) CreateFoodstuff(user string, foodstuff *dto.Foodstuff) dto.RequestError {
+func (service *FoodstuffService) CreateFoodstuff(user dto.User, foodstuff *dto.Foodstuff) dto.RequestError {
 
 	err := foodstuff.VerifyFoodstuff()
 	if err != nil {
@@ -70,7 +70,7 @@ func (service *FoodstuffService) CreateFoodstuff(user string, foodstuff *dto.Foo
 	}
 
 	foodstuffDB := foodstuff.GetModel()
-	foodstuffDB.UserCode = user
+	foodstuffDB.UserCode = user.Code
 	now := time.Now()
 
 	foodstuffDB.CreatedAt = primitive.NewDateTimeFromTime(now)
@@ -85,7 +85,7 @@ func (service *FoodstuffService) CreateFoodstuff(user string, foodstuff *dto.Foo
 	return dto.RequestError{}
 }
 
-func (service *FoodstuffService) UpdateFoodstuff(user string, foodstuff *dto.Foodstuff, id string) dto.RequestError {
+func (service *FoodstuffService) UpdateFoodstuff(user dto.User, foodstuff *dto.Foodstuff, id string) dto.RequestError {
 	err := foodstuff.VerifyFoodstuff()
 	if err != nil {
 		return *dto.NewRequestErrorWithMessages(http.StatusBadRequest, err)
@@ -95,7 +95,7 @@ func (service *FoodstuffService) UpdateFoodstuff(user string, foodstuff *dto.Foo
 	}
 	foodstuff.ID = id
 	foodstuffDB := foodstuff.GetModel()
-	foodstuffDB.UserCode = user
+	foodstuffDB.UserCode = user.Code
 	now := time.Now()
 	foodstuffDB.UpdatedAt = primitive.NewDateTimeFromTime(now)
 
@@ -109,7 +109,7 @@ func (service *FoodstuffService) UpdateFoodstuff(user string, foodstuff *dto.Foo
 	return dto.RequestError{}
 }
 
-func (service *FoodstuffService) DeleteFoodstuff(user string, id string) dto.RequestError {
+func (service *FoodstuffService) DeleteFoodstuff(user dto.User, id string) dto.RequestError {
 	objectID := utils.GetObjectIDFromStringID(id)
 
 	deleteResult, err := service.foodstuffRepository.DeleteFoodstuff(user, objectID)
@@ -123,7 +123,7 @@ func (service *FoodstuffService) DeleteFoodstuff(user string, id string) dto.Req
 }
 
 // Used for 'Purchases'
-func (service *FoodstuffService) GetFoodstuffsBelowMinimum(user string, meal string, name string) ([]*dto.Foodstuff, dto.RequestError) {
+func (service *FoodstuffService) GetFoodstuffsBelowMinimum(user dto.User, meal string, name string) ([]*dto.Foodstuff, dto.RequestError) {
 
 	if meal != "" && !utils.StringExistsInSlice(meal, dto.FoodstuffType) {
 		return nil, *dto.NewRequestError(http.StatusBadRequest, dto.InvalidFoodstuffType)
