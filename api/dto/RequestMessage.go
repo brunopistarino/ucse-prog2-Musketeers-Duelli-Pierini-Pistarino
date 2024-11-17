@@ -39,6 +39,7 @@ const (
 	InvalidRequestBody              = 40090
 	RequiredToken                   = 40111
 	DeniedAuthorization             = 40112
+	DatabaseInternalError           = 50001
 )
 
 var messages = map[int]RequestMessage{
@@ -71,9 +72,10 @@ var messages = map[int]RequestMessage{
 	UnsupportedGrantType:            {ID: UnsupportedGrantType, Description: "unsupported_grant_type"},
 	// Should be returned by the authetication API
 	// RegisterAPIError:                {ID: RegisterAPIError, Description: "error registering user"},
-	InvalidRequestBody:  {ID: InvalidRequestBody, Description: "invalid request body"},
-	RequiredToken:       {ID: RequiredToken, Description: "token is required"},
-	DeniedAuthorization: {ID: DeniedAuthorization, Description: "authorization has been denied for this request"},
+	InvalidRequestBody:    {ID: InvalidRequestBody, Description: "invalid request body"},
+	RequiredToken:         {ID: RequiredToken, Description: "token is required"},
+	DeniedAuthorization:   {ID: DeniedAuthorization, Description: "authorization has been denied for this request"},
+	DatabaseInternalError: {ID: DatabaseInternalError, Description: "a database related error occurred"},
 }
 
 func NewDefaultRequestMessage(id int) *RequestMessage {

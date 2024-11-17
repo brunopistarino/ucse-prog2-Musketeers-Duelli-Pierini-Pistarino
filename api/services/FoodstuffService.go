@@ -34,7 +34,7 @@ func (service *FoodstuffService) GetFoodstuffs(user dto.User) ([]*dto.Foodstuff,
 	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffs(user.Code)
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	var foodstuffs []*dto.Foodstuff
@@ -55,7 +55,7 @@ func (service *FoodstuffService) GetFoodstuff(user dto.User, id string) (*dto.Fo
 		if err.Error() == "mongo: no documents in result" {
 			return nil, *dto.NotFoundError(fmt.Errorf("foodstuff with id %v not found", id))
 		}
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	foodstuff := dto.NewFoodstuff(foodstuffDB)
@@ -79,7 +79,7 @@ func (service *FoodstuffService) CreateFoodstuff(user dto.User, foodstuff *dto.F
 	resultID := insertOneResult.InsertedID.(primitive.ObjectID)
 
 	if errInsert != nil {
-		return *dto.InternalServerError()
+		return *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 	foodstuff.ID = utils.GetStringIDFromObjectID(resultID)
 	return dto.RequestError{}
@@ -101,7 +101,7 @@ func (service *FoodstuffService) UpdateFoodstuff(user dto.User, foodstuff *dto.F
 
 	updateResult, errInsert := service.foodstuffRepository.UpdateFoodstuff(foodstuffDB)
 	if errInsert != nil {
-		return *dto.InternalServerError()
+		return *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 	if updateResult.MatchedCount == 0 {
 		return *dto.NotFoundError(fmt.Errorf("foodstuff with id %v not found", id))
@@ -114,7 +114,7 @@ func (service *FoodstuffService) DeleteFoodstuff(user dto.User, id string) dto.R
 
 	deleteResult, err := service.foodstuffRepository.DeleteFoodstuff(user.Code, objectID)
 	if err != nil {
-		return *dto.InternalServerError()
+		return *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 	if deleteResult.DeletedCount == 0 {
 		return *dto.NotFoundError(fmt.Errorf("foodstuff with id %v not found", id))
@@ -132,7 +132,7 @@ func (service *FoodstuffService) GetFoodstuffsBelowMinimum(user dto.User, meal s
 	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffsBelowMinimum(user.Code, meal, name)
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	var foodstuffs []*dto.Foodstuff

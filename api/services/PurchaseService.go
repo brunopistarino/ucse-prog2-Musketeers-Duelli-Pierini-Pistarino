@@ -7,6 +7,7 @@ import (
 	"api/utils"
 	"errors"
 	"fmt"
+	"net/http"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -33,7 +34,7 @@ func (service *PurchaseService) GetPurchases(user dto.User) ([]*dto.Purchase, dt
 	purchasesDB, err := service.PurchaseRepository.GetPurchases(user.Code)
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	var purchases []*dto.Purchase
@@ -61,7 +62,7 @@ func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dt
 	} else {
 		results, err := service.foodstuffRepository.GetFoodstuffsBelowMinimum(user.Code, "", "")
 		if err != nil {
-			return nil, *dto.InternalServerError()
+			return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 		}
 		if len(results) == 0 {
 			return nil, *dto.NotFoundError(errors.New("unable to proceed with purchase: no food items are below minimum quantity"))
@@ -72,7 +73,7 @@ func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dt
 	total, err := service.foodstuffRepository.SetFoodstuffsQuantityToMinimum(user.Code, foodstuffsDB)
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	if total == 0 {
@@ -89,7 +90,7 @@ func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dt
 	insertOneResult, err := service.PurchaseRepository.CreatePurchase(purchaseDB)
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	purchaseDB.ID = insertOneResult.InsertedID.(primitive.ObjectID)

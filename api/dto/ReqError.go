@@ -66,10 +66,6 @@ func NotFoundError(err error) *RequestError {
 	return NewGenericRequestError(http.StatusNotFound, http.StatusNotFound, err.Error())
 }
 
-func InternalServerError() *RequestError {
-	return NewGenericRequestError(http.StatusInternalServerError, http.StatusInternalServerError, "Internal Server Error")
-}
-
 func TimeoutError(err error) *RequestError {
 	return NewGenericRequestError(http.StatusGatewayTimeout, http.StatusGatewayTimeout, err.Error())
 }

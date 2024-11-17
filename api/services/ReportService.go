@@ -3,6 +3,7 @@ package services
 import (
 	"api/dto"
 	"api/repositories"
+	"net/http"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -32,7 +33,7 @@ func (service *ReportService) GetReportsByMeal(user dto.User) ([]*dto.ReportReci
 	recipesDB, err := service.recipeRepository.GetRecipes(user.Code, "", "")
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	var reportRecipeUses []*dto.ReportRecipeUse
@@ -105,12 +106,12 @@ func (service *ReportService) GetReportsByMeal(user dto.User) ([]*dto.ReportReci
 func (service *ReportService) GetReportsByTypeOfFoodstuff(user dto.User) ([]*dto.ReportRecipeFoodstuff, dto.RequestError) {
 	recipesDB, err := service.recipeRepository.GetRecipes(user.Code, "", "")
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	foodstuffDB, err := service.foodstuffRepository.GetFoodstuffs(user.Code)
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	foodstuffMap := make(map[primitive.ObjectID]string)
@@ -149,7 +150,7 @@ func (service *ReportService) GetMonthlyCosts(user dto.User) ([]*dto.ReportMonth
 	purchasesDB, err := service.purchaseRepository.GetPurchases(user.Code)
 
 	if err != nil {
-		return nil, *dto.InternalServerError()
+		return nil, *dto.NewRequestError(http.StatusInternalServerError, dto.DatabaseInternalError)
 	}
 
 	monthlyCosts := make(map[string]float64)
