@@ -29,7 +29,7 @@ func NewReportService(recipeRepository repositories.RecipeRepositoryInterface, p
 }
 
 func (service *ReportService) GetReportsByMeal(user dto.User) ([]*dto.ReportRecipeUse, dto.RequestError) {
-	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
+	recipesDB, err := service.recipeRepository.GetRecipes(user.Code, "", "")
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -103,12 +103,12 @@ func (service *ReportService) GetReportsByMeal(user dto.User) ([]*dto.ReportReci
 }
 
 func (service *ReportService) GetReportsByTypeOfFoodstuff(user dto.User) ([]*dto.ReportRecipeFoodstuff, dto.RequestError) {
-	recipesDB, err := service.recipeRepository.GetRecipes(user, "", "")
+	recipesDB, err := service.recipeRepository.GetRecipes(user.Code, "", "")
 	if err != nil {
 		return nil, *dto.InternalServerError()
 	}
 
-	foodstuffDB, err := service.foodstuffRepository.GetFoodstuffs(user)
+	foodstuffDB, err := service.foodstuffRepository.GetFoodstuffs(user.Code)
 	if err != nil {
 		return nil, *dto.InternalServerError()
 	}
@@ -146,7 +146,7 @@ func (service *ReportService) GetReportsByTypeOfFoodstuff(user dto.User) ([]*dto
 }
 
 func (service *ReportService) GetMonthlyCosts(user dto.User) ([]*dto.ReportMonthCost, dto.RequestError) {
-	purchasesDB, err := service.purchaseRepository.GetPurchases(user)
+	purchasesDB, err := service.purchaseRepository.GetPurchases(user.Code)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()

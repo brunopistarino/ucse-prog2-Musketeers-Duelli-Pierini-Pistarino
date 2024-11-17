@@ -39,7 +39,7 @@ func (service *RecipeService) GetRecipes(user dto.User, meal string, name string
 		return nil, *dto.NewRequestErrorWithMessages(http.StatusBadRequest, []dto.RequestMessage{*dto.NewDefaultRequestMessage(dto.InvalidFoodstuffType)})
 	}
 
-	recipesDB, err := service.recipeRepository.GetRecipes(user, name, meal)
+	recipesDB, err := service.recipeRepository.GetRecipes(user.Code, name, meal)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -69,7 +69,7 @@ func (service *RecipeService) GetRecipes(user dto.User, meal string, name string
 }
 
 func (service *RecipeService) GetRecipe(user dto.User, id string) (*dto.Recipe, dto.RequestError) {
-	recipeDB, err := service.recipeRepository.GetRecipe(user, id)
+	recipeDB, err := service.recipeRepository.GetRecipe(user.Code, id)
 
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
@@ -96,7 +96,7 @@ func (service *RecipeService) CreateRecipe(user dto.User, recipe *dto.Recipe) dt
 	if len(recipe.Ingredients) != 0 {
 		for _, ingredient := range recipe.Ingredients {
 			id := utils.GetObjectIDFromStringID(ingredient.ID)
-			foodstuffDB, err := service.foodstuffRepository.GetFoodstuffFromMealAndQuantity(user, recipe.Meal, id, ingredient.Quantity)
+			foodstuffDB, err := service.foodstuffRepository.GetFoodstuffFromMealAndQuantity(user.Code, recipe.Meal, id, ingredient.Quantity)
 			if err != nil {
 				return *dto.NotFoundError(fmt.Errorf("foodstuff with id %v with type %s and current_quantity gte than %d not found",
 					ingredient.ID, recipe.Meal, ingredient.Quantity))
@@ -108,7 +108,7 @@ func (service *RecipeService) CreateRecipe(user dto.User, recipe *dto.Recipe) dt
 			ingredientsDB = append(ingredientsDB, ingredientDB)
 		}
 	}
-	errorQuantityAssignment := service.foodstuffRepository.SetFoodstuffQuantityToValue(user, ingredientsDB)
+	errorQuantityAssignment := service.foodstuffRepository.SetFoodstuffQuantityToValue(user.Code, ingredientsDB)
 
 	if errorQuantityAssignment != nil {
 		return *dto.InternalServerError()
@@ -137,7 +137,7 @@ func (service *RecipeService) DeleteRecipe(user dto.User, id string) dto.Request
 	objectID := utils.GetObjectIDFromStringID(id)
 
 	// Get recipe first and ensure it exists
-	recipe, err := service.recipeRepository.GetRecipe(user, id)
+	recipe, err := service.recipeRepository.GetRecipe(user.Code, id)
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
 			return *dto.NotFoundError(fmt.Errorf("recipe with id %v not found", id))
@@ -149,7 +149,7 @@ func (service *RecipeService) DeleteRecipe(user dto.User, id string) dto.Request
 	// the current quantity + the quantity of the ingredient.
 	// If the foodstuff does not exist, don't do anything and keep going
 	for _, ingredient := range recipe.Ingredients {
-		foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user, utils.GetStringIDFromObjectID(ingredient.ID))
+		foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user.Code, utils.GetStringIDFromObjectID(ingredient.ID))
 		if err != nil {
 			continue
 		}
@@ -161,7 +161,7 @@ func (service *RecipeService) DeleteRecipe(user dto.User, id string) dto.Request
 	}
 
 	// Delete the recipe
-	deleteResult, err := service.recipeRepository.DeleteRecipe(user, objectID)
+	deleteResult, err := service.recipeRepository.DeleteRecipe(user.Code, objectID)
 	if err != nil {
 		return *dto.InternalServerError()
 	}
@@ -177,7 +177,7 @@ func (service *RecipeService) setRecipeIngredients(recipe *model.Recipe, user dt
 	if len(recipe.Ingredients) != 0 {
 		for _, ingredient := range recipe.Ingredients {
 			id := utils.GetStringIDFromObjectID(ingredient.ID)
-			foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user, id)
+			foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user.Code, id)
 			if err != nil {
 				if err.Error() == "mongo: no documents in result" {
 					foodstuffsDB = append(foodstuffsDB, model.Foodstuff{

@@ -31,7 +31,7 @@ func NewFoodstuffService(foodstuffRepository repositories.FoodstuffRepositoryInt
 }
 
 func (service *FoodstuffService) GetFoodstuffs(user dto.User) ([]*dto.Foodstuff, dto.RequestError) {
-	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffs(user)
+	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffs(user.Code)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -49,7 +49,7 @@ func (service *FoodstuffService) GetFoodstuffs(user dto.User) ([]*dto.Foodstuff,
 }
 
 func (service *FoodstuffService) GetFoodstuff(user dto.User, id string) (*dto.Foodstuff, dto.RequestError) {
-	foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user, id)
+	foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user.Code, id)
 
 	if err != nil {
 		if err.Error() == "mongo: no documents in result" {
@@ -112,7 +112,7 @@ func (service *FoodstuffService) UpdateFoodstuff(user dto.User, foodstuff *dto.F
 func (service *FoodstuffService) DeleteFoodstuff(user dto.User, id string) dto.RequestError {
 	objectID := utils.GetObjectIDFromStringID(id)
 
-	deleteResult, err := service.foodstuffRepository.DeleteFoodstuff(user, objectID)
+	deleteResult, err := service.foodstuffRepository.DeleteFoodstuff(user.Code, objectID)
 	if err != nil {
 		return *dto.InternalServerError()
 	}
@@ -129,7 +129,7 @@ func (service *FoodstuffService) GetFoodstuffsBelowMinimum(user dto.User, meal s
 		return nil, *dto.NewRequestError(http.StatusBadRequest, dto.InvalidFoodstuffType)
 	}
 
-	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffsBelowMinimum(user, meal, name)
+	foodstuffsDB, err := service.foodstuffRepository.GetFoodstuffsBelowMinimum(user.Code, meal, name)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()

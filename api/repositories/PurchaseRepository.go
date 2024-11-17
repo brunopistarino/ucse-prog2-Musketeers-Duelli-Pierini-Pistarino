@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"api/dto"
 	"api/model"
 	"context"
 
@@ -12,7 +11,7 @@ import (
 
 type PurchaseRepositoryInterface interface {
 	CreatePurchase(purchase model.Purchase) (*mongo.InsertOneResult, error)
-	GetPurchases(user dto.User) ([]model.Purchase, error)
+	GetPurchases(user string) ([]model.Purchase, error)
 }
 
 type PurchaseRepository struct {
@@ -38,7 +37,7 @@ func (repository PurchaseRepository) CreatePurchase(purchase model.Purchase) (*m
 	return result, nil
 }
 
-func (repository PurchaseRepository) GetPurchases(user dto.User) ([]model.Purchase, error) {
+func (repository PurchaseRepository) GetPurchases(user string) ([]model.Purchase, error) {
 
 	collection := repository.db.GetClient().Database("superCook").Collection("purchases")
 	filter := bson.M{"user_code": user}

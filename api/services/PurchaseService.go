@@ -30,7 +30,7 @@ func NewPurchaseService(foodstuffRepository repositories.FoodstuffRepositoryInte
 }
 
 func (service *PurchaseService) GetPurchases(user dto.User) ([]*dto.Purchase, dto.RequestError) {
-	purchasesDB, err := service.PurchaseRepository.GetPurchases(user)
+	purchasesDB, err := service.PurchaseRepository.GetPurchases(user.Code)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()
@@ -51,7 +51,7 @@ func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dt
 	var foodstuffsDB []model.Foodstuff
 	if len(ids) != 0 {
 		for _, id := range ids {
-			foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user, id)
+			foodstuffDB, err := service.foodstuffRepository.GetFoodstuff(user.Code, id)
 			if err != nil {
 				return nil, *dto.NotFoundError(fmt.Errorf("foodstuff with id %v not found", id))
 			}
@@ -59,7 +59,7 @@ func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dt
 			foodstuffsDB = append(foodstuffsDB, foodstuffDB)
 		}
 	} else {
-		results, err := service.foodstuffRepository.GetFoodstuffsBelowMinimum(user, "", "")
+		results, err := service.foodstuffRepository.GetFoodstuffsBelowMinimum(user.Code, "", "")
 		if err != nil {
 			return nil, *dto.InternalServerError()
 		}
@@ -69,7 +69,7 @@ func (service *PurchaseService) CreatePurchase(user dto.User, ids []string) (*dt
 		foodstuffsDB = results
 	}
 
-	total, err := service.foodstuffRepository.SetFoodstuffsQuantityToMinimum(user, foodstuffsDB)
+	total, err := service.foodstuffRepository.SetFoodstuffsQuantityToMinimum(user.Code, foodstuffsDB)
 
 	if err != nil {
 		return nil, *dto.InternalServerError()

@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"api/dto"
 	"api/model"
 	"api/utils"
 	"context"
@@ -13,15 +12,15 @@ import (
 )
 
 type FoodstuffRepositoryInterface interface {
-	GetFoodstuff(user dto.User, id string) (model.Foodstuff, error)
-	GetFoodstuffFromMealAndQuantity(user dto.User, meal string, foodstuff primitive.ObjectID, quantity int) (model.Foodstuff, error)
-	GetFoodstuffs(user dto.User) ([]model.Foodstuff, error)
-	GetFoodstuffsBelowMinimum(user dto.User, typeFoodstuff string, name string) ([]model.Foodstuff, error)
-	SetFoodstuffsQuantityToMinimum(user dto.User, foodstuffs []model.Foodstuff) (float32, error)
-	SetFoodstuffQuantityToValue(user dto.User, foodstuffValues []model.Ingredient) error
+	GetFoodstuff(user string, id string) (model.Foodstuff, error)
+	GetFoodstuffFromMealAndQuantity(user string, meal string, foodstuff primitive.ObjectID, quantity int) (model.Foodstuff, error)
+	GetFoodstuffs(user string) ([]model.Foodstuff, error)
+	GetFoodstuffsBelowMinimum(user string, typeFoodstuff string, name string) ([]model.Foodstuff, error)
+	SetFoodstuffsQuantityToMinimum(user string, foodstuffs []model.Foodstuff) (float32, error)
+	SetFoodstuffQuantityToValue(user string, foodstuffValues []model.Ingredient) error
 	CreateFoodstuff(foodstuff model.Foodstuff) (*mongo.InsertOneResult, error)
 	UpdateFoodstuff(foodstuff model.Foodstuff) (*mongo.UpdateResult, error)
-	DeleteFoodstuff(user dto.User, id primitive.ObjectID) (*mongo.DeleteResult, error)
+	DeleteFoodstuff(user string, id primitive.ObjectID) (*mongo.DeleteResult, error)
 }
 
 type FoodstuffRepository struct {
@@ -34,7 +33,7 @@ func NewFoodstuffRepository(db DB) *FoodstuffRepository {
 	}
 }
 
-func (repository FoodstuffRepository) GetFoodstuffs(user dto.User) ([]model.Foodstuff, error) {
+func (repository FoodstuffRepository) GetFoodstuffs(user string) ([]model.Foodstuff, error) {
 
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	filter := bson.M{"user_code": user}
@@ -62,7 +61,7 @@ func (repository FoodstuffRepository) GetFoodstuffs(user dto.User) ([]model.Food
 	return foodstuffs, nil
 }
 
-func (repository FoodstuffRepository) GetFoodstuffsBelowMinimum(user dto.User, typeFoodstuff string, name string) ([]model.Foodstuff, error) {
+func (repository FoodstuffRepository) GetFoodstuffsBelowMinimum(user string, typeFoodstuff string, name string) ([]model.Foodstuff, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	userFilter := bson.M{"user_code": user}
 	compareFilter := bson.M{"$expr": bson.M{"$lt": []string{"$current_quantity", "$minimum_quantity"}}}
@@ -100,7 +99,7 @@ func (repository FoodstuffRepository) GetFoodstuffsBelowMinimum(user dto.User, t
 	return foodstuffs, nil
 }
 
-func (repository FoodstuffRepository) GetFoodstuffFromMealAndQuantity(user dto.User, meal string, foodstuff primitive.ObjectID, quantity int) (model.Foodstuff, error) {
+func (repository FoodstuffRepository) GetFoodstuffFromMealAndQuantity(user string, meal string, foodstuff primitive.ObjectID, quantity int) (model.Foodstuff, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	userFilter := bson.M{"user_code": user}
 	mealFilter := bson.M{"meals": meal}
@@ -116,7 +115,7 @@ func (repository FoodstuffRepository) GetFoodstuffFromMealAndQuantity(user dto.U
 	return foodstuffModel, nil
 }
 
-func (repository FoodstuffRepository) SetFoodstuffsQuantityToMinimum(user dto.User, foodstuffs []model.Foodstuff) (float32, error) {
+func (repository FoodstuffRepository) SetFoodstuffsQuantityToMinimum(user string, foodstuffs []model.Foodstuff) (float32, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	filterAdder := bson.M{"user_code": user}
 	var total float32
@@ -137,7 +136,7 @@ func (repository FoodstuffRepository) SetFoodstuffsQuantityToMinimum(user dto.Us
 	return total, nil
 }
 
-func (repository FoodstuffRepository) SetFoodstuffQuantityToValue(user dto.User, foodstuffValues []model.Ingredient) error {
+func (repository FoodstuffRepository) SetFoodstuffQuantityToValue(user string, foodstuffValues []model.Ingredient) error {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	filterAdder := bson.M{"user_code": user}
 
@@ -154,7 +153,7 @@ func (repository FoodstuffRepository) SetFoodstuffQuantityToValue(user dto.User,
 	return nil
 }
 
-func (repository FoodstuffRepository) GetFoodstuff(user dto.User, id string) (model.Foodstuff, error) {
+func (repository FoodstuffRepository) GetFoodstuff(user string, id string) (model.Foodstuff, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	objectID := utils.GetObjectIDFromStringID(id)
 	userFilter := bson.M{"user_code": user}
@@ -200,7 +199,7 @@ func (repository FoodstuffRepository) UpdateFoodstuff(foodstuff model.Foodstuff)
 	return result, nil
 }
 
-func (repository FoodstuffRepository) DeleteFoodstuff(user dto.User, id primitive.ObjectID) (*mongo.DeleteResult, error) {
+func (repository FoodstuffRepository) DeleteFoodstuff(user string, id primitive.ObjectID) (*mongo.DeleteResult, error) {
 	collection := repository.db.GetClient().Database("superCook").Collection("foodstuffs")
 	userFilter := bson.M{"user_code": user}
 	idFilter := bson.M{"_id": id}
