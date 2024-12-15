@@ -20,6 +20,8 @@ services:
       - .:/api
     depends_on:
       - db
+    environment:
+      - USER_API=http://w230847.ferozo.com/tp_prog2/api/Account/UserInfo
     networks:
       - app-network
 

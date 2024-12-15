@@ -24,7 +24,12 @@ func NewAuthClient() *AuthClient {
 }
 
 func (auth *AuthClient) GetUserInfo(token string) (*responses.UserInfo, error) {
-	apiUrl := "http://w230847.ferozo.com/tp_prog2/api/Account/UserInfo"
+	apiUrl, exists := os.LookupEnv("USER_API")
+
+	if !exists {
+		log.Printf("[client:AuthClient][method:[GetUserInfo][reason:ERROR_GET][error:USER_API not found]")
+		return nil, errors.New("USER_API environment variable not found")
+	}
 
 	client := &http.Client{
 		Transport: auth.SetTransport(),

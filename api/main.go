@@ -8,6 +8,11 @@ import (
 	"api/services"
 
 	"github.com/gin-gonic/gin"
+	// LOCAL NO DOCKER
+	"log"
+
+	"github.com/joho/godotenv"
+	// LOCAL NO DOCKER
 )
 
 var (
@@ -17,6 +22,16 @@ var (
 	reportHandler    *handlers.ReportHandler
 	router           *gin.Engine
 )
+
+// LOCAL NO DOCKER
+func init() {
+	// loads values from .env into the system
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found")
+	}
+}
+
+// LOCAL NO DOCKER
 
 func main() {
 
