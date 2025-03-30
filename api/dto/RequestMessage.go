@@ -79,17 +79,15 @@ var messages = map[int]RequestMessage{
 }
 
 func NewDefaultRequestMessage(id int) *RequestMessage {
-	if _, ok := messages[id]; !ok {
+	message, ok := messages[id]
+	if !ok {
 		// Return a default message if the ID is not found.
 		return &RequestMessage{
 			ID:          id,
 			Description: "Unknown error",
 		}
 	}
-	return &RequestMessage{
-		ID:          id,
-		Description: messages[id].Description,
-	}
+	return &message
 }
 
 func NewRequestMessage(id int, description string) *RequestMessage {
